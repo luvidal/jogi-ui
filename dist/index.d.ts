@@ -383,6 +383,32 @@ interface StatCardProps {
 }
 declare function StatCard({ label, value, icon, subtitle, trend, color, onClick }: StatCardProps): react_jsx_runtime.JSX.Element;
 
+interface SidebarFilterProps {
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
+}
+/** Compact filter input for dark sidebar */
+declare function SidebarFilter({ value, onChange, placeholder }: SidebarFilterProps): react_jsx_runtime.JSX.Element;
+interface SidebarSortProps {
+    options: {
+        value: string;
+        label: string;
+    }[];
+    value: string;
+    onChange: (value: string) => void;
+    direction: 'asc' | 'desc';
+    onDirectionChange: (dir: 'asc' | 'desc') => void;
+}
+/** Compact sort dropdown for dark sidebar */
+declare function SidebarSort({ options, value, onChange, direction, onDirectionChange }: SidebarSortProps): react_jsx_runtime.JSX.Element;
+interface SidebarPaginatorProps {
+    page: number;
+    setPage: (page: number) => void;
+    hasNext: boolean;
+}
+/** Compact paginator for dark sidebar - auto-hides when only one page */
+declare function SidebarPaginator({ page, setPage, hasNext }: SidebarPaginatorProps): react_jsx_runtime.JSX.Element | null;
 interface SidebarControlsProps {
     search: string;
     onSearchChange: (value: string) => void;
@@ -665,4 +691,4 @@ interface PillTagProps {
 }
 declare const PillTag: ({ children, onRemove, grip }: PillTagProps) => react_jsx_runtime.JSX.Element;
 
-export { Accordion, Anchor, AnimAI, Button, ButtonGroup, type ButtonProps$1 as ButtonProps, Card, type CardItem, CardList, Checkbox, ColorPicker, ConfirmDialog as Confirm, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, Icon, Input, Label, MasterDetail, Modal, Paginator, Panel, PillTag, ProgressRing, PromptDialog as Prompt, Radio, Scroll, type Section, SectionIcon, type SectionIconColors, Select, SidebarControls, Skeleton, Spinner, StatCard, TablePanel, Tabs, Toast, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, useIsDesktop, useIsMobile, useToast };
+export { Accordion, Anchor, AnimAI, Button, ButtonGroup, type ButtonProps$1 as ButtonProps, Card, type CardItem, CardList, Checkbox, ColorPicker, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, Icon, Input, Label, MasterDetail, Modal, Paginator, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, Scroll, type Section, SectionIcon, type SectionIconColors, Select, SidebarControls, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, Spinner, StatCard, TablePanel, Tabs, Toast, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, useIsDesktop, useIsMobile, useToast };

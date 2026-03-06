@@ -1345,6 +1345,34 @@ function SidebarSort({ options, value, onChange, direction, onDirectionChange })
     )
   ] });
 }
+function SidebarPaginator({ page, setPage, hasNext }) {
+  const hasPrev = page > 0;
+  if (!hasPrev && !hasNext) return null;
+  return /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+    /* @__PURE__ */ jsx(
+      "button",
+      {
+        onClick: () => setPage(Math.max(0, page - 1)),
+        disabled: !hasPrev,
+        className: "h-8 w-8 flex items-center justify-center rounded-btn bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors",
+        children: /* @__PURE__ */ jsx(icon_default, { name: "ChevronLeft", size: 16, className: "text-white" })
+      }
+    ),
+    /* @__PURE__ */ jsxs("span", { className: "text-xs text-white/60", children: [
+      "P\xE1gina ",
+      page + 1
+    ] }),
+    /* @__PURE__ */ jsx(
+      "button",
+      {
+        onClick: () => setPage(page + 1),
+        disabled: !hasNext,
+        className: "h-8 w-8 flex items-center justify-center rounded-btn bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors",
+        children: /* @__PURE__ */ jsx(icon_default, { name: "ChevronRight", size: 16, className: "text-white" })
+      }
+    )
+  ] });
+}
 function SidebarControls({
   search,
   onSearchChange,
@@ -2467,6 +2495,6 @@ var PillTag = ({ children, onRemove, grip }) => /* @__PURE__ */ jsxs("div", { cl
 ] });
 var pilltag_default = PillTag;
 
-export { section_default as Accordion, anchor_default as Anchor, AnimAI, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, label_default as Label, MasterDetail, modal_default as Modal, paginator_default as Paginator, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, sectionicon_default as SectionIcon, select_default as Select, SidebarControls, skeleton_default as Skeleton, Spinner, StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, toast_default as Toast, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, useIsDesktop, useIsMobile, useToast };
+export { section_default as Accordion, anchor_default as Anchor, AnimAI, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, label_default as Label, MasterDetail, modal_default as Modal, paginator_default as Paginator, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, sectionicon_default as SectionIcon, select_default as Select, SidebarControls, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, toast_default as Toast, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, useIsDesktop, useIsMobile, useToast };
 //# sourceMappingURL=index.mjs.map
 //# sourceMappingURL=index.mjs.map

@@ -1347,6 +1347,34 @@ function SidebarSort({ options, value, onChange, direction, onDirectionChange })
     )
   ] });
 }
+function SidebarPaginator({ page, setPage, hasNext }) {
+  const hasPrev = page > 0;
+  if (!hasPrev && !hasNext) return null;
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center justify-between", children: [
+    /* @__PURE__ */ jsxRuntime.jsx(
+      "button",
+      {
+        onClick: () => setPage(Math.max(0, page - 1)),
+        disabled: !hasPrev,
+        className: "h-8 w-8 flex items-center justify-center rounded-btn bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors",
+        children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "ChevronLeft", size: 16, className: "text-white" })
+      }
+    ),
+    /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "text-xs text-white/60", children: [
+      "P\xE1gina ",
+      page + 1
+    ] }),
+    /* @__PURE__ */ jsxRuntime.jsx(
+      "button",
+      {
+        onClick: () => setPage(page + 1),
+        disabled: !hasNext,
+        className: "h-8 w-8 flex items-center justify-center rounded-btn bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors",
+        children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "ChevronRight", size: 16, className: "text-white" })
+      }
+    )
+  ] });
+}
 function SidebarControls({
   search,
   onSearchChange,
@@ -2504,6 +2532,9 @@ exports.Scroll = scroll_default;
 exports.SectionIcon = sectionicon_default;
 exports.Select = select_default;
 exports.SidebarControls = SidebarControls;
+exports.SidebarFilter = SidebarFilter;
+exports.SidebarPaginator = SidebarPaginator;
+exports.SidebarSort = SidebarSort;
 exports.Skeleton = skeleton_default;
 exports.Spinner = Spinner;
 exports.StatCard = StatCard;
