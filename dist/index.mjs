@@ -61,9 +61,17 @@ var ToastProvider = ({ children }) => {
   }), [toasts, addToast, removeToast, clearToasts, showSuccess, showError, showWarning, showInfo]);
   return /* @__PURE__ */ jsx(ToastContext.Provider, { value, children });
 };
+var reported = /* @__PURE__ */ new Set();
 var Icon = ({ name, ...props }) => {
-  const LucideIcon = name && icons[name] || CircleHelp;
-  return /* @__PURE__ */ jsx(LucideIcon, { ...props });
+  const LucideIcon = name ? icons[name] : void 0;
+  if (name && !LucideIcon && !reported.has(name)) {
+    reported.add(name);
+    const err = new Error(`[Icon] "${name}" not found in lucide-react`);
+    console.error(err.message);
+    if (typeof reportError === "function") reportError(err);
+  }
+  const Component = LucideIcon || CircleHelp;
+  return /* @__PURE__ */ jsx(Component, { ...props });
 };
 var icon_default = Icon;
 var sizeConfig = {
