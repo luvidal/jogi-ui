@@ -2050,7 +2050,7 @@ var Tabs = ({
         const showSpacer = hasGroups && i > 0 && tab.group !== tabs[i - 1].group;
         const tabStyle = hasGroups ? { ...customStyle, flex: tab.group === firstGroup ? 3 : 1 } : customStyle;
         return /* @__PURE__ */ jsxs(Fragment$1, { children: [
-          showSpacer && /* @__PURE__ */ jsx("div", { style: { flex: 1 }, className: "bg-gray-50" }),
+          showSpacer && /* @__PURE__ */ jsx("div", { style: { flex: 2 }, className: "bg-gray-50" }),
           /* @__PURE__ */ jsxs(
             "button",
             {
@@ -2085,7 +2085,7 @@ var Tabs = ({
       const showSpacer = hasGroups && i > 0 && tab.group !== tabs[i - 1].group;
       const tabStyle = hasGroups ? { ...customStyle, flex: tab.group === firstGroup ? 3 : 1 } : customStyle;
       return /* @__PURE__ */ jsxs(Fragment$1, { children: [
-        showSpacer && /* @__PURE__ */ jsx("div", { style: { flex: 1 }, className: "bg-gray-50" }),
+        showSpacer && /* @__PURE__ */ jsx("div", { style: { flex: 2 }, className: "bg-gray-50" }),
         /* @__PURE__ */ jsxs(
           "button",
           {
