@@ -126,14 +126,13 @@ const Tabs = ({
                             ? (hasCustomColors ? { backgroundColor: bg, color: fg } : undefined)
                             : (hasInactiveColors ? { backgroundColor: inactiveBackground, color: inactiveForeground } : undefined)
                         const isNewGroup = hasGroups && i > 0 && tab.group !== tabs[i - 1].group
-                        const isFirstGroup = !hasGroups || tab.group === firstGroup
-                        const tabStyle = isNewGroup ? { ...customStyle, marginLeft: 'auto' } : customStyle
                         return (
                             <Fragment key={tab.id}>
+                                {isNewGroup && <div style={{ width: 40 }} className="bg-gray-50 flex-shrink-0" />}
                                 <button
                                     onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
-                                    style={tabStyle}
-                                    className={`${isFirstGroup ? 'flex-1' : ''} flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold py-3 sm:py-4 px-2 sm:px-4 md:px-5 truncate whitespace-nowrap overflow-hidden transition-all duration-200 ${rounded ? 'md:first:rounded-tl-btn md:last:rounded-tr-btn' : ''} ${isActive
+                                    style={customStyle}
+                                    className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold py-3 sm:py-4 px-2 sm:px-4 md:px-5 truncate whitespace-nowrap overflow-hidden transition-all duration-200 ${rounded ? 'md:first:rounded-tl-btn md:last:rounded-tr-btn' : ''} ${isActive
                                         ? hasCustomColors ? '' : 'text-theme-700 bg-white'
                                         : hasInactiveColors ? 'hover:brightness-110' : 'text-gray-300 bg-gray-50 hover:text-gray-400 hover:bg-gray-100'
                                         }`}
@@ -164,14 +163,13 @@ const Tabs = ({
                         color: selectedForeground
                     } : undefined
                     const isNewGroup = hasGroups && i > 0 && tab.group !== tabs[i - 1].group
-                    const isFirstGroup = !hasGroups || tab.group === firstGroup
-                    const tabStyle = isNewGroup ? { ...customStyle, marginLeft: 'auto' } : customStyle
                     return (
                         <Fragment key={tab.id}>
+                            {isNewGroup && <div style={{ width: 40 }} className="flex-shrink-0" />}
                             <button
                                 onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
-                                style={tabStyle}
-                                className={`${isFirstGroup ? 'flex-1' : ''} flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 px-2 sm:px-4 md:px-5 rounded-btn transition-all duration-200 ${isActive
+                                style={customStyle}
+                                className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 px-2 sm:px-4 md:px-5 rounded-btn transition-all duration-200 ${isActive
                                     ? hasCustomColors ? 'shadow-sm' : 'bg-white text-theme-700 shadow-sm'
                                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                                     }`}
