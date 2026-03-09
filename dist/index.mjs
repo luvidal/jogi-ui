@@ -2037,6 +2037,7 @@ var Tabs = ({
   const activeContent = tabs.find((t) => t.id === activeId)?.content;
   if (tabs.length === 0) return null;
   const hasGroups = tabs.some((t) => t.group !== void 0);
+  const firstGroup = hasGroups ? tabs[0]?.group : void 0;
   if (variant === "underline") {
     return /* @__PURE__ */ jsxs("div", { className, children: [
       /* @__PURE__ */ jsx("div", { className: "flex flex-shrink-0", children: tabs.map((tab, i) => {
@@ -2047,6 +2048,7 @@ var Tabs = ({
         const hasInactiveColors = inactiveBackground || inactiveForeground;
         const customStyle = isActive ? hasCustomColors2 ? { backgroundColor: bg, color: fg } : void 0 : hasInactiveColors ? { backgroundColor: inactiveBackground, color: inactiveForeground } : void 0;
         const showSpacer = hasGroups && i > 0 && tab.group !== tabs[i - 1].group;
+        const tabFlex = hasGroups ? tab.group === firstGroup ? "flex-1" : "flex-shrink-0" : "flex-1";
         return /* @__PURE__ */ jsxs(Fragment$1, { children: [
           showSpacer && /* @__PURE__ */ jsx("div", { className: "flex-1" }),
           /* @__PURE__ */ jsxs(
@@ -2057,7 +2059,7 @@ var Tabs = ({
                 handleTabClick(tab.id);
               },
               style: customStyle,
-              className: `${hasGroups ? "flex-shrink-0" : "flex-1"} flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold py-3 sm:py-4 px-2 sm:px-4 md:px-5 truncate whitespace-nowrap overflow-hidden transition-all duration-200 ${rounded ? "md:first:rounded-tl-btn md:last:rounded-tr-btn" : ""} ${isActive ? hasCustomColors2 ? "" : "text-theme-700 bg-white" : hasInactiveColors ? "hover:brightness-110" : "text-gray-300 bg-gray-50 hover:text-gray-400 hover:bg-gray-100"}`,
+              className: `${tabFlex} flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold py-3 sm:py-4 px-2 sm:px-4 md:px-5 truncate whitespace-nowrap overflow-hidden transition-all duration-200 ${rounded ? "md:first:rounded-tl-btn md:last:rounded-tr-btn" : ""} ${isActive ? hasCustomColors2 ? "" : "text-theme-700 bg-white" : hasInactiveColors ? "hover:brightness-110" : "text-gray-300 bg-gray-50 hover:text-gray-400 hover:bg-gray-100"}`,
               children: [
                 tab.icon && /* @__PURE__ */ jsx(icon_default, { name: tab.icon, size: 16, className: `flex-shrink-0 ${isActive ? hasCustomColors2 ? "" : "text-theme-500" : hasInactiveColors ? "" : "text-gray-300"}`, style: isActive ? fg ? { color: fg } : void 0 : inactiveForeground ? { color: inactiveForeground } : void 0 }),
                 /* @__PURE__ */ jsx("span", { className: "truncate", children: tab.shortLabel ? /* @__PURE__ */ jsxs(Fragment, { children: [
@@ -2081,6 +2083,7 @@ var Tabs = ({
         color: selectedForeground
       } : void 0;
       const showSpacer = hasGroups && i > 0 && tab.group !== tabs[i - 1].group;
+      const tabFlex = hasGroups ? tab.group === firstGroup ? "flex-1" : "flex-shrink-0" : "flex-1";
       return /* @__PURE__ */ jsxs(Fragment$1, { children: [
         showSpacer && /* @__PURE__ */ jsx("div", { className: "flex-1" }),
         /* @__PURE__ */ jsxs(
@@ -2091,7 +2094,7 @@ var Tabs = ({
               handleTabClick(tab.id);
             },
             style: customStyle,
-            className: `${hasGroups ? "flex-shrink-0" : "flex-1"} flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 px-2 sm:px-4 md:px-5 rounded-btn transition-all duration-200 ${isActive ? hasCustomColors ? "shadow-sm" : "bg-white text-theme-700 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`,
+            className: `${tabFlex} flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 px-2 sm:px-4 md:px-5 rounded-btn transition-all duration-200 ${isActive ? hasCustomColors ? "shadow-sm" : "bg-white text-theme-700 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`,
             children: [
               tab.icon && /* @__PURE__ */ jsx(icon_default, { name: tab.icon, size: 16, className: `flex-shrink-0 ${isActive ? hasCustomColors ? "" : "text-theme-500" : ""}`, style: isActive && selectedForeground ? { color: selectedForeground } : void 0 }),
               /* @__PURE__ */ jsx("span", { className: "truncate", children: tab.shortLabel ? /* @__PURE__ */ jsxs(Fragment, { children: [
