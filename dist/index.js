@@ -2050,9 +2050,9 @@ var Tabs = ({
         const hasInactiveColors = inactiveBackground || inactiveForeground;
         const customStyle = isActive ? hasCustomColors2 ? { backgroundColor: bg, color: fg } : void 0 : hasInactiveColors ? { backgroundColor: inactiveBackground, color: inactiveForeground } : void 0;
         const showSpacer = hasGroups && i > 0 && tab.group !== tabs[i - 1].group;
-        const tabStyle = hasGroups ? { ...customStyle, flex: tab.group === firstGroup ? 3 : 1 } : customStyle;
+        const tabStyle = hasGroups ? { ...customStyle, flex: tab.group === firstGroup ? 3 : 2 } : customStyle;
         return /* @__PURE__ */ jsxRuntime.jsxs(react.Fragment, { children: [
-          showSpacer && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { flex: 2 }, className: "bg-gray-50" }),
+          showSpacer && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { flex: 1 }, className: "bg-gray-50" }),
           /* @__PURE__ */ jsxRuntime.jsxs(
             "button",
             {
@@ -2085,9 +2085,9 @@ var Tabs = ({
         color: selectedForeground
       } : void 0;
       const showSpacer = hasGroups && i > 0 && tab.group !== tabs[i - 1].group;
-      const tabStyle = hasGroups ? { ...customStyle, flex: tab.group === firstGroup ? 3 : 1 } : customStyle;
+      const tabStyle = hasGroups ? { ...customStyle, flex: tab.group === firstGroup ? 3 : 2 } : customStyle;
       return /* @__PURE__ */ jsxRuntime.jsxs(react.Fragment, { children: [
-        showSpacer && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { flex: 2 }, className: "bg-gray-50" }),
+        showSpacer && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { flex: 1 }, className: "bg-gray-50" }),
         /* @__PURE__ */ jsxRuntime.jsxs(
           "button",
           {

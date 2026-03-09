@@ -126,10 +126,10 @@ const Tabs = ({
                             ? (hasCustomColors ? { backgroundColor: bg, color: fg } : undefined)
                             : (hasInactiveColors ? { backgroundColor: inactiveBackground, color: inactiveForeground } : undefined)
                         const showSpacer = hasGroups && i > 0 && tab.group !== tabs[i - 1].group
-                        const tabStyle = hasGroups ? { ...customStyle, flex: tab.group === firstGroup ? 3 : 1 } : customStyle
+                        const tabStyle = hasGroups ? { ...customStyle, flex: tab.group === firstGroup ? 3 : 2 } : customStyle
                         return (
                             <Fragment key={tab.id}>
-                                {showSpacer && <div style={{ flex: 2 }} className="bg-gray-50" />}
+                                {showSpacer && <div style={{ flex: 1 }} className="bg-gray-50" />}
                                 <button
                                     onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
                                     style={tabStyle}
@@ -164,10 +164,10 @@ const Tabs = ({
                         color: selectedForeground
                     } : undefined
                     const showSpacer = hasGroups && i > 0 && tab.group !== tabs[i - 1].group
-                    const tabStyle = hasGroups ? { ...customStyle, flex: tab.group === firstGroup ? 3 : 1 } : customStyle
+                    const tabStyle = hasGroups ? { ...customStyle, flex: tab.group === firstGroup ? 3 : 2 } : customStyle
                     return (
                         <Fragment key={tab.id}>
-                            {showSpacer && <div style={{ flex: 2 }} className="bg-gray-50" />}
+                            {showSpacer && <div style={{ flex: 1 }} className="bg-gray-50" />}
                             <button
                                 onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
                                 style={tabStyle}
