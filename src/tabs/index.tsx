@@ -112,39 +112,64 @@ const Tabs = ({
 
     // Underline variant (default) - matches detail header tab style
     if (variant === 'underline') {
+        const renderTabButton = (tab: Tab, i: number) => {
+            const isActive = activeId === tab.id
+            const bg = tab.selectedBackground ?? selectedBackground
+            const fg = tab.selectedForeground ?? selectedForeground
+            const hasCustomColors = bg || fg
+            const hasInactiveColors = inactiveBackground || inactiveForeground
+            const customStyle = isActive
+                ? (hasCustomColors ? { backgroundColor: bg, color: fg } : undefined)
+                : (hasInactiveColors ? { backgroundColor: inactiveBackground, color: inactiveForeground } : undefined)
+            return (
+                <button
+                    key={tab.id}
+                    onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
+                    style={customStyle}
+                    className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold py-3 sm:py-4 px-2 sm:px-4 md:px-5 truncate whitespace-nowrap overflow-hidden transition-all duration-200 ${!hasGroups && rounded ? 'md:first:rounded-tl-btn md:last:rounded-tr-btn' : ''} ${isActive
+                        ? hasCustomColors ? '' : 'text-theme-700 bg-white'
+                        : hasInactiveColors ? 'hover:brightness-110' : 'text-gray-300 bg-gray-50 hover:text-gray-400 hover:bg-gray-100'
+                        }`}
+                >
+                    {tab.icon && <Icon name={tab.icon} size={16} className={`flex-shrink-0 ${isActive ? (hasCustomColors ? '' : 'text-theme-500') : (hasInactiveColors ? '' : 'text-gray-300')}`} style={isActive ? (fg ? { color: fg } : undefined) : (inactiveForeground ? { color: inactiveForeground } : undefined)} />}
+                    <span className='truncate'>{tab.shortLabel ? (<><span className="sm:hidden">{tab.shortLabel}</span><span className="hidden sm:inline">{tab.label}</span></>) : tab.label}</span>
+                </button>
+            )
+        }
+
+        // Group tabs into clusters when groups are defined
+        const renderTabBar = () => {
+            if (!hasGroups) {
+                return <div className="flex flex-shrink-0">{tabs.map(renderTabButton)}</div>
+            }
+            // Split tabs into groups
+            const groups: Tab[][] = []
+            let currentGroup: Tab[] = []
+            let currentGroupName = tabs[0]?.group
+            for (const tab of tabs) {
+                if (tab.group !== currentGroupName) {
+                    groups.push(currentGroup)
+                    currentGroup = []
+                    currentGroupName = tab.group
+                }
+                currentGroup.push(tab)
+            }
+            if (currentGroup.length) groups.push(currentGroup)
+
+            return (
+                <div className="flex flex-shrink-0 gap-6">
+                    {groups.map((group, gi) => (
+                        <div key={gi} className={`flex ${rounded && gi === 0 ? 'md:first:rounded-tl-btn' : ''} ${rounded && gi === groups.length - 1 ? 'md:last:rounded-tr-btn' : ''}`} style={{ flex: group.length }}>
+                            {group.map((tab, ti) => renderTabButton(tab, ti))}
+                        </div>
+                    ))}
+                </div>
+            )
+        }
+
         return (
             <div className={className}>
-                <div className="flex flex-shrink-0">
-                    {tabs.map((tab, i) => {
-                        const isActive = activeId === tab.id
-                        // Per-tab colors take precedence over component-level colors
-                        const bg = tab.selectedBackground ?? selectedBackground
-                        const fg = tab.selectedForeground ?? selectedForeground
-                        const hasCustomColors = bg || fg
-                        const hasInactiveColors = inactiveBackground || inactiveForeground
-                        const customStyle = isActive
-                            ? (hasCustomColors ? { backgroundColor: bg, color: fg } : undefined)
-                            : (hasInactiveColors ? { backgroundColor: inactiveBackground, color: inactiveForeground } : undefined)
-                        const isNewGroup = hasGroups && i > 0 && tab.group !== tabs[i - 1].group
-                        const groupStyle = customStyle
-                        return (
-                            <Fragment key={tab.id}>
-                                {isNewGroup && <div className="w-0.5 bg-gray-300 mx-2 my-2 flex-shrink-0 rounded-full" />}
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
-                                    style={groupStyle}
-                                    className={`${hasGroups ? 'flex-1' : 'flex-1'} flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold py-3 sm:py-4 px-2 sm:px-4 md:px-5 truncate whitespace-nowrap overflow-hidden transition-all duration-200 ${rounded ? 'md:first:rounded-tl-btn md:last:rounded-tr-btn' : ''} ${isActive
-                                        ? hasCustomColors ? '' : 'text-theme-700 bg-white'
-                                        : hasInactiveColors ? 'hover:brightness-110' : 'text-gray-300 bg-gray-50 hover:text-gray-400 hover:bg-gray-100'
-                                        }`}
-                                >
-                                    {tab.icon && <Icon name={tab.icon} size={16} className={`flex-shrink-0 ${isActive ? (hasCustomColors ? '' : 'text-theme-500') : (hasInactiveColors ? '' : 'text-gray-300')}`} style={isActive ? (fg ? { color: fg } : undefined) : (inactiveForeground ? { color: inactiveForeground } : undefined)} />}
-                                    <span className='truncate'>{tab.shortLabel ? (<><span className="sm:hidden">{tab.shortLabel}</span><span className="hidden sm:inline">{tab.label}</span></>) : tab.label}</span>
-                                </button>
-                            </Fragment>
-                        )
-                    })}
-                </div>
+                {renderTabBar()}
                 <div className="flex-1 min-h-0 flex flex-col">
                     {children ?? activeContent}
                 </div>
