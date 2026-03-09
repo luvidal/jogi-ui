@@ -127,10 +127,11 @@ const Tabs = ({
                             : (hasInactiveColors ? { backgroundColor: inactiveBackground, color: inactiveForeground } : undefined)
                         const isNewGroup = hasGroups && i > 0 && tab.group !== tabs[i - 1].group
                         const groupStyle = hasGroups
-                            ? { ...customStyle, flex: '0 1 300px', ...(isNewGroup ? { marginLeft: 'auto', borderLeft: '2px solid #e5e7eb' } : {}) }
+                            ? { ...customStyle, flex: '0 1 300px' }
                             : customStyle
                         return (
                             <Fragment key={tab.id}>
+                                {isNewGroup && <div className="flex-1 min-w-4" />}
                                 <button
                                     onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
                                     style={groupStyle}
@@ -166,10 +167,11 @@ const Tabs = ({
                     } : undefined
                     const isNewGroup = hasGroups && i > 0 && tab.group !== tabs[i - 1].group
                     const groupStyle = hasGroups
-                        ? { ...customStyle, flex: '0 1 300px', ...(isNewGroup ? { marginLeft: 'auto', borderLeft: '2px solid #e5e7eb' } : {}) }
+                        ? { ...customStyle, flex: '0 1 300px' }
                         : customStyle
                     return (
                         <Fragment key={tab.id}>
+                            {isNewGroup && <div className="flex-1 min-w-4" />}
                             <button
                                 onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
                                 style={groupStyle}
