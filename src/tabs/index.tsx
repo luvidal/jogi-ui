@@ -45,7 +45,7 @@ interface TabsProps {
  * <Tabs
  *   tabs={[
  *     { id: 'renta', label: 'Informe de Renta', content: <RentaReport /> },
- *     { id: 'situacion', label: 'Estado de Situación', content: <SituacionReport /> }
+ *     { id: 'reporte', label: 'Reporte', content: <ReporteView /> }
  *   ]}
  * />
  * ```
