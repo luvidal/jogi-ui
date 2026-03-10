@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Icon from './icon'
 
 const useIsMobile = () => {
@@ -17,9 +17,11 @@ type ModalSize = 'xl' | 'lg' | 'md' | 'sm' | 'xs'
 
 interface Props {
   title?: string
+  icon?: string
   children?: React.ReactNode
   onClose: () => void
   size?: ModalSize
+  headerActions?: React.ReactNode
 }
 
 const SIZE_CONFIG: Record<ModalSize, { w: number, h: number, maxW: number, maxH: number }> = {
@@ -30,7 +32,7 @@ const SIZE_CONFIG: Record<ModalSize, { w: number, h: number, maxW: number, maxH:
   xs: { w: 400, h: 500, maxW: 85, maxH: 80 }
 }
 
-const Modal = ({ title, children, onClose, size: sizeProp = 'md' }: Props) => {
+const Modal = ({ title, icon, children, onClose, size: sizeProp = 'md', headerActions }: Props) => {
   const mobile = useIsMobile()
   const sizeConfig = SIZE_CONFIG[sizeProp]
 
@@ -56,11 +58,14 @@ const Modal = ({ title, children, onClose, size: sizeProp = 'md' }: Props) => {
       >
         <div className='flex items-center justify-between text-white text-sm px-3 py-2 select-none'>
           <div className='flex items-center'>
-            <Icon name='AppWindow' size={16} className='me-2 opacity-80' />
+            <Icon name={icon ?? 'AppWindow'} size={16} className='me-2 opacity-80' />
             <span className='opacity-90'>{title ?? ' '}</span>
           </div>
-          <div className='cursor-pointer hover:bg-white/20 p-1.5 rounded' onClick={onClose} title='Cerrar Ventana'>
-            <Icon name='X' size={16} className='text-white' />
+          <div className='flex items-center gap-1 select-none'>
+            {headerActions}
+            <div className='cursor-pointer hover:bg-white/20 p-1.5 rounded' onClick={onClose} title='Cerrar Ventana'>
+              <Icon name='X' size={16} className='text-white' />
+            </div>
           </div>
         </div>
         <div className='flex-1 overflow-hidden bg-white'>

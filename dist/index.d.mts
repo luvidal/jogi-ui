@@ -138,11 +138,13 @@ declare const Select: ({ label, value, placeholder, options, className, onChange
 type ModalSize = 'xl' | 'lg' | 'md' | 'sm' | 'xs';
 interface Props$6 {
     title?: string;
+    icon?: string;
     children?: React.ReactNode;
     onClose: () => void;
     size?: ModalSize;
+    headerActions?: React.ReactNode;
 }
-declare const Modal: ({ title, children, onClose, size: sizeProp }: Props$6) => react_jsx_runtime.JSX.Element;
+declare const Modal: ({ title, icon, children, onClose, size: sizeProp, headerActions }: Props$6) => react_jsx_runtime.JSX.Element;
 
 type TooltipProps = {
     text: string;

@@ -270,7 +270,7 @@ var SIZE_CONFIG = {
   sm: { w: 560, h: 600, maxW: 88, maxH: 82 },
   xs: { w: 400, h: 500, maxW: 85, maxH: 80 }
 };
-var Modal = ({ title, children, onClose, size: sizeProp = "md" }) => {
+var Modal = ({ title, icon, children, onClose, size: sizeProp = "md", headerActions }) => {
   const mobile = useIsMobile2();
   const sizeConfig3 = SIZE_CONFIG[sizeProp];
   const effectiveSize = useMemo(() => {
@@ -294,10 +294,13 @@ var Modal = ({ title, children, onClose, size: sizeProp = "md" }) => {
       children: [
         /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between text-white text-sm px-3 py-2 select-none", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
-            /* @__PURE__ */ jsx(icon_default, { name: "AppWindow", size: 16, className: "me-2 opacity-80" }),
+            /* @__PURE__ */ jsx(icon_default, { name: icon ?? "AppWindow", size: 16, className: "me-2 opacity-80" }),
             /* @__PURE__ */ jsx("span", { className: "opacity-90", children: title ?? " " })
           ] }),
-          /* @__PURE__ */ jsx("div", { className: "cursor-pointer hover:bg-white/20 p-1.5 rounded", onClick: onClose, title: "Cerrar Ventana", children: /* @__PURE__ */ jsx(icon_default, { name: "X", size: 16, className: "text-white" }) })
+          /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1 select-none", children: [
+            headerActions,
+            /* @__PURE__ */ jsx("div", { className: "cursor-pointer hover:bg-white/20 p-1.5 rounded", onClick: onClose, title: "Cerrar Ventana", children: /* @__PURE__ */ jsx(icon_default, { name: "X", size: 16, className: "text-white" }) })
+          ] })
         ] }),
         /* @__PURE__ */ jsx("div", { className: "flex-1 overflow-hidden bg-white", children })
       ]
