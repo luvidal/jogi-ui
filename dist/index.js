@@ -1115,6 +1115,24 @@ function MasterDetail({
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-1 min-h-0 bg-white overflow-hidden", children: hasSelection && detail ? detail : /* @__PURE__ */ jsxRuntime.jsx("div", { className: "h-full overflow-auto", children: list }) })
   ] });
 }
+var colorConfig = {
+  default: { bg: "bg-theme-50", text: "text-theme-700", iconBg: "bg-theme-100", iconColor: "text-theme-500" },
+  success: { bg: "bg-emerald-50", text: "text-emerald-700", iconBg: "bg-emerald-100", iconColor: "text-emerald-500" },
+  warning: { bg: "bg-amber-50", text: "text-amber-700", iconBg: "bg-amber-100", iconColor: "text-amber-500" },
+  danger: { bg: "bg-rose-50", text: "text-rose-700", iconBg: "bg-rose-100", iconColor: "text-rose-500" }
+};
+var StatCard = ({ label, value, icon, subtitle, color = "default" }) => {
+  const cfg = colorConfig[color];
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `rounded-xl p-4 flex items-start gap-3 ${cfg.bg}`, children: [
+    icon && /* @__PURE__ */ jsxRuntime.jsx("div", { className: `shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${cfg.iconBg}`, children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 20, className: cfg.iconColor }) }),
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "min-w-0", children: [
+      /* @__PURE__ */ jsxRuntime.jsx("div", { className: `text-xs font-medium truncate ${cfg.text} opacity-70`, children: label }),
+      /* @__PURE__ */ jsxRuntime.jsx("div", { className: `text-2xl font-bold ${cfg.text}`, children: value }),
+      subtitle && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "text-xs text-gray-400 truncate mt-0.5", children: subtitle })
+    ] })
+  ] });
+};
+var statcard_default = StatCard;
 function SidebarFilter({ value, onChange, placeholder = "Filtrar..." }) {
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2 bg-white/10 rounded-btn px-3 h-9", children: [
     /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "Search", size: 14, className: "text-white/50" }),
@@ -2100,6 +2118,7 @@ exports.SidebarPaginator = SidebarPaginator;
 exports.SidebarSort = SidebarSort;
 exports.Skeleton = skeleton_default;
 exports.Spinner = Spinner;
+exports.StatCard = statcard_default;
 exports.TablePanel = tablepanel_default;
 exports.Tabs = tabs_default;
 exports.ToastContainer = ToastContainer;

@@ -63,10 +63,10 @@ interface CardItem {
     right?: ReactNode;
 }
 
-interface Props$c extends LucideProps {
+interface Props$d extends LucideProps {
     name?: string;
 }
-declare const Icon: ({ name, ...props }: Props$c) => react_jsx_runtime.JSX.Element;
+declare const Icon: ({ name, ...props }: Props$d) => react_jsx_runtime.JSX.Element;
 
 interface ButtonProps$1 extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: string;
@@ -76,22 +76,22 @@ interface ButtonProps$1 extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 declare const Button: ({ icon, text, loading, className, ...props }: ButtonProps$1) => react_jsx_runtime.JSX.Element;
 
-interface Props$b {
+interface Props$c {
     label: string;
     checked: boolean;
     className?: string;
     onChange: (checked: boolean) => void;
 }
-declare const Checkbox: ({ label, checked, className, onChange }: Props$b) => react_jsx_runtime.JSX.Element;
+declare const Checkbox: ({ label, checked, className, onChange }: Props$c) => react_jsx_runtime.JSX.Element;
 
-interface Props$a {
+interface Props$b {
     label?: string;
     value?: string;
     onChange?: (value: string) => void;
     className?: string;
     visible?: boolean;
 }
-declare const ColorPicker: ({ label, value, onChange, className, visible }: Props$a) => react_jsx_runtime.JSX.Element;
+declare const ColorPicker: ({ label, value, onChange, className, visible }: Props$b) => react_jsx_runtime.JSX.Element;
 
 interface FieldWrapperProps {
     label?: string;
@@ -101,7 +101,7 @@ interface FieldWrapperProps {
 }
 declare function FieldWrapper({ label, className, visible, children }: FieldWrapperProps): react_jsx_runtime.JSX.Element | null;
 
-interface Props$9 {
+interface Props$a {
     label?: string;
     readOnly?: boolean;
     onChange?: (value: string) => void;
@@ -109,19 +109,19 @@ interface Props$9 {
     className?: string;
     visible?: boolean;
 }
-type InputProps = Props$9 & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'readOnly'>;
+type InputProps = Props$a & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'readOnly'>;
 declare const Input: ({ label, className, readOnly, onChange, value, visible, ...rest }: InputProps) => react_jsx_runtime.JSX.Element;
 
-interface Props$8<T extends string = string> {
+interface Props$9<T extends string = string> {
     label: string;
     value: T;
     selected: T;
     onChange?: (value: T) => void;
     className?: string;
 }
-declare const Radio: <T extends string = string>({ label, value, selected, onChange, className }: Props$8<T>) => react_jsx_runtime.JSX.Element;
+declare const Radio: <T extends string = string>({ label, value, selected, onChange, className }: Props$9<T>) => react_jsx_runtime.JSX.Element;
 
-interface Props$7 {
+interface Props$8 {
     label?: string;
     value: string;
     placeholder?: string;
@@ -133,10 +133,10 @@ interface Props$7 {
     tooltip?: string;
     onChange: (value: string) => void;
 }
-declare const Select: ({ label, value, placeholder, options, className, onChange }: Props$7) => react_jsx_runtime.JSX.Element;
+declare const Select: ({ label, value, placeholder, options, className, onChange }: Props$8) => react_jsx_runtime.JSX.Element;
 
 type ModalSize = 'xl' | 'lg' | 'md' | 'sm' | 'xs';
-interface Props$6 {
+interface Props$7 {
     title?: string;
     icon?: string;
     children?: React.ReactNode;
@@ -144,19 +144,19 @@ interface Props$6 {
     size?: ModalSize;
     headerActions?: React.ReactNode;
 }
-declare const Modal: ({ title, icon, children, onClose, size: sizeProp, headerActions }: Props$6) => react_jsx_runtime.JSX.Element;
+declare const Modal: ({ title, icon, children, onClose, size: sizeProp, headerActions }: Props$7) => react_jsx_runtime.JSX.Element;
 
 type TooltipProps = {
     text: string;
 };
 declare const Tooltip: ({ text }: TooltipProps) => react_jsx_runtime.JSX.Element;
 
-interface Props$5 {
+interface Props$6 {
     className?: string;
 }
 /** Shimmer placeholder block for loading states. Uses theme-colored sweep animation. */
 declare const Skeleton: {
-    ({ className }: Props$5): react_jsx_runtime.JSX.Element;
+    ({ className }: Props$6): react_jsx_runtime.JSX.Element;
     Card({ variant, compact }: {
         variant?: "light" | "dark";
         compact?: boolean;
@@ -193,7 +193,7 @@ declare const Skeleton: {
     }): react_jsx_runtime.JSX.Element;
 };
 
-interface Props$4 {
+interface Props$5 {
     title?: string;
     description?: string;
     className?: string;
@@ -206,7 +206,7 @@ interface Props$4 {
         onClick: () => void;
     };
 }
-declare const EmptyState: ({ title, description, className, variant, icon, action }: Props$4) => react_jsx_runtime.JSX.Element;
+declare const EmptyState: ({ title, description, className, variant, icon, action }: Props$5) => react_jsx_runtime.JSX.Element;
 
 interface ConfirmOptions {
     title?: string;
@@ -243,7 +243,7 @@ type MenuItem = {
     disabled?: boolean;
     variant?: 'default' | 'amber' | 'red';
 };
-type Props$3 = {
+type Props$4 = {
     open: boolean;
     position: {
         x: number;
@@ -252,9 +252,9 @@ type Props$3 = {
     items: MenuItem[];
     onClose: () => void;
 };
-declare const ContextMenu: ({ open, position, items, onClose }: Props$3) => React$1.ReactPortal | null;
+declare const ContextMenu: ({ open, position, items, onClose }: Props$4) => React$1.ReactPortal | null;
 
-interface Props$2 {
+interface Props$3 {
     items: CardItem[];
     selectedId: string | null;
     onSelect: (id: string) => void;
@@ -264,7 +264,7 @@ interface Props$2 {
     /** Callback when an item's checkbox is toggled */
     onCheck?: (id: string, checked: boolean) => void;
 }
-declare function CardList({ items, selectedId, onSelect, compact, checkedIds, onCheck }: Props$2): react_jsx_runtime.JSX.Element | null;
+declare function CardList({ items, selectedId, onSelect, compact, checkedIds, onCheck }: Props$3): react_jsx_runtime.JSX.Element | null;
 
 interface MasterDetailProps {
     /** Page title */
@@ -311,6 +311,16 @@ interface MasterDetailProps {
  * item on desktop. The detail panel should never be empty if data exists.
  */
 declare function MasterDetail({ title, icon, list, detail, hasSelection, sidebarWidth, actions, sidebarHeader, sidebarFooter, mobileTbar, mobileExtension, items, onSelect, detailLoading, }: MasterDetailProps): react_jsx_runtime.JSX.Element;
+
+type Color = 'default' | 'success' | 'warning' | 'danger';
+interface Props$2 {
+    label: string;
+    value: string | number;
+    icon?: string;
+    subtitle?: string;
+    color?: Color;
+}
+declare const StatCard: ({ label, value, icon, subtitle, color }: Props$2) => react_jsx_runtime.JSX.Element;
 
 interface SidebarFilterProps {
     value: string;
@@ -525,4 +535,4 @@ interface PillTagProps {
 }
 declare const PillTag: ({ children, grip }: PillTagProps) => react_jsx_runtime.JSX.Element;
 
-export { Accordion, Anchor, Button, ButtonGroup, Card, type CardItem, CardList, Checkbox, ColorPicker, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, Icon, Input, MasterDetail, Modal, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, Scroll, type Section, Select, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, Spinner, TablePanel, Tabs, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, useToast };
+export { Accordion, Anchor, Button, ButtonGroup, Card, type CardItem, CardList, Checkbox, ColorPicker, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, Icon, Input, MasterDetail, Modal, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, Scroll, type Section, Select, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, Spinner, StatCard, TablePanel, Tabs, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, useToast };
