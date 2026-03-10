@@ -254,6 +254,86 @@ var Select = ({ label, value, placeholder, options, className = "", onChange }) 
   ) });
 };
 var select_default = Select;
+var ComputedField = ({ label, value, suffix, className = "" }) => {
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className, children: [
+    /* @__PURE__ */ jsxRuntime.jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "relative", children: [
+      /* @__PURE__ */ jsxRuntime.jsx("div", { className: "border border-dashed border-theme-300 rounded-xl w-full text-sm px-3 py-2 tabular-nums bg-theme-50 text-theme-700 font-medium cursor-default select-none", children: value }),
+      suffix && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute right-3 top-1/2 -translate-y-1/2 text-xs text-theme-400 pointer-events-none", children: suffix })
+    ] })
+  ] });
+};
+var computedfield_default = ComputedField;
+var inputBase = "border rounded-xl w-full text-sm px-3 py-2 text-gray-950";
+var inputEditable = "bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200";
+var inputReadOnly = "bg-gray-50 border-gray-200 cursor-default";
+var NumberField = ({ label, value, onChange, suffix, step = "any", readOnly }) => {
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { children: [
+    /* @__PURE__ */ jsxRuntime.jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "relative", children: [
+      /* @__PURE__ */ jsxRuntime.jsx(
+        "input",
+        {
+          type: "number",
+          step,
+          value: value ?? "",
+          readOnly,
+          tabIndex: readOnly ? -1 : void 0,
+          onChange: readOnly ? void 0 : (e) => {
+            const raw = e.target.value;
+            onChange?.(raw === "" ? void 0 : Number(raw));
+          },
+          className: `${inputBase} tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${readOnly ? inputReadOnly : inputEditable}`
+        }
+      ),
+      suffix && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none", children: suffix })
+    ] })
+  ] });
+};
+var numberfield_default = NumberField;
+var inputBase2 = "border rounded-xl w-full text-sm px-3 py-2 text-gray-950";
+var inputEditable2 = "bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200";
+var inputReadOnly2 = "bg-gray-50 border-gray-200 cursor-default";
+var TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth }) => {
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: fullWidth ? "col-span-2" : "", children: [
+    /* @__PURE__ */ jsxRuntime.jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    /* @__PURE__ */ jsxRuntime.jsx(
+      "input",
+      {
+        type: "text",
+        value: value ?? "",
+        readOnly,
+        tabIndex: readOnly ? -1 : void 0,
+        placeholder: readOnly ? void 0 : placeholder,
+        onChange: readOnly ? void 0 : (e) => onChange?.(e.target.value || void 0),
+        className: `${inputBase2} ${readOnly ? inputReadOnly2 : inputEditable2}`
+      }
+    )
+  ] });
+};
+var textfield_default = TextField;
+var inputBase3 = "border rounded-xl w-full text-sm px-3 py-2 text-gray-950";
+var inputEditable3 = "bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200";
+var inputReadOnly3 = "bg-gray-50 border-gray-200 cursor-default";
+var SelectField = ({ label, value, options, onChange, readOnly }) => {
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { children: [
+    /* @__PURE__ */ jsxRuntime.jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    /* @__PURE__ */ jsxRuntime.jsxs(
+      "select",
+      {
+        value: value ?? "",
+        disabled: readOnly,
+        onChange: readOnly ? void 0 : (e) => onChange?.(e.target.value || void 0),
+        className: `${inputBase3} ${readOnly ? inputReadOnly3 : inputEditable3}`,
+        children: [
+          /* @__PURE__ */ jsxRuntime.jsx("option", { value: "", children: "\u2014" }),
+          options.map((o) => /* @__PURE__ */ jsxRuntime.jsx("option", { value: o.value, children: o.label }, o.value))
+        ]
+      }
+    )
+  ] });
+};
+var selectfield_default = SelectField;
 var useIsMobile2 = () => {
   const [m, setM] = react.useState(false);
   react.useEffect(() => {
@@ -2091,6 +2171,7 @@ exports.Card = card_default;
 exports.CardList = CardList;
 exports.Checkbox = checkbox_default;
 exports.ColorPicker = colorpicker_default;
+exports.ComputedField = computedfield_default;
 exports.Confirm = confirm_default;
 exports.Container = container_default;
 exports.ContextMenu = contextmenu_default;
@@ -2106,6 +2187,7 @@ exports.Icon = icon_default;
 exports.Input = input_default;
 exports.MasterDetail = MasterDetail;
 exports.Modal = modal_default;
+exports.NumberField = numberfield_default;
 exports.Panel = panel_default;
 exports.PillTag = pilltag_default;
 exports.ProgressRing = progressring_default;
@@ -2113,6 +2195,7 @@ exports.Prompt = prompt_default;
 exports.Radio = radio_default;
 exports.Scroll = scroll_default;
 exports.Select = select_default;
+exports.SelectField = selectfield_default;
 exports.SidebarFilter = SidebarFilter;
 exports.SidebarPaginator = SidebarPaginator;
 exports.SidebarSort = SidebarSort;
@@ -2121,6 +2204,7 @@ exports.Spinner = Spinner;
 exports.StatCard = statcard_default;
 exports.TablePanel = tablepanel_default;
 exports.Tabs = tabs_default;
+exports.TextField = textfield_default;
 exports.ToastContainer = ToastContainer;
 exports.ToastProvider = ToastProvider;
 exports.ToolBack = toolback_default;

@@ -252,6 +252,86 @@ var Select = ({ label, value, placeholder, options, className = "", onChange }) 
   ) });
 };
 var select_default = Select;
+var ComputedField = ({ label, value, suffix, className = "" }) => {
+  return /* @__PURE__ */ jsxs("div", { className, children: [
+    /* @__PURE__ */ jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+      /* @__PURE__ */ jsx("div", { className: "border border-dashed border-theme-300 rounded-xl w-full text-sm px-3 py-2 tabular-nums bg-theme-50 text-theme-700 font-medium cursor-default select-none", children: value }),
+      suffix && /* @__PURE__ */ jsx("span", { className: "absolute right-3 top-1/2 -translate-y-1/2 text-xs text-theme-400 pointer-events-none", children: suffix })
+    ] })
+  ] });
+};
+var computedfield_default = ComputedField;
+var inputBase = "border rounded-xl w-full text-sm px-3 py-2 text-gray-950";
+var inputEditable = "bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200";
+var inputReadOnly = "bg-gray-50 border-gray-200 cursor-default";
+var NumberField = ({ label, value, onChange, suffix, step = "any", readOnly }) => {
+  return /* @__PURE__ */ jsxs("div", { children: [
+    /* @__PURE__ */ jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          type: "number",
+          step,
+          value: value ?? "",
+          readOnly,
+          tabIndex: readOnly ? -1 : void 0,
+          onChange: readOnly ? void 0 : (e) => {
+            const raw = e.target.value;
+            onChange?.(raw === "" ? void 0 : Number(raw));
+          },
+          className: `${inputBase} tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${readOnly ? inputReadOnly : inputEditable}`
+        }
+      ),
+      suffix && /* @__PURE__ */ jsx("span", { className: "absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none", children: suffix })
+    ] })
+  ] });
+};
+var numberfield_default = NumberField;
+var inputBase2 = "border rounded-xl w-full text-sm px-3 py-2 text-gray-950";
+var inputEditable2 = "bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200";
+var inputReadOnly2 = "bg-gray-50 border-gray-200 cursor-default";
+var TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth }) => {
+  return /* @__PURE__ */ jsxs("div", { className: fullWidth ? "col-span-2" : "", children: [
+    /* @__PURE__ */ jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    /* @__PURE__ */ jsx(
+      "input",
+      {
+        type: "text",
+        value: value ?? "",
+        readOnly,
+        tabIndex: readOnly ? -1 : void 0,
+        placeholder: readOnly ? void 0 : placeholder,
+        onChange: readOnly ? void 0 : (e) => onChange?.(e.target.value || void 0),
+        className: `${inputBase2} ${readOnly ? inputReadOnly2 : inputEditable2}`
+      }
+    )
+  ] });
+};
+var textfield_default = TextField;
+var inputBase3 = "border rounded-xl w-full text-sm px-3 py-2 text-gray-950";
+var inputEditable3 = "bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200";
+var inputReadOnly3 = "bg-gray-50 border-gray-200 cursor-default";
+var SelectField = ({ label, value, options, onChange, readOnly }) => {
+  return /* @__PURE__ */ jsxs("div", { children: [
+    /* @__PURE__ */ jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    /* @__PURE__ */ jsxs(
+      "select",
+      {
+        value: value ?? "",
+        disabled: readOnly,
+        onChange: readOnly ? void 0 : (e) => onChange?.(e.target.value || void 0),
+        className: `${inputBase3} ${readOnly ? inputReadOnly3 : inputEditable3}`,
+        children: [
+          /* @__PURE__ */ jsx("option", { value: "", children: "\u2014" }),
+          options.map((o) => /* @__PURE__ */ jsx("option", { value: o.value, children: o.label }, o.value))
+        ]
+      }
+    )
+  ] });
+};
+var selectfield_default = SelectField;
 var useIsMobile2 = () => {
   const [m, setM] = useState(false);
   useEffect(() => {
@@ -2081,6 +2161,6 @@ var PillTag = ({ children, grip }) => /* @__PURE__ */ jsxs("div", { className: "
 ] });
 var pilltag_default = PillTag;
 
-export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, MasterDetail, modal_default as Modal, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, select_default as Select, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, useToast };
+export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, MasterDetail, modal_default as Modal, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, useToast };
 //# sourceMappingURL=index.mjs.map
 //# sourceMappingURL=index.mjs.map

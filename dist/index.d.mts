@@ -135,6 +135,46 @@ interface Props$8 {
 }
 declare const Select: ({ label, value, placeholder, options, className, onChange }: Props$8) => react_jsx_runtime.JSX.Element;
 
+interface ComputedFieldProps {
+    label: string;
+    value: string;
+    suffix?: string;
+    className?: string;
+}
+declare const ComputedField: ({ label, value, suffix, className }: ComputedFieldProps) => react_jsx_runtime.JSX.Element;
+
+interface NumberFieldProps {
+    label: string;
+    value: number | undefined;
+    onChange?: (v: number | undefined) => void;
+    suffix?: string;
+    step?: string;
+    readOnly?: boolean;
+}
+declare const NumberField: ({ label, value, onChange, suffix, step, readOnly }: NumberFieldProps) => react_jsx_runtime.JSX.Element;
+
+interface TextFieldProps {
+    label: string;
+    value: string | undefined;
+    onChange?: (v: string | undefined) => void;
+    readOnly?: boolean;
+    placeholder?: string;
+    fullWidth?: boolean;
+}
+declare const TextField: ({ label, value, onChange, readOnly, placeholder, fullWidth }: TextFieldProps) => react_jsx_runtime.JSX.Element;
+
+interface SelectFieldProps {
+    label: string;
+    value: string | undefined;
+    options: {
+        label: string;
+        value: string;
+    }[];
+    onChange?: (v: string | undefined) => void;
+    readOnly?: boolean;
+}
+declare const SelectField: ({ label, value, options, onChange, readOnly }: SelectFieldProps) => react_jsx_runtime.JSX.Element;
+
 type ModalSize = 'xl' | 'lg' | 'md' | 'sm' | 'xs';
 interface Props$7 {
     title?: string;
@@ -536,4 +576,4 @@ interface PillTagProps {
 }
 declare const PillTag: ({ children, grip }: PillTagProps) => react_jsx_runtime.JSX.Element;
 
-export { Accordion, Anchor, Button, ButtonGroup, Card, type CardItem, CardList, Checkbox, ColorPicker, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, Icon, Input, MasterDetail, Modal, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, Scroll, type Section, Select, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, Spinner, StatCard, TablePanel, Tabs, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, useToast };
+export { Accordion, Anchor, Button, ButtonGroup, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, Icon, Input, MasterDetail, Modal, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, Scroll, type Section, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, useToast };

@@ -18,6 +18,10 @@ export { default as FieldWrapper } from './forms/fieldwrapper'
 export { default as Input } from './forms/input'
 export { default as Radio } from './forms/radio'
 export { default as Select } from './forms/select'
+export { default as ComputedField } from './forms/computedfield'
+export { default as NumberField } from './forms/numberfield'
+export { default as TextField } from './forms/textfield'
+export { default as SelectField } from './forms/selectfield'
 
 // ── Common ──
 export { default as Modal } from './common/modal'
