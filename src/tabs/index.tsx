@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactNode } from 'react'
+import { useState, useEffect, useRef, useLayoutEffect, ReactNode } from 'react'
 import Icon from '../common/icon'
 
 export interface Tab {
@@ -17,6 +17,7 @@ interface TabsProps {
     activeTab?: string
     onChange?: (tabId: string) => void
     onRefresh?: (tabId: string) => void
+    storageKey?: string
     children?: ReactNode
     className?: string
 }
@@ -26,17 +27,48 @@ const Tabs = ({
     activeTab: controlledActive,
     onChange,
     onRefresh,
+    storageKey,
     children,
     className = ''
 }: TabsProps) => {
-    const [internalActive, setInternalActive] = useState(tabs[0]?.id || '')
+    const [internalActive, setInternalActive] = useState<string>(() => {
+        if (storageKey && controlledActive === undefined) {
+            try {
+                const stored = localStorage.getItem(storageKey)
+                if (stored && tabs.some(t => t.id === stored)) return stored
+            } catch {}
+        }
+        return tabs[0]?.id || ''
+    })
     const activeId = controlledActive ?? internalActive
+    const restoredRef = useRef(false)
+
+    // Controlled mode: on mount (once), restore stored tab via onChange (before paint)
+    useLayoutEffect(() => {
+        if (!storageKey || controlledActive === undefined || restoredRef.current) return
+        restoredRef.current = true
+        try {
+            const stored = localStorage.getItem(storageKey)
+            if (stored && tabs.some(t => t.id === stored) && stored !== controlledActive) {
+                onChange?.(stored)
+            }
+        } catch {}
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Controlled mode: sync active tab to localStorage on change
+    useEffect(() => {
+        if (!storageKey || controlledActive === undefined) return
+        try { localStorage.setItem(storageKey, controlledActive) } catch {}
+    }, [controlledActive, storageKey])
 
     useEffect(() => {
         if (tabs.length > 0 && !tabs.some(t => t.id === activeId)) {
             const newActive = tabs[0].id
             setInternalActive(newActive)
             onChange?.(newActive)
+            if (storageKey) {
+                try { localStorage.setItem(storageKey, newActive) } catch {}
+            }
         }
     }, [tabs, activeId])
 
@@ -46,6 +78,9 @@ const Tabs = ({
         } else {
             if (controlledActive === undefined) {
                 setInternalActive(tabId)
+                if (storageKey) {
+                    try { localStorage.setItem(storageKey, tabId) } catch {}
+                }
             }
             onChange?.(tabId)
         }

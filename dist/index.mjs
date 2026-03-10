@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext, useCallback, useMemo, useRef, useLayoutEffect, Fragment as Fragment$1, useId } from 'react';
+import { createContext, useState, useEffect, useContext, useCallback, useMemo, useRef, useLayoutEffect, useId } from 'react';
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import { icons, CircleHelp } from 'lucide-react';
 import { createPortal } from 'react-dom';
@@ -2006,22 +2006,51 @@ var Tabs = ({
   activeTab: controlledActive,
   onChange,
   onRefresh,
+  storageKey,
   children,
-  className = "",
-  variant = "underline",
-  selectedBackground,
-  selectedForeground,
-  inactiveBackground,
-  inactiveForeground,
-  rounded = true
+  className = ""
 }) => {
-  const [internalActive, setInternalActive] = useState(tabs[0]?.id || "");
+  const [internalActive, setInternalActive] = useState(() => {
+    if (storageKey && controlledActive === void 0) {
+      try {
+        const stored = localStorage.getItem(storageKey);
+        if (stored && tabs.some((t) => t.id === stored)) return stored;
+      } catch {
+      }
+    }
+    return tabs[0]?.id || "";
+  });
   const activeId = controlledActive ?? internalActive;
+  const restoredRef = useRef(false);
+  useLayoutEffect(() => {
+    if (!storageKey || controlledActive === void 0 || restoredRef.current) return;
+    restoredRef.current = true;
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored && tabs.some((t) => t.id === stored) && stored !== controlledActive) {
+        onChange?.(stored);
+      }
+    } catch {
+    }
+  }, []);
+  useEffect(() => {
+    if (!storageKey || controlledActive === void 0) return;
+    try {
+      localStorage.setItem(storageKey, controlledActive);
+    } catch {
+    }
+  }, [controlledActive, storageKey]);
   useEffect(() => {
     if (tabs.length > 0 && !tabs.some((t) => t.id === activeId)) {
       const newActive = tabs[0].id;
       setInternalActive(newActive);
       onChange?.(newActive);
+      if (storageKey) {
+        try {
+          localStorage.setItem(storageKey, newActive);
+        } catch {
+        }
+      }
     }
   }, [tabs, activeId]);
   const handleTabClick = (tabId) => {
@@ -2030,22 +2059,21 @@ var Tabs = ({
     } else {
       if (controlledActive === void 0) {
         setInternalActive(tabId);
+        if (storageKey) {
+          try {
+            localStorage.setItem(storageKey, tabId);
+          } catch {
+          }
+        }
       }
       onChange?.(tabId);
     }
   };
   const activeContent = tabs.find((t) => t.id === activeId)?.content;
   if (tabs.length === 0) return null;
-  const hasGroups = tabs.some((t) => t.group !== void 0);
-  hasGroups ? tabs[0]?.group : void 0;
-  if (variant === "underline") {
-    const renderTabButton = (tab, i) => {
+  return /* @__PURE__ */ jsxs("div", { className, children: [
+    /* @__PURE__ */ jsx("div", { className: "flex flex-shrink-0", children: tabs.map((tab) => {
       const isActive = activeId === tab.id;
-      const bg = tab.selectedBackground ?? selectedBackground;
-      const fg = tab.selectedForeground ?? selectedForeground;
-      const hasCustomColors2 = bg || fg;
-      const hasInactiveColors = inactiveBackground || inactiveForeground;
-      const customStyle = isActive ? hasCustomColors2 ? { backgroundColor: bg, color: fg } : void 0 : hasInactiveColors ? { backgroundColor: inactiveBackground, color: inactiveForeground } : void 0;
       return /* @__PURE__ */ jsxs(
         "button",
         {
@@ -2053,10 +2081,9 @@ var Tabs = ({
             e.stopPropagation();
             handleTabClick(tab.id);
           },
-          style: customStyle,
-          className: `flex-1 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold py-3 sm:py-4 px-2 sm:px-4 md:px-5 truncate whitespace-nowrap overflow-hidden transition-all duration-200 ${!hasGroups && rounded ? "md:first:rounded-tl-btn md:last:rounded-tr-btn" : ""} ${isActive ? hasCustomColors2 ? "" : "text-theme-700 bg-white" : hasInactiveColors ? "hover:brightness-110" : "text-gray-300 bg-gray-50 hover:text-gray-400 hover:bg-gray-100"}`,
+          className: `flex-1 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold py-3 sm:py-4 px-2 sm:px-4 md:px-5 truncate whitespace-nowrap overflow-hidden transition-all duration-200 md:first:rounded-tl-btn md:last:rounded-tr-btn ${isActive ? "text-theme-700 bg-white" : "text-gray-300 bg-gray-50 hover:text-gray-400 hover:bg-gray-100"}`,
           children: [
-            tab.icon && /* @__PURE__ */ jsx(icon_default, { name: tab.icon, size: 16, className: `flex-shrink-0 ${isActive ? hasCustomColors2 ? "" : "text-theme-500" : hasInactiveColors ? "" : "text-gray-300"}`, style: isActive ? fg ? { color: fg } : void 0 : inactiveForeground ? { color: inactiveForeground } : void 0 }),
+            tab.icon && /* @__PURE__ */ jsx(icon_default, { name: tab.icon, size: 16, className: `flex-shrink-0 ${isActive ? "text-theme-500" : "text-gray-300"}` }),
             /* @__PURE__ */ jsx("span", { className: "truncate", children: tab.shortLabel ? /* @__PURE__ */ jsxs(Fragment, { children: [
               /* @__PURE__ */ jsx("span", { className: "sm:hidden", children: tab.shortLabel }),
               /* @__PURE__ */ jsx("span", { className: "hidden sm:inline", children: tab.label })
@@ -2065,63 +2092,8 @@ var Tabs = ({
         },
         tab.id
       );
-    };
-    const renderTabBar = () => {
-      if (!hasGroups) {
-        return /* @__PURE__ */ jsx("div", { className: "flex flex-shrink-0", children: tabs.map(renderTabButton) });
-      }
-      const groups = [];
-      let currentGroup = [];
-      let currentGroupName = tabs[0]?.group;
-      for (const tab of tabs) {
-        if (tab.group !== currentGroupName) {
-          groups.push(currentGroup);
-          currentGroup = [];
-          currentGroupName = tab.group;
-        }
-        currentGroup.push(tab);
-      }
-      if (currentGroup.length) groups.push(currentGroup);
-      return /* @__PURE__ */ jsx("div", { className: "flex flex-shrink-0 gap-6", children: groups.map((group, gi) => /* @__PURE__ */ jsx("div", { className: `flex ${rounded && gi === 0 ? "md:first:rounded-tl-btn" : ""} ${rounded && gi === groups.length - 1 ? "md:last:rounded-tr-btn" : ""}`, style: { flex: group.length }, children: group.map((tab, ti) => renderTabButton(tab)) }, gi)) });
-    };
-    return /* @__PURE__ */ jsxs("div", { className, children: [
-      renderTabBar(),
-      /* @__PURE__ */ jsx("div", { className: "flex-1 min-h-0 flex flex-col", children: children ?? activeContent })
-    ] });
-  }
-  const hasCustomColors = selectedBackground || selectedForeground;
-  return /* @__PURE__ */ jsxs("div", { className, children: [
-    /* @__PURE__ */ jsx("div", { className: "flex gap-2 p-2 bg-gray-100 rounded-xl", children: tabs.map((tab, i) => {
-      const isActive = activeId === tab.id;
-      const customStyle = isActive && hasCustomColors ? {
-        backgroundColor: selectedBackground,
-        color: selectedForeground
-      } : void 0;
-      const isNewGroup = hasGroups && i > 0 && tab.group !== tabs[i - 1].group;
-      const groupStyle = hasGroups ? { ...customStyle, flex: "0 1 300px" } : customStyle;
-      return /* @__PURE__ */ jsxs(Fragment$1, { children: [
-        isNewGroup && /* @__PURE__ */ jsx("div", { className: "w-px bg-gray-300 mx-2 my-2 flex-shrink-0" }),
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            onClick: (e) => {
-              e.stopPropagation();
-              handleTabClick(tab.id);
-            },
-            style: groupStyle,
-            className: `${hasGroups ? "flex-1" : "flex-1"} flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 px-2 sm:px-4 md:px-5 rounded-btn transition-all duration-200 ${isActive ? hasCustomColors ? "shadow-sm" : "bg-white text-theme-700 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`,
-            children: [
-              tab.icon && /* @__PURE__ */ jsx(icon_default, { name: tab.icon, size: 16, className: `flex-shrink-0 ${isActive ? hasCustomColors ? "" : "text-theme-500" : ""}`, style: isActive && selectedForeground ? { color: selectedForeground } : void 0 }),
-              /* @__PURE__ */ jsx("span", { className: "truncate", children: tab.shortLabel ? /* @__PURE__ */ jsxs(Fragment, { children: [
-                /* @__PURE__ */ jsx("span", { className: "sm:hidden", children: tab.shortLabel }),
-                /* @__PURE__ */ jsx("span", { className: "hidden sm:inline", children: tab.label })
-              ] }) : tab.label })
-            ]
-          }
-        )
-      ] }, tab.id);
     }) }),
-    /* @__PURE__ */ jsx("div", { children: children ?? activeContent })
+    /* @__PURE__ */ jsx("div", { className: "flex-1 min-h-0 flex flex-col", children: children ?? activeContent })
   ] });
 };
 var tabs_default = Tabs;

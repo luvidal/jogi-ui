@@ -563,12 +563,6 @@ interface Tab {
     shortLabel?: string;
     icon?: string;
     content?: ReactNode;
-    /** Custom background color when this tab is selected */
-    selectedBackground?: string;
-    /** Custom foreground (text) color when this tab is selected */
-    selectedForeground?: string;
-    /** Group name for visual clustering. Tabs with different groups get a flex spacer between them. */
-    group?: string;
 }
 
 interface TabsProps {
@@ -576,47 +570,11 @@ interface TabsProps {
     activeTab?: string;
     onChange?: (tabId: string) => void;
     onRefresh?: (tabId: string) => void;
+    storageKey?: string;
     children?: ReactNode;
     className?: string;
-    /** Render style: 'underline' (default) or 'pill' */
-    variant?: 'underline' | 'pill';
-    /** Custom background color for selected tab */
-    selectedBackground?: string;
-    /** Custom foreground (text) color for selected tab */
-    selectedForeground?: string;
-    /** Custom background color for inactive tabs */
-    inactiveBackground?: string;
-    /** Custom foreground (text) color for inactive tabs */
-    inactiveForeground?: string;
-    /** Whether to show rounded corners on first/last tabs (default: true) */
-    rounded?: boolean;
 }
-/**
- * Shared Tabs component for switching between views.
- *
- * Usage with content prop:
- * ```tsx
- * <Tabs
- *   tabs={[
- *     { id: 'renta', label: 'Informe de Renta', content: <RentaReport /> },
- *     { id: 'reporte', label: 'Reporte', content: <ReporteView /> }
- *   ]}
- * />
- * ```
- *
- * Usage with children (controlled):
- * ```tsx
- * <Tabs
- *   tabs={[{ id: 'tab1', label: 'Tab 1' }, { id: 'tab2', label: 'Tab 2' }]}
- *   activeTab={activeTab}
- *   onChange={setActiveTab}
- * >
- *   {activeTab === 'tab1' && <Content1 />}
- *   {activeTab === 'tab2' && <Content2 />}
- * </Tabs>
- * ```
- */
-declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, children, className, variant, selectedBackground, selectedForeground, inactiveBackground, inactiveForeground, rounded }: TabsProps) => react_jsx_runtime.JSX.Element | null;
+declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey, children, className }: TabsProps) => react_jsx_runtime.JSX.Element | null;
 
 interface PanelProps {
     open: boolean;
