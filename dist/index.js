@@ -76,30 +76,24 @@ var Icon = ({ name, ...props }) => {
   return /* @__PURE__ */ jsxRuntime.jsx(Component, { ...props });
 };
 var icon_default = Icon;
-var sizeConfig = {
-  sm: { cls: "h-8 px-3 text-xs gap-1.5", icon: 14 },
-  md: { cls: "h-10 px-5 text-sm gap-2", icon: 16 },
-  lg: { cls: "h-12 px-6 text-base gap-2.5", icon: 18 }
-};
-var variantStyles = {
-  primary: (_a, d) => `bg-theme-700 hover:bg-theme-600 text-white shadow-lg hover:shadow-xl ${d ? "cursor-not-allowed" : ""}`,
-  glass: (a, d) => `${a ? "bg-white/20 text-white" : "bg-white/10 text-white/80 hover:bg-white/15 hover:text-white"} ${d ? "cursor-not-allowed" : ""}`,
-  danger: (_a, d) => `bg-rose-600 hover:bg-rose-700 text-white shadow-lg hover:shadow-xl ${d ? "cursor-not-allowed" : ""}`,
-  outline: (_a, d) => `border border-gray-300 text-gray-700 hover:bg-gray-50 bg-white ${d ? "cursor-not-allowed" : ""}`,
-  ghost: (_a, d) => `text-gray-600 hover:bg-gray-100 ${d ? "cursor-not-allowed" : ""}`
-};
-var Button = ({ icon, text, variant = "primary", size = "md", active = false, loading = false, className = "", ...props }) => {
+var Button = ({ icon, text, loading = false, className = "", ...props }) => {
   const isDisabled = props.disabled || loading;
-  const sz = sizeConfig[size];
-  const base = "flex items-center justify-center transition-all duration-200 backdrop-blur-sm rounded-btn active:scale-[0.98]";
   const disabledEffect = isDisabled ? "opacity-40 blur-[0.5px]" : "";
-  return /* @__PURE__ */ jsxRuntime.jsxs("button", { className: `${base} ${sz.cls} ${variantStyles[variant](active, isDisabled)} ${className}`, ...props, disabled: isDisabled, children: [
-    loading ? /* @__PURE__ */ jsxRuntime.jsxs("svg", { className: "animate-spin h-4 w-4 text-current", viewBox: "0 0 24 24", fill: "none", children: [
-      /* @__PURE__ */ jsxRuntime.jsx("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "3" }),
-      /* @__PURE__ */ jsxRuntime.jsx("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" })
-    ] }) : icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: sz.icon, className: `text-shadow-sm ${disabledEffect}` }),
-    text && /* @__PURE__ */ jsxRuntime.jsx("span", { className: `text-shadow-sm truncate font-semibold uppercase tracking-wide ${disabledEffect}`, children: text })
-  ] });
+  return /* @__PURE__ */ jsxRuntime.jsxs(
+    "button",
+    {
+      className: `flex items-center justify-center h-10 px-5 text-sm gap-2 bg-theme-700 hover:bg-theme-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 backdrop-blur-sm rounded-btn active:scale-[0.98] ${isDisabled ? "cursor-not-allowed" : ""} ${className}`,
+      ...props,
+      disabled: isDisabled,
+      children: [
+        loading ? /* @__PURE__ */ jsxRuntime.jsxs("svg", { className: "animate-spin h-4 w-4 text-current", viewBox: "0 0 24 24", fill: "none", children: [
+          /* @__PURE__ */ jsxRuntime.jsx("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "3" }),
+          /* @__PURE__ */ jsxRuntime.jsx("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" })
+        ] }) : icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 16, className: `text-shadow-sm ${disabledEffect}` }),
+        text && /* @__PURE__ */ jsxRuntime.jsx("span", { className: `text-shadow-sm truncate font-semibold uppercase tracking-wide ${disabledEffect}`, children: text })
+      ]
+    }
+  );
 };
 var button_default = Button;
 var Checkbox = ({ label, checked, className = "", onChange }) => {
@@ -119,96 +113,10 @@ var Checkbox = ({ label, checked, className = "", onChange }) => {
   );
 };
 var checkbox_default = Checkbox;
-var Tooltip = ({ text, icon = "CircleQuestionMark", iconColor = "text-gray-700", className = "", html = false }) => {
-  const [open, setOpen] = react.useState(false);
-  const [pos, setPos] = react.useState({ top: 0, left: 0 });
-  const [visible, setVisible] = react.useState(false);
-  const ref = react.useRef(null);
-  const btnRef = react.useRef(null);
-  const tooltipRef = react.useRef(null);
-  const shouldHtml = html || /<[a-z][\s\S]*>/i.test(text);
-  const patchedText = shouldHtml ? text.replace(
-    /(<li[\s\S]*<\/li>)/gi,
-    '<ul style="list-style:disc;padding-left:1.25rem;margin:0">$1</ul>'
-  ) : text;
-  const updatePosition = react.useCallback(() => {
-    if (!btnRef.current) return;
-    const r = btnRef.current.getBoundingClientRect();
-    let top = r.top;
-    let left = r.right + 8;
-    const tooltipWidth = 256;
-    if (left + tooltipWidth > window.innerWidth - 16) {
-      left = r.left - tooltipWidth - 8;
-    }
-    if (top + 100 > window.innerHeight - 16) {
-      top = window.innerHeight - 116;
-    }
-    top = Math.max(8, top);
-    left = Math.max(8, left);
-    setPos({ top, left });
-  }, []);
-  react.useEffect(() => {
-    if (open) {
-      updatePosition();
-      requestAnimationFrame(() => setVisible(true));
-    } else {
-      setVisible(false);
-    }
-  }, [open, updatePosition]);
-  react.useEffect(() => {
-    const onDown = (e) => {
-      if (ref.current && !ref.current.contains(e.target) && tooltipRef.current && !tooltipRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
-  }, []);
-  return /* @__PURE__ */ jsxRuntime.jsxs("span", { ref, className: `relative inline-block left-1 ${className}`, children: [
-    /* @__PURE__ */ jsxRuntime.jsx(
-      "button",
-      {
-        ref: btnRef,
-        onClick: (e) => {
-          e.stopPropagation();
-          setOpen((v) => !v);
-        },
-        children: /* @__PURE__ */ jsxRuntime.jsx(
-          icon_default,
-          {
-            name: icon,
-            className: `size-4 opacity-60 hover:opacity-100 transition-opacity ${iconColor}`
-          }
-        )
-      }
-    ),
-    open && typeof document !== "undefined" && reactDom.createPortal(
-      /* @__PURE__ */ jsxRuntime.jsx(
-        "div",
-        {
-          ref: tooltipRef,
-          className: `
-                        fixed z-[9999] p-3 rounded-xl shade-md text-sm max-w-xs break-words
-                        bg-theme-800 text-white/90 border border-white/10 backdrop-blur-md
-                        transition-all duration-200
-                        ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}
-                    `,
-          style: { top: pos.top, left: pos.left },
-          children: shouldHtml ? /* @__PURE__ */ jsxRuntime.jsx("div", { dangerouslySetInnerHTML: { __html: patchedText } }) : text
-        }
-      ),
-      document.body
-    )
-  ] });
-};
-var tooltip_default = Tooltip;
-function FieldWrapper({ label, tooltip, className = "", visible = true, children }) {
+function FieldWrapper({ label, className = "", visible = true, children }) {
   if (!visible) return null;
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `mb-2 ${className}`, children: [
-    (label || tooltip) && /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center", children: [
-      label && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-gray-500 text-sm", children: label }),
-      tooltip && /* @__PURE__ */ jsxRuntime.jsx(tooltip_default, { text: tooltip })
-    ] }),
+    label && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex items-center", children: /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-gray-500 text-sm", children: label }) }),
     children
   ] });
 }
@@ -277,7 +185,7 @@ var ColorPicker = ({ label, value = "#000000", onChange, className = "", visible
 };
 var colorpicker_default = ColorPicker;
 var sanitizeValue = (s) => String(s || "").replace(/[\u0000-\u001F\u007F-\u009F]/g, "").replace(/[\u00A0\u1680\u180E\u2000-\u200D\u2028-\u202F\u205F\u2060\u3000\uFEFF]+/g, " ").replace(/\s+/g, " ").trim();
-var Input = ({ label, className = "", readOnly, onChange, value = "", tooltip, visible = true, ...rest }) => {
+var Input = ({ label, className = "", readOnly, onChange, value = "", visible = true, ...rest }) => {
   const [localValue, setLocalValue] = react.useState(value);
   const [cleanValue, setCleanValue] = react.useState(() => sanitizeValue(value));
   react.useEffect(() => {
@@ -290,7 +198,7 @@ var Input = ({ label, className = "", readOnly, onChange, value = "", tooltip, v
     setLocalValue(sanitized);
     if (sanitized !== cleanValue) onChange?.(sanitized);
   };
-  return /* @__PURE__ */ jsxRuntime.jsx(FieldWrapper, { label, tooltip, className, visible, children: /* @__PURE__ */ jsxRuntime.jsx(
+  return /* @__PURE__ */ jsxRuntime.jsx(FieldWrapper, { label, className, visible, children: /* @__PURE__ */ jsxRuntime.jsx(
     "input",
     {
       ...rest,
@@ -320,13 +228,13 @@ var Radio = ({ label, value, selected, onChange, className = "" }) => {
   ] });
 };
 var radio_default = Radio;
-var Select = ({ label, value, placeholder, options, className = "", onChange, tooltip = "" }) => {
+var Select = ({ label, value, placeholder, options, className = "", onChange }) => {
   react.useEffect(() => {
     if (options.length === 1 && value !== options[0].value) {
       onChange(options[0].value);
     }
   }, [options, value, onChange]);
-  return /* @__PURE__ */ jsxRuntime.jsx(FieldWrapper, { label, tooltip, className, children: /* @__PURE__ */ jsxRuntime.jsxs(
+  return /* @__PURE__ */ jsxRuntime.jsx(FieldWrapper, { label, className, children: /* @__PURE__ */ jsxRuntime.jsxs(
     "select",
     {
       value: value || "",
@@ -364,151 +272,113 @@ var SIZE_CONFIG = {
   sm: { w: 560, h: 600, maxW: 88, maxH: 82 },
   xs: { w: 400, h: 500, maxW: 85, maxH: 80 }
 };
-var MIN_W = 320;
-var MIN_H = 240;
-var MAXIMIZE_MARGIN = 16;
-var Modal = ({ title, icon, children, onClose, className = "", size: sizeProp = "md", headerActions, resizable = true }) => {
+var Modal = ({ title, children, onClose, size: sizeProp = "md" }) => {
   const mobile = useIsMobile2();
-  const sizeConfig4 = SIZE_CONFIG[sizeProp];
-  const [dims, setDims] = react.useState(null);
-  const [maximized, setMaximized] = react.useState(false);
-  const [resizing, setResizing] = react.useState(false);
-  const getResponsiveSize = react.useCallback(() => {
-    if (typeof window === "undefined") return { w: sizeConfig4.w, h: sizeConfig4.h };
-    const maxW = Math.floor(window.innerWidth * sizeConfig4.maxW / 100);
-    const maxH = Math.floor(window.innerHeight * sizeConfig4.maxH / 100);
-    return {
-      w: Math.min(sizeConfig4.w, maxW),
-      h: Math.min(sizeConfig4.h, maxH)
-    };
-  }, [sizeConfig4]);
+  const sizeConfig3 = SIZE_CONFIG[sizeProp];
   const effectiveSize = react.useMemo(() => {
-    if (mobile) return null;
-    if (maximized) return {
-      w: window.innerWidth - MAXIMIZE_MARGIN * 2,
-      h: window.innerHeight - MAXIMIZE_MARGIN * 2
+    if (mobile || typeof window === "undefined") return null;
+    const maxW = Math.floor(window.innerWidth * sizeConfig3.maxW / 100);
+    const maxH = Math.floor(window.innerHeight * sizeConfig3.maxH / 100);
+    return {
+      w: Math.min(sizeConfig3.w, maxW),
+      h: Math.min(sizeConfig3.h, maxH)
     };
-    return dims ?? getResponsiveSize();
-  }, [mobile, maximized, dims, getResponsiveSize]);
-  react.useEffect(() => {
-    if (mobile) return;
-    const onResize = () => {
-      if (maximized) return;
-      setDims((prev) => {
-        if (!prev) return prev;
-        const maxW = window.innerWidth - MAXIMIZE_MARGIN * 2;
-        const maxH = window.innerHeight - MAXIMIZE_MARGIN * 2;
-        const w = Math.min(prev.w, maxW);
-        const h = Math.min(prev.h, maxH);
-        if (w === prev.w && h === prev.h) return prev;
-        return { w, h };
-      });
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [mobile, maximized]);
-  const handleResizeStart = react.useCallback((edge, e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setResizing(true);
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const current = effectiveSize ?? getResponsiveSize();
-    const startW = current.w;
-    const startH = current.h;
-    const onMove = (ev) => {
-      const dx = ev.clientX - startX;
-      const dy = ev.clientY - startY;
-      let newW = startW;
-      let newH = startH;
-      if (edge.includes("e")) newW = startW + dx;
-      if (edge.includes("s")) newH = startH + dy;
-      const maxW = window.innerWidth - MAXIMIZE_MARGIN * 2;
-      const maxH = window.innerHeight - MAXIMIZE_MARGIN * 2;
-      newW = Math.max(MIN_W, Math.min(newW, maxW));
-      newH = Math.max(MIN_H, Math.min(newH, maxH));
-      setDims({ w: newW, h: newH });
-      setMaximized(false);
-    };
-    const onUp = () => {
-      setResizing(false);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-  }, [effectiveSize, getResponsiveSize]);
-  const canResize = resizable && !mobile;
+  }, [mobile, sizeConfig3]);
   return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "fixed z-[9999] inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300", children: /* @__PURE__ */ jsxRuntime.jsxs(
     "div",
     {
-      className: `relative flex flex-col overflow-hidden shadow-2xl bg-theme-700 border border-theme-600 ${mobile ? "w-full h-full rounded-none" : "rounded-xl"} ${className}`,
+      className: `relative flex flex-col overflow-hidden shadow-2xl bg-theme-700 border border-theme-600 ${mobile ? "w-full h-full rounded-none" : "rounded-xl"}`,
       style: mobile ? {} : {
         width: `${effectiveSize.w}px`,
-        height: `${effectiveSize.h}px`,
-        transition: resizing ? "none" : "width 200ms ease, height 200ms ease"
+        height: `${effectiveSize.h}px`
       },
       onClick: (ev) => ev.stopPropagation(),
       children: [
-        canResize && !maximized && /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
-          /* @__PURE__ */ jsxRuntime.jsx(
-            "div",
-            {
-              className: "absolute bottom-0 left-2 right-2 h-1.5 cursor-s-resize z-10",
-              onMouseDown: (e) => handleResizeStart("s", e)
-            }
-          ),
-          /* @__PURE__ */ jsxRuntime.jsx(
-            "div",
-            {
-              className: "absolute right-0 top-2 bottom-2 w-1.5 cursor-e-resize z-10",
-              onMouseDown: (e) => handleResizeStart("e", e)
-            }
-          ),
-          /* @__PURE__ */ jsxRuntime.jsx(
-            "div",
-            {
-              className: "absolute bottom-0 right-0 w-3 h-3 cursor-se-resize z-20",
-              onMouseDown: (e) => handleResizeStart("se", e)
-            }
-          )
+        /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center justify-between text-white text-sm px-3 py-2 select-none", children: [
+          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center", children: [
+            /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "AppWindow", size: 16, className: "me-2 opacity-80" }),
+            /* @__PURE__ */ jsxRuntime.jsx("span", { className: "opacity-90", children: title ?? " " })
+          ] }),
+          /* @__PURE__ */ jsxRuntime.jsx("div", { className: "cursor-pointer hover:bg-white/20 p-1.5 rounded", onClick: onClose, title: "Cerrar Ventana", children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "X", size: 16, className: "text-white" }) })
         ] }),
-        /* @__PURE__ */ jsxRuntime.jsxs(
-          "div",
-          {
-            className: "flex items-center justify-between text-white text-sm px-3 py-2 select-none",
-            onDoubleClick: () => canResize && setMaximized((m) => !m),
-            children: [
-              /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center", children: [
-                /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon ?? "AppWindow", size: 16, className: "me-2 opacity-80" }),
-                /* @__PURE__ */ jsxRuntime.jsx("span", { className: "opacity-90", children: title ?? " " })
-              ] }),
-              /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-1 select-none", children: [
-                headerActions,
-                canResize && /* @__PURE__ */ jsxRuntime.jsx(
-                  "div",
-                  {
-                    className: "cursor-pointer hover:bg-white/20 p-1.5 rounded",
-                    onClick: () => setMaximized((m) => !m),
-                    title: maximized ? "Restaurar" : "Maximizar",
-                    children: maximized ? /* @__PURE__ */ jsxRuntime.jsxs("svg", { width: "14", height: "14", viewBox: "0 0 14 14", fill: "none", className: "text-white", children: [
-                      /* @__PURE__ */ jsxRuntime.jsx("rect", { x: "3", y: "3", width: "8", height: "8", stroke: "currentColor", strokeWidth: "1.2", fill: "none" }),
-                      /* @__PURE__ */ jsxRuntime.jsx("path", { d: "M3 3 L3 1 L11 1 L11 3", stroke: "currentColor", strokeWidth: "1.2", fill: "none" }),
-                      /* @__PURE__ */ jsxRuntime.jsx("path", { d: "M11 3 L13 3 L13 11 L11 11", stroke: "currentColor", strokeWidth: "1.2", fill: "none" })
-                    ] }) : /* @__PURE__ */ jsxRuntime.jsx("svg", { width: "14", height: "14", viewBox: "0 0 14 14", fill: "none", className: "text-white", children: /* @__PURE__ */ jsxRuntime.jsx("rect", { x: "2", y: "2", width: "10", height: "10", stroke: "currentColor", strokeWidth: "1.2", fill: "none" }) })
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntime.jsx("div", { className: "cursor-pointer hover:bg-white/20 p-1.5 rounded", onClick: onClose, title: "Cerrar Ventana", children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "X", size: 16, className: "text-white" }) })
-              ] })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxRuntime.jsx("div", { className: `flex-1 overflow-hidden bg-white ${resizing ? "pointer-events-none" : ""}`, children })
+        /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-1 overflow-hidden bg-white", children })
       ]
     }
   ) });
 };
 var modal_default = Modal;
+var Tooltip = ({ text }) => {
+  const [open, setOpen] = react.useState(false);
+  const [pos, setPos] = react.useState({ top: 0, left: 0 });
+  const [visible, setVisible] = react.useState(false);
+  const ref = react.useRef(null);
+  const btnRef = react.useRef(null);
+  const tooltipRef = react.useRef(null);
+  const updatePosition = react.useCallback(() => {
+    if (!btnRef.current) return;
+    const r = btnRef.current.getBoundingClientRect();
+    let top = r.top;
+    let left = r.right + 8;
+    const tooltipWidth = 256;
+    if (left + tooltipWidth > window.innerWidth - 16) {
+      left = r.left - tooltipWidth - 8;
+    }
+    if (top + 100 > window.innerHeight - 16) {
+      top = window.innerHeight - 116;
+    }
+    top = Math.max(8, top);
+    left = Math.max(8, left);
+    setPos({ top, left });
+  }, []);
+  react.useEffect(() => {
+    if (open) {
+      updatePosition();
+      requestAnimationFrame(() => setVisible(true));
+    } else {
+      setVisible(false);
+    }
+  }, [open, updatePosition]);
+  react.useEffect(() => {
+    const onDown = (e) => {
+      if (ref.current && !ref.current.contains(e.target) && tooltipRef.current && !tooltipRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, []);
+  return /* @__PURE__ */ jsxRuntime.jsxs("span", { ref, className: "relative inline-block left-1", children: [
+    /* @__PURE__ */ jsxRuntime.jsx(
+      "button",
+      {
+        ref: btnRef,
+        onClick: (e) => {
+          e.stopPropagation();
+          setOpen((v) => !v);
+        },
+        children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "CircleQuestionMark", className: "size-4 opacity-60 hover:opacity-100 transition-opacity text-gray-700" })
+      }
+    ),
+    open && typeof document !== "undefined" && reactDom.createPortal(
+      /* @__PURE__ */ jsxRuntime.jsx(
+        "div",
+        {
+          ref: tooltipRef,
+          className: `
+                        fixed z-[9999] p-3 rounded-xl shade-md text-sm max-w-xs break-words
+                        bg-theme-800 text-white/90 border border-white/10 backdrop-blur-md
+                        transition-all duration-200
+                        ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}
+                    `,
+          style: { top: pos.top, left: pos.left },
+          children: text
+        }
+      ),
+      document.body
+    )
+  ] });
+};
+var tooltip_default = Tooltip;
 var Skeleton = ({ className = "" }) => /* @__PURE__ */ jsxRuntime.jsx("div", { className: `animate-shimmer rounded ${className}` });
 Skeleton.Card = function SkeletonCard({ variant = "light", compact = false }) {
   const isLight = variant === "light";
@@ -774,7 +644,7 @@ var ConfirmDialog = ({ state, onDone }) => {
     }
   }, [visible]);
   const v = state.variant || "danger";
-  const cfg2 = variantConfig[v];
+  const cfg = variantConfig[v];
   return reactDom.createPortal(
     /* @__PURE__ */ jsxRuntime.jsx(
       "div",
@@ -800,7 +670,7 @@ var ConfirmDialog = ({ state, onDone }) => {
             onClick: (e) => e.stopPropagation(),
             children: [
               /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col items-center text-center px-6 pt-7 pb-5", children: [
-                /* @__PURE__ */ jsxRuntime.jsx("div", { className: `w-12 h-12 rounded-xl ${cfg2.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 ${visible && !leaving ? "scale-100" : "scale-75"}`, children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: state.icon || cfg2.icon, size: 24, className: cfg2.iconColor }) }),
+                /* @__PURE__ */ jsxRuntime.jsx("div", { className: `w-12 h-12 rounded-xl ${cfg.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 ${visible && !leaving ? "scale-100" : "scale-75"}`, children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: cfg.icon, size: 24, className: cfg.iconColor }) }),
                 /* @__PURE__ */ jsxRuntime.jsx("h3", { id: "confirm-title", className: "text-[15px] font-semibold text-gray-900 mb-1", children: state.title || "\xBFEst\xE1s seguro?" }),
                 /* @__PURE__ */ jsxRuntime.jsx("p", { id: "confirm-message", className: "text-sm text-gray-500 leading-relaxed whitespace-pre-line", children: state.message })
               ] }),
@@ -809,8 +679,8 @@ var ConfirmDialog = ({ state, onDone }) => {
                   "button",
                   {
                     onClick: () => close(true),
-                    className: `flex-1 h-10 rounded-btn text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] outline-none ${cfg2.confirmBg}`,
-                    children: state.confirmText || "Confirmar"
+                    className: `flex-1 h-10 rounded-btn text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] outline-none ${cfg.confirmBg}`,
+                    children: "Confirmar"
                   }
                 ),
                 /* @__PURE__ */ jsxRuntime.jsx(
@@ -818,7 +688,7 @@ var ConfirmDialog = ({ state, onDone }) => {
                   {
                     onClick: () => close(false),
                     className: "flex-1 h-10 rounded-btn text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all duration-200 active:scale-[0.98] outline-none",
-                    children: state.cancelText || "Cancelar"
+                    children: "Cancelar"
                   }
                 )
               ] })
@@ -854,7 +724,7 @@ var variantConfig2 = {
 var PromptDialog = ({ state, onDone }) => {
   const [visible, setVisible] = react.useState(false);
   const [leaving, setLeaving] = react.useState(false);
-  const [value, setValue] = react.useState(state.defaultValue || "");
+  const [value, setValue] = react.useState("");
   const dialogRef = react.useRef(null);
   const inputRef = react.useRef(null);
   react.useEffect(() => {
@@ -898,7 +768,7 @@ var PromptDialog = ({ state, onDone }) => {
     }
   }, [visible]);
   const v = state.variant || "info";
-  const cfg2 = variantConfig2[v];
+  const cfg = variantConfig2[v];
   const handleSubmit = (e) => {
     e.preventDefault();
     if (value.trim()) close(value.trim());
@@ -927,7 +797,7 @@ var PromptDialog = ({ state, onDone }) => {
             onClick: (e) => e.stopPropagation(),
             children: /* @__PURE__ */ jsxRuntime.jsxs("form", { onSubmit: handleSubmit, children: [
               /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col items-center text-center px-6 pt-7 pb-4", children: [
-                /* @__PURE__ */ jsxRuntime.jsx("div", { className: `w-12 h-12 rounded-xl ${cfg2.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 ${visible && !leaving ? "scale-100" : "scale-75"}`, children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: state.icon || cfg2.icon, size: 24, className: cfg2.iconColor }) }),
+                /* @__PURE__ */ jsxRuntime.jsx("div", { className: `w-12 h-12 rounded-xl ${cfg.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 ${visible && !leaving ? "scale-100" : "scale-75"}`, children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: state.icon || cfg.icon, size: 24, className: cfg.iconColor }) }),
                 /* @__PURE__ */ jsxRuntime.jsx("h3", { id: "prompt-title", className: "text-[15px] font-semibold text-gray-900 mb-1", children: state.title || "Ingresa un valor" }),
                 /* @__PURE__ */ jsxRuntime.jsx("p", { id: "prompt-message", className: "text-sm text-gray-500 leading-relaxed whitespace-pre-line", children: state.message })
               ] }),
@@ -935,11 +805,9 @@ var PromptDialog = ({ state, onDone }) => {
                 "input",
                 {
                   ref: inputRef,
-                  type: state.type || "text",
+                  type: "text",
                   value,
                   onChange: (e) => setValue(e.target.value),
-                  placeholder: state.placeholder,
-                  step: state.type === "number" ? "any" : void 0,
                   className: "w-full h-10 px-3 rounded-lg border border-gray-300 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-theme-500 focus:ring-2 focus:ring-theme-500/20 transition-all"
                 }
               ) }),
@@ -949,8 +817,8 @@ var PromptDialog = ({ state, onDone }) => {
                   {
                     type: "submit",
                     disabled: !value.trim(),
-                    className: `flex-1 h-10 rounded-btn text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] outline-none disabled:opacity-40 disabled:cursor-not-allowed ${cfg2.confirmBg}`,
-                    children: state.confirmText || "Aceptar"
+                    className: `flex-1 h-10 rounded-btn text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] outline-none disabled:opacity-40 disabled:cursor-not-allowed ${cfg.confirmBg}`,
+                    children: "Aceptar"
                   }
                 ),
                 /* @__PURE__ */ jsxRuntime.jsx(
@@ -959,7 +827,7 @@ var PromptDialog = ({ state, onDone }) => {
                     type: "button",
                     onClick: () => close(null),
                     className: "flex-1 h-10 rounded-btn text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all duration-200 active:scale-[0.98] outline-none",
-                    children: state.cancelText || "Cancelar"
+                    children: "Cancelar"
                   }
                 )
               ] })
@@ -1052,33 +920,6 @@ var ContextMenu = ({ open, position, items, onClose }) => {
   );
 };
 var contextmenu_default = ContextMenu;
-var containerSizes = {
-  sm: "w-6 h-6",
-  md: "w-8 h-8",
-  lg: "w-10 h-10"
-};
-var DEFAULT_COLORS = { iconBg: "bg-gray-100", text: "text-gray-700" };
-var SectionIcon = ({
-  colors = DEFAULT_COLORS,
-  icon,
-  size = 18,
-  containerSize = "md",
-  className = ""
-}) => {
-  return /* @__PURE__ */ jsxRuntime.jsx(
-    "div",
-    {
-      className: `
-        shrink-0 flex items-center justify-center rounded-xl
-        ${containerSizes[containerSize]}
-        ${colors.iconBg}
-        ${className}
-      `,
-      children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size, className: colors.text })
-    }
-  );
-};
-var sectionicon_default = SectionIcon;
 var Card = ({ item, isSelected, onClick, checkbox }) => /* @__PURE__ */ jsxRuntime.jsxs(
   "div",
   {
@@ -1271,39 +1112,6 @@ function MasterDetail({
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-1 min-h-0 bg-white overflow-hidden", children: hasSelection && detail ? detail : /* @__PURE__ */ jsxRuntime.jsx("div", { className: "h-full overflow-auto", children: list }) })
   ] });
 }
-var colorMap = {
-  default: { bg: "bg-gray-50", text: "text-gray-600", icon: "text-gray-400" },
-  success: { bg: "bg-emerald-50", text: "text-emerald-600", icon: "text-emerald-400" },
-  warning: { bg: "bg-amber-50", text: "text-amber-600", icon: "text-amber-400" },
-  danger: { bg: "bg-rose-50", text: "text-rose-600", icon: "text-rose-400" }
-};
-function StatCard({ label, value, icon, subtitle, trend, color = "default", onClick }) {
-  const colors = colorMap[color];
-  return /* @__PURE__ */ jsxRuntime.jsx(
-    "div",
-    {
-      onClick,
-      className: `relative overflow-hidden bg-white rounded-2xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 ${onClick ? "cursor-pointer" : ""}`,
-      children: /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-start justify-between", children: [
-        /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex-1 min-w-0", children: [
-          /* @__PURE__ */ jsxRuntime.jsx("p", { className: "text-sm font-medium text-gray-500 truncate", children: label }),
-          /* @__PURE__ */ jsxRuntime.jsx("p", { className: "mt-1 text-3xl font-bold text-theme-700", children: value }),
-          subtitle && /* @__PURE__ */ jsxRuntime.jsx("p", { className: "mt-1 text-xs text-gray-400", children: subtitle }),
-          trend && /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "mt-2 flex items-center gap-1", children: [
-            /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: trend.value >= 0 ? "TrendingUp" : "TrendingDown", size: 14, className: trend.value >= 0 ? "text-emerald-500" : "text-rose-500" }),
-            /* @__PURE__ */ jsxRuntime.jsxs("span", { className: `text-xs font-medium ${trend.value >= 0 ? "text-emerald-600" : "text-rose-600"}`, children: [
-              trend.value >= 0 ? "+" : "",
-              trend.value,
-              "%"
-            ] }),
-            /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-xs text-gray-400", children: trend.label })
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntime.jsx("div", { className: `${colors.bg} rounded-xl p-3`, children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 24, className: colors.icon }) })
-      ] })
-    }
-  );
-}
 function SidebarFilter({ value, onChange, placeholder = "Filtrar..." }) {
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2 bg-white/10 rounded-btn px-3 h-9", children: [
     /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "Search", size: 14, className: "text-white/50" }),
@@ -1380,57 +1188,6 @@ function SidebarPaginator({ page, setPage, hasNext }) {
         children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "ChevronRight", size: 16, className: "text-white" })
       }
     )
-  ] });
-}
-function SidebarControls({
-  search,
-  onSearchChange,
-  sortOptions,
-  sortBy,
-  onSortChange,
-  sortDir,
-  onSortDirChange
-}) {
-  const [expanded, setExpanded] = react.useState(false);
-  const currentSortLabel = sortOptions.find((o) => o.value === sortBy)?.label || sortBy;
-  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col", children: [
-    /* @__PURE__ */ jsxRuntime.jsxs(
-      "button",
-      {
-        onClick: () => setExpanded(!expanded),
-        className: "flex items-center justify-between gap-2 h-9 px-3 rounded-btn bg-white/10 hover:bg-white/15 transition-colors",
-        children: [
-          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2 min-w-0", children: [
-            /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "SlidersHorizontal", size: 14, className: "text-white/60 flex-shrink-0" }),
-            /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "text-xs text-white/80 truncate", children: [
-              search ? `"${search}"` : currentSortLabel,
-              search && ` \xB7 ${currentSortLabel}`
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntime.jsx(
-            icon_default,
-            {
-              name: expanded ? "ChevronUp" : "ChevronDown",
-              size: 14,
-              className: "text-white/50 flex-shrink-0"
-            }
-          )
-        ]
-      }
-    ),
-    expanded && /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col gap-2 mt-2", children: [
-      /* @__PURE__ */ jsxRuntime.jsx(SidebarFilter, { value: search, onChange: onSearchChange }),
-      /* @__PURE__ */ jsxRuntime.jsx(
-        SidebarSort,
-        {
-          options: sortOptions,
-          value: sortBy,
-          onChange: onSortChange,
-          direction: sortDir,
-          onDirectionChange: onSortDirChange
-        }
-      )
-    ] })
   ] });
 }
 var EditableTitle = ({ value, onChange, className = "" }) => {
@@ -1744,7 +1501,6 @@ var Toast = ({ toast, onClose }) => {
     }
   );
 };
-var toast_default = Toast;
 var ToastContainer = () => {
   const { toasts, removeToast } = useToast();
   if (toasts.length === 0) return null;
@@ -1757,15 +1513,41 @@ var ToastContainer = () => {
     toast.id
   )) });
 };
+var containerSizes = {
+  sm: "w-6 h-6",
+  md: "w-8 h-8",
+  lg: "w-10 h-10"
+};
+var DEFAULT_COLORS = { iconBg: "bg-gray-100", text: "text-gray-700" };
+var SectionIcon = ({
+  colors = DEFAULT_COLORS,
+  icon,
+  size = 18,
+  containerSize = "md",
+  className = ""
+}) => {
+  return /* @__PURE__ */ jsxRuntime.jsx(
+    "div",
+    {
+      className: `
+        shrink-0 flex items-center justify-center rounded-xl
+        ${containerSizes[containerSize]}
+        ${colors.iconBg}
+        ${className}
+      `,
+      children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size, className: colors.text })
+    }
+  );
+};
+var sectionicon_default = SectionIcon;
 var DEFAULT_COLORS2 = { bg: "bg-gray-50", text: "text-gray-700", iconBg: "bg-gray-100" };
-var Accordion = ({ sections, forceExpanded = false, defaultOpenId, bare = false }) => {
-  const initialOpenId = defaultOpenId === void 0 ? sections[0]?.id ?? null : defaultOpenId;
-  const [openId, setOpenId] = react.useState(initialOpenId);
+var Accordion = ({ sections, forceExpanded = false }) => {
+  const [openId, setOpenId] = react.useState(sections[0]?.id ?? null);
   const handleToggle = (sectionId) => {
     if (forceExpanded) return;
     setOpenId((prev) => prev === sectionId ? null : sectionId);
   };
-  const content = sections.map((section) => {
+  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "rounded-xl overflow-hidden border border-gray-200 flex-1 flex flex-col min-h-0", children: sections.map((section) => {
     const colors = section.colors ?? DEFAULT_COLORS2;
     const isExpanded = forceExpanded || openId === section.id;
     const contentId = `section-content-${section.id}`;
@@ -1804,9 +1586,7 @@ var Accordion = ({ sections, forceExpanded = false, defaultOpenId, bare = false 
         }
       )
     ] }, section.id);
-  });
-  if (bare) return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, { children: content });
-  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "rounded-xl overflow-hidden border border-gray-200 flex-1 flex flex-col min-h-0", children: content });
+  }) });
 };
 var section_default = Accordion;
 var Tooltip2 = ({ label, btnRef }) => {
@@ -1833,26 +1613,16 @@ var Tooltip2 = ({ label, btnRef }) => {
 var ToolbarButton = ({
   icon,
   label,
-  visible = true,
   onClick,
   active = false,
-  blink = false,
   variant = "dark",
-  className = "",
   disabled,
   ...rest
 }) => {
-  const [blinkActive, setBlinkActive] = react.useState(false);
   const [hovered, setHovered] = react.useState(false);
   const btnRef = react.useRef(null);
-  react.useEffect(() => {
-    if (!blink) return;
-    const i = setInterval(() => setBlinkActive((a) => !a), 600);
-    return () => clearInterval(i);
-  }, [blink]);
-  if (!visible) return null;
   const disabledEffect = disabled ? "opacity-40 blur-[0.5px]" : "";
-  const variantStyles2 = variant === "light" ? "bg-white hover:bg-gray-50 text-theme-700 hover:text-theme-800" : "bg-white/10 hover:bg-white/15 text-white/80 hover:text-white";
+  const variantStyles = variant === "light" ? "bg-white hover:bg-gray-50 text-theme-700 hover:text-theme-800" : "bg-white/10 hover:bg-white/15 text-white/80 hover:text-white";
   const activeStyles = variant === "light" ? "bg-gray-100 text-theme-600" : "bg-white/20 text-white";
   return /* @__PURE__ */ jsxRuntime.jsxs(
     "button",
@@ -1869,13 +1639,11 @@ var ToolbarButton = ({
       "aria-label": label,
       className: `
                 flex items-center justify-center h-9 px-3
-                ${variantStyles2}
+                ${variantStyles}
                 backdrop-blur-sm transition-all duration-200
                 first:rounded-l-btn last:rounded-r-btn
                 ${active ? activeStyles : ""}
-                ${blinkActive ? "opacity-30" : ""}
                 ${disabled ? "cursor-not-allowed" : ""}
-                ${className}
             `,
       children: [
         /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 16, className: `${variant === "dark" ? "icon-shadow-sm" : ""} ${disabledEffect}` }),
@@ -1909,7 +1677,7 @@ var Tooltip3 = ({ label, btnRef }) => {
 var ToolBack = ({ icon, label = "Volver", onClick, variant = "light" }) => {
   const [hovered, setHovered] = react.useState(false);
   const btnRef = react.useRef(null);
-  const variantStyles2 = variant === "light" ? "bg-theme-100 hover:bg-theme-200 text-theme-700 hover:text-theme-800" : "bg-white/10 hover:bg-white/15 text-white/80 hover:text-white";
+  const variantStyles = variant === "light" ? "bg-theme-100 hover:bg-theme-200 text-theme-700 hover:text-theme-800" : "bg-white/10 hover:bg-white/15 text-white/80 hover:text-white";
   return /* @__PURE__ */ jsxRuntime.jsxs(
     "button",
     {
@@ -1923,7 +1691,7 @@ var ToolBack = ({ icon, label = "Volver", onClick, variant = "light" }) => {
       "aria-label": label,
       className: `
                 flex items-center justify-center gap-0.5 h-9 px-2
-                ${variantStyles2}
+                ${variantStyles}
                 backdrop-blur-sm transition-all duration-200
                 rounded-btn
             `,
@@ -1936,8 +1704,7 @@ var ToolBack = ({ icon, label = "Volver", onClick, variant = "light" }) => {
   );
 };
 var toolback_default = ToolBack;
-var ButtonGroup = ({ children, className = "", visible = true, variant = "dark" }) => {
-  if (!visible) return null;
+var ButtonGroup = ({ children, className = "", variant = "dark" }) => {
   const bg = variant === "dark" ? "bg-white/10" : "bg-gray-200 shadow-sm";
   return /* @__PURE__ */ jsxRuntime.jsx(
     "div",
@@ -1949,60 +1716,6 @@ var ButtonGroup = ({ children, className = "", visible = true, variant = "dark" 
   );
 };
 var buttongroup_default = ButtonGroup;
-var Label = ({ text, className = "", visible = true }) => {
-  if (!visible) return null;
-  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: `flex items-center justify-center px-4 min-w-[2.5rem] h-9 bg-white/10 text-white font-semibold text-sm ${className}`, children: text });
-};
-var label_default = Label;
-var Paginator = ({ page, setPage, hasNext, className = "", visible, compact = false }) => {
-  const hasPrev = page > 0;
-  if (visible === false || visible === void 0 && !hasPrev && !hasNext) return null;
-  if (compact) {
-    return /* @__PURE__ */ jsxRuntime.jsx("div", { className: `flex items-center ${className}`, children: /* @__PURE__ */ jsxRuntime.jsxs(buttongroup_default, { children: [
-      /* @__PURE__ */ jsxRuntime.jsx(
-        toolbarbutton_default,
-        {
-          icon: "ChevronLeft",
-          label: "Anterior",
-          onClick: () => setPage(Math.max(page - 1, 0)),
-          disabled: page === 0
-        }
-      ),
-      /* @__PURE__ */ jsxRuntime.jsx(label_default, { text: `${page + 1}` }),
-      /* @__PURE__ */ jsxRuntime.jsx(
-        toolbarbutton_default,
-        {
-          icon: "ChevronRight",
-          label: "Siguiente",
-          onClick: () => setPage(page + 1),
-          disabled: !hasNext
-        }
-      )
-    ] }) });
-  }
-  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: `flex justify-end p-3 sm:p-4 ${className}`, children: /* @__PURE__ */ jsxRuntime.jsxs(buttongroup_default, { children: [
-    /* @__PURE__ */ jsxRuntime.jsx(
-      toolbarbutton_default,
-      {
-        icon: "ChevronLeft",
-        label: "Anterior",
-        onClick: () => setPage(Math.max(page - 1, 0)),
-        disabled: page === 0
-      }
-    ),
-    /* @__PURE__ */ jsxRuntime.jsx(label_default, { text: `${page + 1}` }),
-    /* @__PURE__ */ jsxRuntime.jsx(
-      toolbarbutton_default,
-      {
-        icon: "ChevronRight",
-        label: "Siguiente",
-        onClick: () => setPage(page + 1),
-        disabled: !hasNext
-      }
-    )
-  ] }) });
-};
-var paginator_default = Paginator;
 var Tabs = ({
   tabs,
   activeTab: controlledActive,
@@ -2213,27 +1926,19 @@ var Scroll = ({ children, className = "", grid = false }) => {
   return /* @__PURE__ */ jsxRuntime.jsx("div", { className: `flex-1 min-h-0 overflow-y-auto overflow-x-hidden flex flex-col ${layout} ${className}`, children });
 };
 var scroll_default = Scroll;
-var Container = ({ title, icon, tbar, children, page, setPage, hasNext }) => {
-  const hasPagination = page !== void 0 && setPage && hasNext !== void 0;
-  const FirstRow = ({ title: title2, icon: icon2 }) => {
-    return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "group/header flex items-center gap-4 sm:gap-8", children: [
-      /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "flex items-center gap-3 whitespace-nowrap text-theme-100", children: [
-        icon2 && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon2, className: "hidden sm:inline-block size-[20px] md:size-[22px] lg:size-[24px] text-theme-100 icon-shadow-md" }),
-        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-xl md:text-2xl font-bold uppercase tracking-wide text-theme-100 text-shadow-md", children: title2 })
-      ] }),
-      /* @__PURE__ */ jsxRuntime.jsx("span", { className: "flex flex-1 items-center", children: tbar }),
-      hasPagination && /* @__PURE__ */ jsxRuntime.jsx(paginator_default, { page, setPage, hasNext, visible: true, compact: true })
-    ] });
-  };
+var Container = ({ title, icon, children }) => {
   const horizontalr = "gap-2 sm:gap-4 px-4 sm:px-5 md:px-6";
   const verticalr = "py-2 short:py-3 mid:py-3 tall:py-4 xtall:py-5";
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col h-full shadow-2xl lg:rounded-xl overflow-hidden", children: [
-    /* @__PURE__ */ jsxRuntime.jsx("header", { className: `flex flex-col text-lg sm:text-xl ${horizontalr} ${verticalr} flex-shrink-0 bg-gradient-to-r from-theme-700 to-theme-600`, children: /* @__PURE__ */ jsxRuntime.jsx(FirstRow, { title, icon }) }),
+    /* @__PURE__ */ jsxRuntime.jsx("header", { className: `flex flex-col text-lg sm:text-xl ${horizontalr} ${verticalr} flex-shrink-0 bg-gradient-to-r from-theme-700 to-theme-600`, children: /* @__PURE__ */ jsxRuntime.jsx("div", { className: "group/header flex items-center gap-4 sm:gap-8", children: /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "flex items-center gap-3 whitespace-nowrap text-theme-100", children: [
+      icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, className: "hidden sm:inline-block size-[20px] md:size-[22px] lg:size-[24px] text-theme-100 icon-shadow-md" }),
+      /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-xl md:text-2xl font-bold uppercase tracking-wide text-theme-100 text-shadow-md", children: title })
+    ] }) }) }),
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-1 min-h-0 flex flex-col bg-white", children })
   ] });
 };
 var container_default = Container;
-var sizeConfig2 = {
+var sizeConfig = {
   xs: { spinner: 20, stroke: 2, text: "text-xs" },
   sm: { spinner: 28, stroke: 2.5, text: "text-sm" },
   md: { spinner: 36, stroke: 3, text: "text-base" },
@@ -2241,7 +1946,7 @@ var sizeConfig2 = {
 };
 function Spinner({ size = "sm", message }) {
   const id = react.useId().replace(/:/g, "");
-  const cfg2 = sizeConfig2[size];
+  const cfg = sizeConfig[size];
   return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
     /* @__PURE__ */ jsxRuntime.jsx("style", { children: `
         @keyframes loading-spin-${id} {
@@ -2266,7 +1971,7 @@ function Spinner({ size = "sm", message }) {
         {
           className: `loading-spinner-${id} drop-shadow-sm`,
           viewBox: "0 0 50 50",
-          style: { width: cfg2.spinner, height: cfg2.spinner },
+          style: { width: cfg.spinner, height: cfg.spinner },
           children: [
             /* @__PURE__ */ jsxRuntime.jsx(
               "circle",
@@ -2276,7 +1981,7 @@ function Spinner({ size = "sm", message }) {
                 r: "20",
                 fill: "none",
                 stroke: "currentColor",
-                strokeWidth: cfg2.stroke,
+                strokeWidth: cfg.stroke,
                 className: "text-theme-100"
               }
             ),
@@ -2288,7 +1993,7 @@ function Spinner({ size = "sm", message }) {
                 r: "20",
                 fill: "none",
                 stroke: "currentColor",
-                strokeWidth: cfg2.stroke,
+                strokeWidth: cfg.stroke,
                 strokeLinecap: "round",
                 className: `text-theme-500 loading-dash-${id}`
               }
@@ -2296,154 +2001,11 @@ function Spinner({ size = "sm", message }) {
           ]
         }
       ),
-      message && /* @__PURE__ */ jsxRuntime.jsx("span", { className: `${cfg2.text} text-theme-600 font-medium`, children: message })
+      message && /* @__PURE__ */ jsxRuntime.jsx("span", { className: `${cfg.text} text-theme-600 font-medium`, children: message })
     ] })
   ] });
 }
-var cfg = { svg: 120, text: "text-lg", minH: 200, barW: 140 };
-function AnimAI({ message = "Analizando con IA" }) {
-  const id = react.useId().replace(/:/g, "");
-  const [phase, setPhase] = react.useState("upload");
-  react.useEffect(() => {
-    const t1 = setTimeout(() => setPhase("ai"), 2e3);
-    return () => clearTimeout(t1);
-  }, []);
-  const phaseLabel = phase === "upload" ? "Subiendo archivo" : message;
-  return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntime.jsx("style", { children: `
-        @keyframes animai-arrow-${id} {
-          0%, 100% { transform: translateY(6px); opacity: 0.4; }
-          50% { transform: translateY(-6px); opacity: 1; }
-        }
-        @keyframes animai-orbit-${id} {
-          0% { transform: rotate(0deg) translateX(18px) rotate(0deg); }
-          100% { transform: rotate(360deg) translateX(18px) rotate(-360deg); }
-        }
-        @keyframes animai-pop-${id} {
-          0% { transform: scale(0); opacity: 0; }
-          20% { transform: scale(1.3); opacity: 0.8; }
-          40% { transform: scale(1); opacity: 0.6; }
-          100% { transform: scale(0.6); opacity: 0; }
-        }
-        .animai-arrow-${id} {
-          animation: animai-arrow-${id} 1.4s ease-in-out infinite;
-        }
-        .animai-orbit-${id}-1 {
-          animation: animai-orbit-${id} 3s linear infinite;
-          transform-origin: 68px 16px;
-        }
-        .animai-orbit-${id}-2 {
-          animation: animai-orbit-${id} 3s linear -1s infinite;
-          transform-origin: 68px 16px;
-        }
-        .animai-orbit-${id}-3 {
-          animation: animai-orbit-${id} 3s linear -2s infinite;
-          transform-origin: 68px 16px;
-        }
-        .animai-pop-${id}-1 {
-          animation: animai-pop-${id} 2s ease-out 0s infinite;
-        }
-        .animai-pop-${id}-2 {
-          animation: animai-pop-${id} 2s ease-out 0.7s infinite;
-        }
-        .animai-pop-${id}-3 {
-          animation: animai-pop-${id} 2s ease-out 1.4s infinite;
-        }
-      ` }),
-    /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-0 bg-white/60 backdrop-blur-sm grid place-items-center z-50", children: /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col items-center justify-center gap-0", style: { minHeight: cfg.minH }, children: [
-      /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "relative flex items-center justify-center", style: { minHeight: cfg.minH - 24 }, children: [
-        /* @__PURE__ */ jsxRuntime.jsxs(
-          "div",
-          {
-            className: "absolute flex flex-col items-center justify-center gap-3 transition-opacity duration-500",
-            style: { opacity: phase === "upload" ? 1 : 0, visibility: phase === "upload" ? "visible" : "hidden" },
-            children: [
-              /* @__PURE__ */ jsxRuntime.jsxs(
-                "svg",
-                {
-                  width: cfg.svg,
-                  height: Math.round(cfg.svg * 0.83),
-                  viewBox: "0 0 120 100",
-                  fill: "none",
-                  xmlns: "http://www.w3.org/2000/svg",
-                  className: "opacity-50",
-                  children: [
-                    /* @__PURE__ */ jsxRuntime.jsx("path", { d: "M20 35 L60 15 L100 35 L60 55 Z", className: "fill-theme-200 stroke-theme-400", strokeWidth: "1.5" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("path", { d: "M20 35 L20 65 L60 85 L60 55 Z", className: "fill-theme-100 stroke-theme-400", strokeWidth: "1.5" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("path", { d: "M100 35 L100 65 L60 85 L60 55 Z", className: "fill-theme-50 stroke-theme-400", strokeWidth: "1.5" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("g", { className: `animai-arrow-${id}`, children: /* @__PURE__ */ jsxRuntime.jsx(
-                      "path",
-                      {
-                        d: "M60 30 L60 4 M52 12 L60 4 L68 12",
-                        className: "stroke-theme-500",
-                        strokeWidth: "2.5",
-                        strokeLinecap: "round",
-                        strokeLinejoin: "round"
-                      }
-                    ) })
-                  ]
-                }
-              ),
-              /* @__PURE__ */ jsxRuntime.jsx("p", { className: `font-medium text-gray-500 whitespace-nowrap ${cfg.text}`, children: phaseLabel })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxRuntime.jsxs(
-          "div",
-          {
-            className: "absolute flex flex-col items-center justify-center gap-3 transition-opacity duration-500",
-            style: { opacity: phase === "ai" ? 1 : 0, visibility: phase === "ai" ? "visible" : "hidden" },
-            children: [
-              /* @__PURE__ */ jsxRuntime.jsxs(
-                "svg",
-                {
-                  width: cfg.svg,
-                  height: Math.round(cfg.svg * 0.83),
-                  viewBox: "0 0 120 100",
-                  fill: "none",
-                  xmlns: "http://www.w3.org/2000/svg",
-                  className: "opacity-50",
-                  children: [
-                    /* @__PURE__ */ jsxRuntime.jsx("path", { d: "M20 35 L60 15 L100 35 L60 55 Z", className: "fill-theme-200 stroke-theme-400", strokeWidth: "1.5" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("path", { d: "M20 35 L20 65 L60 85 L60 55 Z", className: "fill-theme-100 stroke-theme-400", strokeWidth: "1.5" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("path", { d: "M100 35 L100 65 L60 85 L60 55 Z", className: "fill-theme-50 stroke-theme-400", strokeWidth: "1.5" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("circle", { cx: "68", cy: "16", r: "13", className: "stroke-theme-500", strokeWidth: "2", fill: "none" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("line", { x1: "78", y1: "25", x2: "88", y2: "35", className: "stroke-theme-500", strokeWidth: "3", strokeLinecap: "round" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("circle", { className: `fill-theme-400 animai-orbit-${id}-1`, r: "2.5", cx: "68", cy: "16" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("circle", { className: `fill-theme-300 animai-orbit-${id}-2`, r: "2", cx: "68", cy: "16" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("circle", { className: `fill-theme-400 animai-orbit-${id}-3`, r: "1.5", cx: "68", cy: "16" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("circle", { cx: "50", cy: "8", r: "3", className: `fill-theme-300 animai-pop-${id}-1` }),
-                    /* @__PURE__ */ jsxRuntime.jsx("circle", { cx: "68", cy: "2", r: "2.5", className: `fill-theme-300 animai-pop-${id}-2` }),
-                    /* @__PURE__ */ jsxRuntime.jsx("circle", { cx: "42", cy: "3", r: "2", className: `fill-theme-300 animai-pop-${id}-3` })
-                  ]
-                }
-              ),
-              /* @__PURE__ */ jsxRuntime.jsx("p", { className: `font-medium text-gray-500 whitespace-nowrap ${cfg.text}`, children: phaseLabel })
-            ]
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsxRuntime.jsx(
-        "div",
-        {
-          className: "rounded-full bg-theme-100 overflow-hidden",
-          style: { width: cfg.barW, height: 4 },
-          children: /* @__PURE__ */ jsxRuntime.jsx(
-            "div",
-            {
-              className: "h-full rounded-full bg-theme-400 transition-all ease-out",
-              style: {
-                width: phase === "upload" ? "30%" : "85%",
-                transitionDuration: phase === "upload" ? "1.5s" : "8s"
-              }
-            }
-          )
-        }
-      )
-    ] }) })
-  ] });
-}
-var sizeConfig3 = {
+var sizeConfig2 = {
   xs: { svg: 60, text: "text-xs" },
   sm: { svg: 80, text: "text-sm" },
   md: { svg: 100, text: "text-base" },
@@ -2452,7 +2014,7 @@ var sizeConfig3 = {
 };
 function DragHere2({ size = "lg" }) {
   const isMobile = useIsMobile();
-  const cfg2 = sizeConfig3[size];
+  const cfg = sizeConfig2[size];
   return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
     /* @__PURE__ */ jsxRuntime.jsx("style", { children: `
         @keyframes drag-arrow-bounce {
@@ -2467,8 +2029,8 @@ function DragHere2({ size = "lg" }) {
       /* @__PURE__ */ jsxRuntime.jsxs(
         "svg",
         {
-          width: cfg2.svg,
-          height: Math.round(cfg2.svg * 0.83),
+          width: cfg.svg,
+          height: Math.round(cfg.svg * 0.83),
           viewBox: "0 0 120 100",
           fill: "none",
           xmlns: "http://www.w3.org/2000/svg",
@@ -2490,20 +2052,18 @@ function DragHere2({ size = "lg" }) {
           ]
         }
       ),
-      /* @__PURE__ */ jsxRuntime.jsx("p", { className: `${cfg2.text} font-medium text-gray-500`, children: isMobile ? "Toca para subir documentos" : "Arrastre aqu\xED" })
+      /* @__PURE__ */ jsxRuntime.jsx("p", { className: `${cfg.text} font-medium text-gray-500`, children: isMobile ? "Toca para subir documentos" : "Arrastre aqu\xED" })
     ] }) })
   ] });
 }
-var PillTag = ({ children, onRemove, grip }) => /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-full bg-white border border-gray-200 text-gray-700", children: [
+var PillTag = ({ children, grip }) => /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-full bg-white border border-gray-200 text-gray-700", children: [
   grip && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "GripVertical", size: 12, className: "text-gray-400" }),
-  /* @__PURE__ */ jsxRuntime.jsx("span", { className: "truncate", children }),
-  onRemove && /* @__PURE__ */ jsxRuntime.jsx("button", { onClick: onRemove, className: "hover:text-red-500 transition-all", children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "X", size: 12 }) })
+  /* @__PURE__ */ jsxRuntime.jsx("span", { className: "truncate", children })
 ] });
 var pilltag_default = PillTag;
 
 exports.Accordion = section_default;
 exports.Anchor = anchor_default;
-exports.AnimAI = AnimAI;
 exports.Button = button_default;
 exports.ButtonGroup = buttongroup_default;
 exports.Card = card_default;
@@ -2523,35 +2083,27 @@ exports.EmptyState = emptystate_default;
 exports.FieldWrapper = FieldWrapper;
 exports.Icon = icon_default;
 exports.Input = input_default;
-exports.Label = label_default;
 exports.MasterDetail = MasterDetail;
 exports.Modal = modal_default;
-exports.Paginator = paginator_default;
 exports.Panel = panel_default;
 exports.PillTag = pilltag_default;
 exports.ProgressRing = progressring_default;
 exports.Prompt = prompt_default;
 exports.Radio = radio_default;
 exports.Scroll = scroll_default;
-exports.SectionIcon = sectionicon_default;
 exports.Select = select_default;
-exports.SidebarControls = SidebarControls;
 exports.SidebarFilter = SidebarFilter;
 exports.SidebarPaginator = SidebarPaginator;
 exports.SidebarSort = SidebarSort;
 exports.Skeleton = skeleton_default;
 exports.Spinner = Spinner;
-exports.StatCard = StatCard;
 exports.TablePanel = tablepanel_default;
 exports.Tabs = tabs_default;
-exports.Toast = toast_default;
 exports.ToastContainer = ToastContainer;
 exports.ToastProvider = ToastProvider;
 exports.ToolBack = toolback_default;
 exports.ToolbarButton = toolbarbutton_default;
 exports.Tooltip = tooltip_default;
-exports.useIsDesktop = useIsDesktop;
-exports.useIsMobile = useIsMobile;
 exports.useToast = useToast;
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

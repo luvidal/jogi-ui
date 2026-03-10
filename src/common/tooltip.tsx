@@ -4,13 +4,9 @@ import Icon from './icon'
 
 type TooltipProps = {
     text: string
-    icon?: string
-    iconColor?: string
-    className?: string
-    html?: boolean
 }
 
-const Tooltip = ({ text, icon = 'CircleQuestionMark', iconColor = 'text-gray-700', className = '', html = false }: TooltipProps) => {
+const Tooltip = ({ text }: TooltipProps) => {
     const [open, setOpen] = useState(false)
     const [pos, setPos] = useState({ top: 0, left: 0 })
     const [visible, setVisible] = useState(false)
@@ -18,35 +14,21 @@ const Tooltip = ({ text, icon = 'CircleQuestionMark', iconColor = 'text-gray-700
     const btnRef = useRef<HTMLButtonElement>(null)
     const tooltipRef = useRef<HTMLDivElement>(null)
 
-    const shouldHtml = html || /<[a-z][\s\S]*>/i.test(text)
-    const patchedText = shouldHtml
-        ? text.replace(
-            /(<li[\s\S]*<\/li>)/gi,
-            '<ul style="list-style:disc;padding-left:1.25rem;margin:0">$1</ul>'
-        )
-        : text
-
     const updatePosition = useCallback(() => {
         if (!btnRef.current) return
         const r = btnRef.current.getBoundingClientRect()
         let top = r.top
         let left = r.right + 8
 
-        // Viewport edge detection: if tooltip would overflow right, show on left
-        const tooltipWidth = 256 // max-w-xs = 20rem = 320px, but typically ~256px
+        const tooltipWidth = 256
         if (left + tooltipWidth > window.innerWidth - 16) {
             left = r.left - tooltipWidth - 8
         }
-
-        // If would overflow bottom, shift up
         if (top + 100 > window.innerHeight - 16) {
             top = window.innerHeight - 116
         }
-
-        // Clamp to viewport
         top = Math.max(8, top)
         left = Math.max(8, left)
-
         setPos({ top, left })
     }, [])
 
@@ -71,7 +53,7 @@ const Tooltip = ({ text, icon = 'CircleQuestionMark', iconColor = 'text-gray-700
     }, [])
 
     return (
-        <span ref={ref} className={`relative inline-block left-1 ${className}`}>
+        <span ref={ref} className='relative inline-block left-1'>
             <button
                 ref={btnRef}
                 onClick={e => {
@@ -79,10 +61,7 @@ const Tooltip = ({ text, icon = 'CircleQuestionMark', iconColor = 'text-gray-700
                     setOpen(v => !v)
                 }}
             >
-                <Icon
-                    name={icon}
-                    className={`size-4 opacity-60 hover:opacity-100 transition-opacity ${iconColor}`}
-                />
+                <Icon name='CircleQuestionMark' className='size-4 opacity-60 hover:opacity-100 transition-opacity text-gray-700' />
             </button>
             {open && typeof document !== 'undefined' && createPortal(
                 <div
@@ -95,9 +74,7 @@ const Tooltip = ({ text, icon = 'CircleQuestionMark', iconColor = 'text-gray-700
                     `}
                     style={{ top: pos.top, left: pos.left }}
                 >
-                    {shouldHtml
-                        ? <div dangerouslySetInnerHTML={{ __html: patchedText }} />
-                        : text}
+                    {text}
                 </div>,
                 document.body
             )}

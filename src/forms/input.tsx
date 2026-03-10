@@ -7,7 +7,6 @@ interface Props {
   onChange?: (value: string) => void
   value?: string
   className?: string
-  tooltip?: string
   visible?: boolean
 }
 
@@ -19,7 +18,7 @@ const sanitizeValue = (s: any) => String(s || '')
   .replace(/\s+/g, ' ')
   .trim()
 
-const Input = ({ label, className = '', readOnly, onChange, value = '', tooltip, visible = true, ...rest }: InputProps) => {
+const Input = ({ label, className = '', readOnly, onChange, value = '', visible = true, ...rest }: InputProps) => {
   const [localValue, setLocalValue] = useState(value)
   const [cleanValue, setCleanValue] = useState(() => sanitizeValue(value))
 
@@ -36,7 +35,7 @@ const Input = ({ label, className = '', readOnly, onChange, value = '', tooltip,
   }
 
   return (
-    <FieldWrapper label={label} tooltip={tooltip} className={className} visible={visible}>
+    <FieldWrapper label={label} className={className} visible={visible}>
       <input
         {...rest}
         readOnly={readOnly}

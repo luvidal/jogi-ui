@@ -11,7 +11,7 @@ interface Props {
   onChange: (value: string) => void
 }
 
-const Select = ({ label, value, placeholder, options, className = '', onChange, tooltip = '' }: Props) => {
+const Select = ({ label, value, placeholder, options, className = '', onChange }: Props) => {
   useEffect(() => {
     if (options.length === 1 && value !== options[0].value) {
       onChange(options[0].value)
@@ -19,7 +19,7 @@ const Select = ({ label, value, placeholder, options, className = '', onChange, 
   }, [options, value, onChange])
 
   return (
-    <FieldWrapper label={label} tooltip={tooltip} className={className}>
+    <FieldWrapper label={label} className={className}>
       <select
         value={value || ''}
         onChange={(e) => onChange(e.target.value)}

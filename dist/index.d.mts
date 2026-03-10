@@ -15,16 +15,7 @@ interface ToastData {
         onClick: () => void;
     };
 }
-interface ToastProps {
-    toast: ToastData;
-    onClose: (id: string) => void;
-}
-declare const Toast: ({ toast, onClose }: ToastProps) => react_jsx_runtime.JSX.Element;
-
 declare const ToastContainer: () => react_jsx_runtime.JSX.Element | null;
-
-declare const useIsMobile: () => boolean;
-declare const useIsDesktop: () => boolean;
 
 interface ToastContextType {
     toasts: ToastData[];
@@ -72,72 +63,65 @@ interface CardItem {
     right?: ReactNode;
 }
 
-interface Props$d extends LucideProps {
+interface Props$c extends LucideProps {
     name?: string;
 }
-declare const Icon: ({ name, ...props }: Props$d) => react_jsx_runtime.JSX.Element;
+declare const Icon: ({ name, ...props }: Props$c) => react_jsx_runtime.JSX.Element;
 
-type Variant = 'primary' | 'glass' | 'danger' | 'outline' | 'ghost';
-type Size$2 = 'sm' | 'md' | 'lg';
 interface ButtonProps$1 extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: string;
     text?: string;
-    variant?: Variant;
-    size?: Size$2;
-    active?: boolean;
     /** Shows inline spinner and disables interaction */
     loading?: boolean;
 }
-declare const Button: ({ icon, text, variant, size, active, loading, className, ...props }: ButtonProps$1) => react_jsx_runtime.JSX.Element;
+declare const Button: ({ icon, text, loading, className, ...props }: ButtonProps$1) => react_jsx_runtime.JSX.Element;
 
-interface Props$c {
+interface Props$b {
     label: string;
     checked: boolean;
     className?: string;
     onChange: (checked: boolean) => void;
 }
-declare const Checkbox: ({ label, checked, className, onChange }: Props$c) => react_jsx_runtime.JSX.Element;
+declare const Checkbox: ({ label, checked, className, onChange }: Props$b) => react_jsx_runtime.JSX.Element;
 
-interface Props$b {
+interface Props$a {
     label?: string;
     value?: string;
     onChange?: (value: string) => void;
     className?: string;
     visible?: boolean;
 }
-declare const ColorPicker: ({ label, value, onChange, className, visible }: Props$b) => react_jsx_runtime.JSX.Element;
+declare const ColorPicker: ({ label, value, onChange, className, visible }: Props$a) => react_jsx_runtime.JSX.Element;
 
 interface FieldWrapperProps {
     label?: string;
-    tooltip?: string;
     className?: string;
     visible?: boolean;
     children: ReactNode;
 }
-declare function FieldWrapper({ label, tooltip, className, visible, children }: FieldWrapperProps): react_jsx_runtime.JSX.Element | null;
+declare function FieldWrapper({ label, className, visible, children }: FieldWrapperProps): react_jsx_runtime.JSX.Element | null;
 
-interface Props$a {
+interface Props$9 {
     label?: string;
     readOnly?: boolean;
     onChange?: (value: string) => void;
     value?: string;
     className?: string;
-    tooltip?: string;
     visible?: boolean;
 }
-type InputProps = Props$a & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'readOnly'>;
-declare const Input: ({ label, className, readOnly, onChange, value, tooltip, visible, ...rest }: InputProps) => react_jsx_runtime.JSX.Element;
+type InputProps = Props$9 & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'readOnly'>;
+declare const Input: ({ label, className, readOnly, onChange, value, visible, ...rest }: InputProps) => react_jsx_runtime.JSX.Element;
 
-interface Props$9<T extends string = string> {
+interface Props$8<T extends string = string> {
     label: string;
     value: T;
     selected: T;
     onChange?: (value: T) => void;
     className?: string;
 }
-declare const Radio: <T extends string = string>({ label, value, selected, onChange, className }: Props$9<T>) => react_jsx_runtime.JSX.Element;
+declare const Radio: <T extends string = string>({ label, value, selected, onChange, className }: Props$8<T>) => react_jsx_runtime.JSX.Element;
 
-interface Props$8 {
+interface Props$7 {
     label?: string;
     value: string;
     placeholder?: string;
@@ -149,36 +133,28 @@ interface Props$8 {
     tooltip?: string;
     onChange: (value: string) => void;
 }
-declare const Select: ({ label, value, placeholder, options, className, onChange, tooltip }: Props$8) => react_jsx_runtime.JSX.Element;
+declare const Select: ({ label, value, placeholder, options, className, onChange }: Props$7) => react_jsx_runtime.JSX.Element;
 
 type ModalSize = 'xl' | 'lg' | 'md' | 'sm' | 'xs';
-interface Props$7 {
+interface Props$6 {
     title?: string;
-    icon?: string;
     children?: React.ReactNode;
     onClose: () => void;
-    className?: string;
     size?: ModalSize;
-    headerActions?: React.ReactNode;
-    resizable?: boolean;
 }
-declare const Modal: ({ title, icon, children, onClose, className, size: sizeProp, headerActions, resizable }: Props$7) => react_jsx_runtime.JSX.Element;
+declare const Modal: ({ title, children, onClose, size: sizeProp }: Props$6) => react_jsx_runtime.JSX.Element;
 
 type TooltipProps = {
     text: string;
-    icon?: string;
-    iconColor?: string;
-    className?: string;
-    html?: boolean;
 };
-declare const Tooltip: ({ text, icon, iconColor, className, html }: TooltipProps) => react_jsx_runtime.JSX.Element;
+declare const Tooltip: ({ text }: TooltipProps) => react_jsx_runtime.JSX.Element;
 
-interface Props$6 {
+interface Props$5 {
     className?: string;
 }
 /** Shimmer placeholder block for loading states. Uses theme-colored sweep animation. */
 declare const Skeleton: {
-    ({ className }: Props$6): react_jsx_runtime.JSX.Element;
+    ({ className }: Props$5): react_jsx_runtime.JSX.Element;
     Card({ variant, compact }: {
         variant?: "light" | "dark";
         compact?: boolean;
@@ -215,7 +191,7 @@ declare const Skeleton: {
     }): react_jsx_runtime.JSX.Element;
 };
 
-interface Props$5 {
+interface Props$4 {
     title?: string;
     description?: string;
     className?: string;
@@ -228,14 +204,11 @@ interface Props$5 {
         onClick: () => void;
     };
 }
-declare const EmptyState: ({ title, description, className, variant, icon, action }: Props$5) => react_jsx_runtime.JSX.Element;
+declare const EmptyState: ({ title, description, className, variant, icon, action }: Props$4) => react_jsx_runtime.JSX.Element;
 
 interface ConfirmOptions {
     title?: string;
     message: string;
-    icon?: string;
-    confirmText?: string;
-    cancelText?: string;
     variant?: 'danger' | 'warning' | 'info';
 }
 interface ConfirmState extends ConfirmOptions {
@@ -249,13 +222,8 @@ declare const ConfirmDialog: ({ state, onDone }: {
 interface PromptOptions {
     title?: string;
     message: string;
-    defaultValue?: string;
-    placeholder?: string;
     icon?: string;
-    confirmText?: string;
-    cancelText?: string;
     variant?: 'danger' | 'warning' | 'info';
-    type?: 'text' | 'number';
 }
 interface PromptState extends PromptOptions {
     resolve: (value: string | null) => void;
@@ -273,7 +241,7 @@ type MenuItem = {
     disabled?: boolean;
     variant?: 'default' | 'amber' | 'red';
 };
-type Props$4 = {
+type Props$3 = {
     open: boolean;
     position: {
         x: number;
@@ -282,34 +250,7 @@ type Props$4 = {
     items: MenuItem[];
     onClose: () => void;
 };
-declare const ContextMenu: ({ open, position, items, onClose }: Props$4) => React$1.ReactPortal | null;
-
-/**
- * SectionIcon - Icon with colored background container
- *
- * Design: Mono-color icon with solid lighter background
- * Creates a clean, professional look consistent across the app
- *
- * Colors must be provided explicitly — no domain-specific lookups.
- * In Jogi, callers typically pass colors from getSectionColors().
- */
-interface SectionIconColors {
-    iconBg: string;
-    text: string;
-}
-interface Props$3 {
-    /** Color scheme for icon container and icon */
-    colors?: SectionIconColors;
-    /** Icon name from Lucide */
-    icon: string;
-    /** Icon size in pixels (default: 18) */
-    size?: number;
-    /** Container size: 'sm' (24px), 'md' (32px), 'lg' (40px) */
-    containerSize?: 'sm' | 'md' | 'lg';
-    /** Additional class names for the container */
-    className?: string;
-}
-declare const SectionIcon: ({ colors, icon, size, containerSize, className, }: Props$3) => react_jsx_runtime.JSX.Element;
+declare const ContextMenu: ({ open, position, items, onClose }: Props$3) => React$1.ReactPortal | null;
 
 interface Props$2 {
     items: CardItem[];
@@ -369,20 +310,6 @@ interface MasterDetailProps {
  */
 declare function MasterDetail({ title, icon, list, detail, hasSelection, sidebarWidth, actions, sidebarHeader, sidebarFooter, mobileTbar, mobileExtension, items, onSelect, detailLoading, }: MasterDetailProps): react_jsx_runtime.JSX.Element;
 
-interface StatCardProps {
-    label: string;
-    value: string | number;
-    icon: string;
-    subtitle?: string;
-    trend?: {
-        value: number;
-        label: string;
-    };
-    color?: 'default' | 'success' | 'warning' | 'danger';
-    onClick?: () => void;
-}
-declare function StatCard({ label, value, icon, subtitle, trend, color, onClick }: StatCardProps): react_jsx_runtime.JSX.Element;
-
 interface SidebarFilterProps {
     value: string;
     onChange: (value: string) => void;
@@ -409,20 +336,6 @@ interface SidebarPaginatorProps {
 }
 /** Compact paginator for dark sidebar - auto-hides when only one page */
 declare function SidebarPaginator({ page, setPage, hasNext }: SidebarPaginatorProps): react_jsx_runtime.JSX.Element | null;
-interface SidebarControlsProps {
-    search: string;
-    onSearchChange: (value: string) => void;
-    sortOptions: {
-        value: string;
-        label: string;
-    }[];
-    sortBy: string;
-    onSortChange: (value: string) => void;
-    sortDir: 'asc' | 'desc';
-    onSortDirChange: (dir: 'asc' | 'desc') => void;
-}
-/** Collapsible sidebar controls - filter and sort */
-declare function SidebarControls({ search, onSearchChange, sortOptions, sortBy, onSortChange, sortDir, onSortDirChange }: SidebarControlsProps): react_jsx_runtime.JSX.Element;
 
 interface DetailBarProps {
     title: string | ReactNode;
@@ -476,36 +389,23 @@ interface AccordionProps {
     sections: Section[];
     /** Force all sections expanded (useful for PDF generation) */
     forceExpanded?: boolean;
-    /** Default open section ID. Omit to auto-open first section, pass null to start all closed */
-    defaultOpenId?: string | null;
-    /** Remove container wrapper (use raw accordion without rounded bg-gray-100 container) */
-    bare?: boolean;
 }
 /**
  * Accordion — collapsible sections with colored headers.
  *
  * Colors are provided per section via `section.colors`. Falls back to neutral gray.
  * Only one section can be open at a time (mutual exclusivity).
- *
- * @example
- * <Accordion sections={[
- *   { id: 'ingresos', title: 'Ingresos', icon: 'TrendingUp',
- *     colors: { bg: 'bg-emerald-50', text: 'text-emerald-700', iconBg: 'bg-emerald-100' },
- *     content: <IncomeTable /> },
- * ]} />
  */
-declare const Accordion: ({ sections, forceExpanded, defaultOpenId, bare }: AccordionProps) => react_jsx_runtime.JSX.Element;
+declare const Accordion: ({ sections, forceExpanded }: AccordionProps) => react_jsx_runtime.JSX.Element;
 
 interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
     icon: string;
     label: string;
     onClick?: MouseEventHandler<HTMLButtonElement>;
-    visible?: boolean;
     active?: boolean;
-    blink?: boolean;
     variant?: 'dark' | 'light';
 }
-declare const ToolbarButton: ({ icon, label, visible, onClick, active, blink, variant, className, disabled, ...rest }: ButtonProps) => react_jsx_runtime.JSX.Element | null;
+declare const ToolbarButton: ({ icon, label, onClick, active, variant, disabled, ...rest }: ButtonProps) => react_jsx_runtime.JSX.Element;
 
 interface ToolBackProps {
     icon: string;
@@ -533,28 +433,10 @@ declare const EmailLink: ({ label, email, onClick, className }: EmailLinkProps) 
 interface ButtonGroupProps {
     children?: React.ReactNode;
     className?: string;
-    visible?: boolean;
     /** Visual variant — dark for teal/colored headers, light for white backgrounds */
     variant?: 'dark' | 'light';
 }
-declare const ButtonGroup: ({ children, className, visible, variant }: ButtonGroupProps) => react_jsx_runtime.JSX.Element | null;
-
-interface LabelProps {
-    text: string;
-    className?: string;
-    visible?: boolean;
-}
-declare const Label: ({ text, className, visible }: LabelProps) => react_jsx_runtime.JSX.Element | null;
-
-interface PaginatorProps {
-    page: number;
-    setPage: (page: number) => void;
-    hasNext: boolean;
-    className?: string;
-    visible?: boolean;
-    compact?: boolean;
-}
-declare const Paginator: ({ page, setPage, hasNext, className, visible, compact }: PaginatorProps) => react_jsx_runtime.JSX.Element | null;
+declare const ButtonGroup: ({ children, className, variant }: ButtonGroupProps) => react_jsx_runtime.JSX.Element;
 
 interface Tab {
     id: string;
@@ -618,13 +500,9 @@ declare const Scroll: ({ children, className, grid }: ScrollProps) => react_jsx_
 interface ContainerProps {
     title?: string;
     icon?: string;
-    tbar?: React__default.ReactNode;
     children: React__default.ReactNode;
-    page?: number;
-    setPage?: (page: number) => void;
-    hasNext?: boolean;
 }
-declare const Container: ({ title, icon, tbar, children, page, setPage, hasNext }: ContainerProps) => react_jsx_runtime.JSX.Element;
+declare const Container: ({ title, icon, children }: ContainerProps) => react_jsx_runtime.JSX.Element;
 
 type Size$1 = 'xs' | 'sm' | 'md' | 'lg';
 interface SpinnerProps {
@@ -632,11 +510,6 @@ interface SpinnerProps {
     message?: string;
 }
 declare function Spinner({ size, message }: SpinnerProps): react_jsx_runtime.JSX.Element;
-
-interface AnimAIProps {
-    message?: string;
-}
-declare function AnimAI({ message }: AnimAIProps): react_jsx_runtime.JSX.Element;
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 interface DragHereProps {
@@ -646,9 +519,8 @@ declare function DragHere({ size }: DragHereProps): react_jsx_runtime.JSX.Elemen
 
 interface PillTagProps {
     children: React.ReactNode;
-    onRemove?: () => void;
     grip?: boolean;
 }
-declare const PillTag: ({ children, onRemove, grip }: PillTagProps) => react_jsx_runtime.JSX.Element;
+declare const PillTag: ({ children, grip }: PillTagProps) => react_jsx_runtime.JSX.Element;
 
-export { Accordion, Anchor, AnimAI, Button, ButtonGroup, type ButtonProps$1 as ButtonProps, Card, type CardItem, CardList, Checkbox, ColorPicker, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, Icon, Input, Label, MasterDetail, Modal, Paginator, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, Scroll, type Section, SectionIcon, type SectionIconColors, Select, SidebarControls, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, Spinner, StatCard, TablePanel, Tabs, Toast, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, useIsDesktop, useIsMobile, useToast };
+export { Accordion, Anchor, Button, ButtonGroup, Card, type CardItem, CardList, Checkbox, ColorPicker, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, Icon, Input, MasterDetail, Modal, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, Scroll, type Section, Select, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, Spinner, TablePanel, Tabs, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, useToast };

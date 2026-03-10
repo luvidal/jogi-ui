@@ -1,19 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import type { ButtonHTMLAttributes, MouseEventHandler } from 'react'
+import type { ButtonHTMLAttributes, MouseEventHandler, RefObject } from 'react'
 import Icon from '../common/icon'
 
 interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
     icon: string
     label: string
     onClick?: MouseEventHandler<HTMLButtonElement>
-    visible?: boolean
     active?: boolean
-    blink?: boolean
     variant?: 'dark' | 'light'
 }
 
-const Tooltip = ({ label, btnRef }: { label: string; btnRef: React.RefObject<HTMLButtonElement | null> }) => {
+const Tooltip = ({ label, btnRef }: { label: string; btnRef: RefObject<HTMLButtonElement | null> }) => {
     const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
 
     useEffect(() => {
@@ -39,26 +37,14 @@ const Tooltip = ({ label, btnRef }: { label: string; btnRef: React.RefObject<HTM
 const ToolbarButton = ({
     icon,
     label,
-    visible = true,
     onClick,
     active = false,
-    blink = false,
     variant = 'dark',
-    className = '',
     disabled,
     ...rest
 }: ButtonProps) => {
-    const [blinkActive, setBlinkActive] = useState(false)
     const [hovered, setHovered] = useState(false)
     const btnRef = useRef<HTMLButtonElement>(null)
-
-    useEffect(() => {
-        if (!blink) return
-        const i = setInterval(() => setBlinkActive(a => !a), 600)
-        return () => clearInterval(i)
-    }, [blink])
-
-    if (!visible) return null
 
     const disabledEffect = disabled ? 'opacity-40 blur-[0.5px]' : ''
 
@@ -88,9 +74,7 @@ const ToolbarButton = ({
                 backdrop-blur-sm transition-all duration-200
                 first:rounded-l-btn last:rounded-r-btn
                 ${active ? activeStyles : ''}
-                ${blinkActive ? 'opacity-30' : ''}
                 ${disabled ? 'cursor-not-allowed' : ''}
-                ${className}
             `}
         >
             <Icon name={icon} size={16} className={`${variant === 'dark' ? 'icon-shadow-sm' : ''} ${disabledEffect}`} />

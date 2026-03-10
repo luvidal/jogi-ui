@@ -5,9 +5,6 @@ import Icon from './icon'
 export interface ConfirmOptions {
   title?: string
   message: string
-  icon?: string
-  confirmText?: string
-  cancelText?: string
   variant?: 'danger' | 'warning' | 'info'
 }
 
@@ -53,13 +50,11 @@ const ConfirmDialog = ({ state, onDone }: { state: ConfirmState, onDone: () => v
     }, 200)
   }, [state, onDone])
 
-  // Keyboard: Escape/Enter + focus trap
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') close(false)
       if (e.key === 'Enter') close(true)
 
-      // Focus trap: keep Tab cycling within dialog
       if (e.key === 'Tab' && dialogRef.current) {
         const focusable = dialogRef.current.querySelectorAll<HTMLElement>('button')
         if (focusable.length === 0) return
@@ -83,7 +78,6 @@ const ConfirmDialog = ({ state, onDone }: { state: ConfirmState, onDone: () => v
     return () => window.removeEventListener('keydown', onKey)
   }, [close])
 
-  // Auto-focus dialog container on mount (for keyboard handling)
   useEffect(() => {
     if (visible && dialogRef.current) {
       dialogRef.current.focus()
@@ -116,7 +110,7 @@ const ConfirmDialog = ({ state, onDone }: { state: ConfirmState, onDone: () => v
       >
         <div className='flex flex-col items-center text-center px-6 pt-7 pb-5'>
           <div className={`w-12 h-12 rounded-xl ${cfg.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 ${visible && !leaving ? 'scale-100' : 'scale-75'}`}>
-            <Icon name={state.icon || cfg.icon} size={24} className={cfg.iconColor} />
+            <Icon name={cfg.icon} size={24} className={cfg.iconColor} />
           </div>
           <h3 id='confirm-title' className='text-[15px] font-semibold text-gray-900 mb-1'>{state.title || '¿Estás seguro?'}</h3>
           <p id='confirm-message' className='text-sm text-gray-500 leading-relaxed whitespace-pre-line'>{state.message}</p>
@@ -127,13 +121,13 @@ const ConfirmDialog = ({ state, onDone }: { state: ConfirmState, onDone: () => v
             onClick={() => close(true)}
             className={`flex-1 h-10 rounded-btn text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] outline-none ${cfg.confirmBg}`}
           >
-            {state.confirmText || 'Confirmar'}
+            Confirmar
           </button>
           <button
             onClick={() => close(false)}
             className='flex-1 h-10 rounded-btn text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all duration-200 active:scale-[0.98] outline-none'
           >
-            {state.cancelText || 'Cancelar'}
+            Cancelar
           </button>
         </div>
       </div>

@@ -1,7 +1,7 @@
 // @avd/gizmos — UI component library
 
 // ── Hooks & Context ──
-export { useIsMobile, useIsDesktop, useToast, ToastProvider } from './hooks'
+export { useToast, ToastProvider } from './hooks'
 
 // ── Types ──
 export type { Section, CardItem } from './types'
@@ -12,7 +12,6 @@ export { default as Icon } from './common/icon'
 
 // ── Forms ──
 export { default as Button } from './forms/button'
-export type { ButtonProps } from './forms/button'
 export { default as Checkbox } from './forms/checkbox'
 export { default as ColorPicker } from './forms/colorpicker'
 export { default as FieldWrapper } from './forms/fieldwrapper'
@@ -30,19 +29,16 @@ export type { ConfirmOptions } from './common/confirm'
 export { default as Prompt } from './common/prompt'
 export type { PromptOptions } from './common/prompt'
 export { default as ContextMenu } from './common/contextmenu'
-export { default as SectionIcon } from './common/sectionicon'
-export type { SectionIconColors } from './common/sectionicon'
 export { default as CardList } from './common/cardlist'
 export { default as MasterDetail } from './common/masterdetail'
-export { default as StatCard } from './common/statcard'
-export { default as SidebarControls, SidebarFilter, SidebarSort, SidebarPaginator } from './common/sidebarcontrols'
+export { SidebarFilter, SidebarSort, SidebarPaginator } from './common/sidebarcontrols'
 export { default as DetailBar } from './common/detailbar'
 export { default as Card } from './common/card'
 export { default as Anchor } from './common/anchor'
 export { default as ProgressRing } from './common/progressring'
 export { default as DetailContent } from './common/detailcontent'
 export { default as DragHereHint } from './common/dragherehint'
-export { default as Toast, ToastContainer } from './common/toast'
+export { ToastContainer } from './common/toast'
 
 // ── Section (Accordion) ──
 export { default as Accordion } from './section'
@@ -53,8 +49,6 @@ export { default as ToolBack } from './header/toolback'
 export { default as EditableTitle } from './header/editabletitle'
 export { default as EmailLink } from './header/emaillink'
 export { default as ButtonGroup } from './header/buttongroup'
-export { default as Label } from './header/label'
-export { default as Paginator } from './header/paginator'
 
 // ── Tabs ──
 export { default as Tabs } from './tabs'
@@ -68,7 +62,6 @@ export { default as Container, Scroll } from './container'
 
 // ── Animations ──
 export { default as Spinner } from './animations/spinner'
-export { default as AnimAI } from './animations/animai'
 export { default as DragHereOverlay } from './animations/draghereoverlay'
 
 // ── Display ──

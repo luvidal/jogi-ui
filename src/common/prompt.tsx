@@ -5,13 +5,8 @@ import Icon from './icon'
 export interface PromptOptions {
   title?: string
   message: string
-  defaultValue?: string
-  placeholder?: string
   icon?: string
-  confirmText?: string
-  cancelText?: string
   variant?: 'danger' | 'warning' | 'info'
-  type?: 'text' | 'number'
 }
 
 export interface PromptState extends PromptOptions {
@@ -42,7 +37,7 @@ const variantConfig = {
 const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => void }) => {
   const [visible, setVisible] = useState(false)
   const [leaving, setLeaving] = useState(false)
-  const [value, setValue] = useState(state.defaultValue || '')
+  const [value, setValue] = useState('')
   const dialogRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -58,12 +53,10 @@ const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => voi
     }, 200)
   }, [state, onDone])
 
-  // Keyboard: Escape to cancel + focus trap
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') close(null)
 
-      // Focus trap: keep Tab cycling within dialog
       if (e.key === 'Tab' && dialogRef.current) {
         const focusable = dialogRef.current.querySelectorAll<HTMLElement>('input, button')
         if (focusable.length === 0) return
@@ -87,7 +80,6 @@ const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => voi
     return () => window.removeEventListener('keydown', onKey)
   }, [close])
 
-  // Auto-focus + select input on mount
   useEffect(() => {
     if (visible && inputRef.current) {
       inputRef.current.focus()
@@ -135,11 +127,9 @@ const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => voi
           <div className='px-5 pb-4'>
             <input
               ref={inputRef}
-              type={state.type || 'text'}
+              type='text'
               value={value}
               onChange={e => setValue(e.target.value)}
-              placeholder={state.placeholder}
-              step={state.type === 'number' ? 'any' : undefined}
               className='w-full h-10 px-3 rounded-lg border border-gray-300 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-theme-500 focus:ring-2 focus:ring-theme-500/20 transition-all'
             />
           </div>
@@ -150,14 +140,14 @@ const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => voi
               disabled={!value.trim()}
               className={`flex-1 h-10 rounded-btn text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] outline-none disabled:opacity-40 disabled:cursor-not-allowed ${cfg.confirmBg}`}
             >
-              {state.confirmText || 'Aceptar'}
+              Aceptar
             </button>
             <button
               type='button'
               onClick={() => close(null)}
               className='flex-1 h-10 rounded-btn text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all duration-200 active:scale-[0.98] outline-none'
             >
-              {state.cancelText || 'Cancelar'}
+              Cancelar
             </button>
           </div>
         </form>
