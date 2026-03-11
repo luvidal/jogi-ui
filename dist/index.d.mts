@@ -160,8 +160,10 @@ interface TextFieldProps {
     readOnly?: boolean;
     placeholder?: string;
     fullWidth?: boolean;
+    icon?: string;
+    onIconClick?: () => void;
 }
-declare const TextField: ({ label, value, onChange, readOnly, placeholder, fullWidth }: TextFieldProps) => react_jsx_runtime.JSX.Element;
+declare const TextField: ({ label, value, onChange, readOnly, placeholder, fullWidth, icon, onIconClick }: TextFieldProps) => react_jsx_runtime.JSX.Element;
 
 interface SelectFieldProps {
     label: string;

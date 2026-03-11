@@ -292,21 +292,36 @@ var numberfield_default = NumberField;
 var inputBase2 = "border rounded-xl w-full text-sm px-3 py-2 text-gray-950";
 var inputEditable2 = "bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200";
 var inputReadOnly2 = "bg-gray-50 border-gray-200 cursor-default";
-var TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth }) => {
+var TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth, icon, onIconClick }) => {
+  const hasIcon = !!icon;
+  const isInteractive = hasIcon && !!onIconClick;
   return /* @__PURE__ */ jsxs("div", { className: fullWidth ? "col-span-2" : "", children: [
     /* @__PURE__ */ jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
-    /* @__PURE__ */ jsx(
-      "input",
-      {
-        type: "text",
-        value: value ?? "",
-        readOnly,
-        tabIndex: readOnly ? -1 : void 0,
-        placeholder: readOnly ? void 0 : placeholder,
-        onChange: readOnly ? void 0 : (e) => onChange?.(e.target.value || void 0),
-        className: `${inputBase2} ${readOnly ? inputReadOnly2 : inputEditable2}`
-      }
-    )
+    /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          type: "text",
+          value: value ?? "",
+          readOnly,
+          tabIndex: readOnly ? -1 : void 0,
+          placeholder: readOnly ? void 0 : placeholder,
+          onChange: readOnly ? void 0 : (e) => onChange?.(e.target.value || void 0),
+          className: `${inputBase2} ${hasIcon ? "pr-8" : ""} ${readOnly ? inputReadOnly2 : inputEditable2}`
+        }
+      ),
+      hasIcon && isInteractive && /* @__PURE__ */ jsx(
+        "button",
+        {
+          onClick: onIconClick,
+          tabIndex: -1,
+          type: "button",
+          className: "absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-gray-100 transition-colors",
+          children: /* @__PURE__ */ jsx(icon_default, { name: icon, size: 14, className: "text-gray-500 hover:text-gray-700" })
+        }
+      ),
+      hasIcon && !isInteractive && /* @__PURE__ */ jsx("span", { className: "absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none", children: /* @__PURE__ */ jsx(icon_default, { name: icon, size: 14, className: "text-gray-300" }) })
+    ] })
   ] });
 };
 var textfield_default = TextField;
