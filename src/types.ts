@@ -16,6 +16,8 @@ export interface Section {
   content: ReactNode
   /** Color scheme for header. Falls back to neutral gray if not provided. */
   colors?: { bg: string; text: string; iconBg: string }
+  /** Override the default content wrapper classes (replaces default padding + bg) */
+  contentClassName?: string
 }
 
 export interface CardItem {

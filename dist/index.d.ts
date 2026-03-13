@@ -52,6 +52,8 @@ interface Section {
         text: string;
         iconBg: string;
     };
+    /** Override the default content wrapper classes (replaces default padding + bg) */
+    contentClassName?: string;
 }
 interface CardItem {
     id: string;

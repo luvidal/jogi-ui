@@ -1695,7 +1695,7 @@ var Accordion = ({ sections, forceExpanded = false }) => {
         {
           id: contentId,
           role: "region",
-          className: `p-2.5 sm:p-4 bg-gray-50/30 ${isExpanded ? "flex-1 min-h-0 overflow-auto" : "hidden print:block"}`,
+          className: `${section.contentClassName ?? "p-2.5 sm:p-4 bg-gray-50/30"} ${isExpanded ? "flex-1 min-h-0 overflow-auto" : "hidden print:block"}`,
           children: section.content
         }
       )
