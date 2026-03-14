@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useMemo, useRef, useEffect, useLayoutEffect, useId } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo, useEffect, useRef, useLayoutEffect, useId, createElement } from 'react';
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import { icons, CircleHelp } from 'lucide-react';
 import { createPortal } from 'react-dom';
@@ -60,6 +60,54 @@ var ToastProvider = ({ children }) => {
     showInfo
   }), [toasts, addToast, removeToast, clearToasts, showSuccess, showError, showWarning, showInfo]);
   return /* @__PURE__ */ jsx(ToastContext.Provider, { value, children });
+};
+function createDialogContext(Dialog, name, normalizeInput) {
+  const Context = createContext(void 0);
+  const Provider = ({ children }) => {
+    const [state, setState] = useState(null);
+    const trigger = useCallback((input) => {
+      const opts = normalizeInput && typeof input === "string" ? normalizeInput(input) : input;
+      return new Promise((resolve) => {
+        setState({ ...opts, resolve });
+      });
+    }, []);
+    const handleDone = useCallback(() => setState(null), []);
+    const value = useMemo(() => ({ trigger }), [trigger]);
+    return createElement(
+      Context.Provider,
+      { value },
+      children,
+      state && createElement(Dialog, { state, onDone: handleDone })
+    );
+  };
+  const useHook = () => {
+    const context = useContext(Context);
+    if (!context) throw new Error(`${name} must be used within its Provider`);
+    return context.trigger;
+  };
+  return [Provider, useHook];
+}
+var useIsMobile2 = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 639px)");
+    setIsMobile(mql.matches);
+    const handler = (e) => setIsMobile(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+  return isMobile;
+};
+var useIsDesktop2 = () => {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    setIsDesktop(mql.matches);
+    const handler = (e) => setIsDesktop(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+  return isDesktop;
 };
 var reported = /* @__PURE__ */ new Set();
 var Icon = ({ name, ...props }) => {
@@ -347,7 +395,7 @@ var SelectField = ({ label, value, options, onChange, readOnly }) => {
   ] });
 };
 var selectfield_default = SelectField;
-var useIsMobile2 = () => {
+var useIsMobile3 = () => {
   const [m, setM] = useState(false);
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 639px)");
@@ -366,7 +414,7 @@ var SIZE_CONFIG = {
   xs: { w: 400, h: 500, maxW: 85, maxH: 80 }
 };
 var Modal = ({ title, icon, children, onClose, size: sizeProp = "md", headerActions }) => {
-  const mobile = useIsMobile2();
+  const mobile = useIsMobile3();
   const sizeConfig3 = SIZE_CONFIG[sizeProp];
   const effectiveSize = useMemo(() => {
     if (mobile || typeof window === "undefined") return null;
@@ -2175,7 +2223,548 @@ var PillTag = ({ children, grip }) => /* @__PURE__ */ jsxs("div", { className: "
   /* @__PURE__ */ jsx("span", { className: "truncate", children })
 ] });
 var pilltag_default = PillTag;
+var defaultGetId = (item) => item?.id ?? "";
+function useRecords({
+  endpoint,
+  sortList,
+  fetchFn,
+  onError,
+  getId = defaultGetId,
+  staticParams,
+  filterId,
+  limit = 10,
+  initialState
+}) {
+  const [raw, setRaw] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(initialState?.page ?? 0);
+  const [search, setSearch] = useState(initialState?.search ?? "");
+  const [debouncedSearch, setDebouncedSearch] = useState(initialState?.search ?? "");
+  const [sortBy, setSortBy] = useState(initialState?.sortBy || (sortList[0]?.value ?? ""));
+  const [thenBy, setThenBy] = useState(sortList[1]?.value ?? "");
+  const [sortDir, setSortDir] = useState(initialState?.sortDir ?? "desc");
+  const [thenDir, setThenDir] = useState("desc");
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+  const staticParamsKey = useMemo(() => JSON.stringify(staticParams ?? {}), [staticParams]);
+  const abortControllerRef = useRef(null);
+  const fetchData = useCallback(async () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+    setLoading(true);
+    try {
+      const params = JSON.parse(staticParamsKey);
+      const payload = filterId ? { filterId, ...params } : { search: debouncedSearch, offset: page * limit, limit: limit + 1, sortBy, thenBy, sortDir, thenDir, ...params };
+      const data2 = await fetchFn(endpoint, payload);
+      setRaw(Array.isArray(data2) ? data2 : []);
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") return;
+      onError?.(err, { module: "userecords", action: "fetch" });
+      setRaw([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [endpoint, filterId, debouncedSearch, page, sortBy, thenBy, sortDir, thenDir, limit, staticParamsKey, fetchFn, onError]);
+  useEffect(() => {
+    fetchData();
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [fetchData]);
+  const matchId = useCallback(
+    (h, id) => getId(h) === id,
+    [getId]
+  );
+  const patchRaw = useCallback((id, changes) => {
+    setRaw((prev) => {
+      if (!Array.isArray(prev)) return prev;
+      const isGrouped = Array.isArray(prev[0]);
+      if (isGrouped) {
+        return prev.map(
+          (group) => group.map((h) => matchId(h, id) ? { ...h, ...changes } : h)
+        );
+      }
+      return prev.map((h) => matchId(h, id) ? { ...h, ...changes } : h);
+    });
+  }, [matchId]);
+  const removeRaw = useCallback((id) => {
+    setRaw(
+      (prev) => Array.isArray(prev[0]) ? prev.filter((group) => !matchId(group[0], id)).map((group) => group.filter((h) => !matchId(h, id))).filter((g) => g.length > 0) : prev.filter((h) => !matchId(h, id))
+    );
+  }, [matchId]);
+  const refresh = useMemo(() => ({
+    fetch: fetchData,
+    patch: patchRaw,
+    remove: removeRaw
+  }), [fetchData, patchRaw, removeRaw]);
+  const data = useMemo(() => Array.isArray(raw) ? raw.slice(0, limit) : [], [raw, limit]);
+  const hasNext = raw.length > limit;
+  return {
+    data,
+    loading,
+    hasNext,
+    refresh,
+    page,
+    setPage,
+    search,
+    setSearch,
+    sortBy,
+    setSortBy,
+    thenBy,
+    setThenBy,
+    sortDir,
+    setSortDir,
+    thenDir,
+    setThenDir,
+    sortList
+  };
+}
 
-export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, MasterDetail, modal_default as Modal, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, useToast };
+// src/common/folderutils.ts
+var IGNORED = /* @__PURE__ */ new Set([".DS_Store", "Thumbs.db", "desktop.ini"]);
+function isHiddenOrIgnored(name) {
+  return name.startsWith(".") || name.startsWith("__MACOSX") || IGNORED.has(name);
+}
+function readEntries(reader) {
+  return new Promise((resolve, reject) => reader.readEntries(resolve, reject));
+}
+function fileFromEntry(entry) {
+  return new Promise((resolve, reject) => entry.file(resolve, reject));
+}
+async function collectFiles(entry) {
+  if (isHiddenOrIgnored(entry.name)) return [];
+  if (entry.isFile) {
+    const file = await fileFromEntry(entry);
+    return [file];
+  }
+  if (entry.isDirectory) {
+    const reader = entry.createReader();
+    const files = [];
+    let batch;
+    do {
+      batch = await readEntries(reader);
+      for (const child of batch) {
+        const childFiles = await collectFiles(child);
+        files.push(...childFiles);
+      }
+    } while (batch.length > 0);
+    return files;
+  }
+  return [];
+}
+function captureDataTransfer(dt) {
+  if (dt.items && dt.items.length > 0) {
+    const entries = [];
+    for (let i = 0; i < dt.items.length; i++) {
+      const entry = dt.items[i].webkitGetAsEntry?.();
+      if (entry) entries.push(entry);
+    }
+    if (entries.length > 0) return { entries };
+  }
+  return { files: Array.from(dt.files) };
+}
+async function resolveFiles(captured) {
+  if ("files" in captured) return captured.files;
+  const allFiles = [];
+  for (const entry of captured.entries) {
+    const files = await collectFiles(entry);
+    allFiles.push(...files);
+  }
+  return allFiles;
+}
+
+// src/common/filepicker.ts
+function openFilePicker(opts) {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.multiple = true;
+  input.accept = opts.accept ?? "*";
+  input.onchange = (e) => {
+    const target = e.target;
+    if (target.files) opts.onFiles(target.files);
+  };
+  input.click();
+}
+var DEFAULT_LABELS = {
+  documentN: (i) => `Document ${i}`,
+  unclassifiedType: "Unclassified",
+  unclassifiedTitle: "Unclassified document",
+  unclassifiedMessage: (name) => `${name}: saved as additional document.`,
+  unknownError: "Unknown error",
+  uploadErrorMessage: (name) => `Error uploading ${name}`,
+  documentsUploaded: (count) => count === 1 ? "1 document uploaded" : `${count} documents uploaded`,
+  partialUploadTitle: "Partial upload",
+  completeUploadTitle: "Upload complete",
+  filesWithError: (count) => `${count} file(s) with errors.`,
+  successSuffix: "successfully"
+};
+var wait = (ms) => new Promise((r) => setTimeout(r, ms));
+var shortName = (name, max = 30) => name.length > max ? name.slice(0, max - 3) + "..." : name;
+function safeJsonParse(str) {
+  try {
+    return JSON.parse(str);
+  } catch {
+    return null;
+  }
+}
+function useUploadFlow(options) {
+  const { uploadFn, onToast, concurrency = 3 } = options;
+  const labels = { ...DEFAULT_LABELS, ...options.labels };
+  const [active, setActive] = useState(false);
+  const [items, setItems] = useState([]);
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
+  const labelsRef = useRef(labels);
+  labelsRef.current = labels;
+  const updateItem = useCallback((id, patch) => {
+    setItems((prev) => prev.map((it) => it.id === id ? { ...it, ...patch } : it));
+  }, []);
+  const compressIfImage = async (file) => {
+    if (!file.type.startsWith("image/")) return file;
+    const { default: imageCompression } = await import('browser-image-compression');
+    const c = await imageCompression(file, { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true });
+    return new File([c], file.name, { type: c.type });
+  };
+  const processSingleFile = useCallback(async (item, uploadOpts) => {
+    const name = shortName(item.file.name);
+    const l = labelsRef.current;
+    let progressTimer = null;
+    try {
+      updateItem(item.id, { status: "compressing", progress: 5 });
+      const compressed = await compressIfImage(item.file);
+      updateItem(item.id, { status: "uploading", progress: 15 });
+      let currentProgress = 15;
+      progressTimer = setInterval(() => {
+        currentProgress += (80 - currentProgress) * 0.08;
+        updateItem(item.id, { status: "analyzing", progress: Math.min(Math.round(currentProgress), 78) });
+      }, 300);
+      await wait(200);
+      updateItem(item.id, { status: "analyzing" });
+      const params = {};
+      if (uploadOpts?.requestid) params.requestid = uploadOpts.requestid;
+      else if (optionsRef.current.requestid) params.requestid = optionsRef.current.requestid;
+      if (uploadOpts?.doctypeid) params.doctypeid = uploadOpts.doctypeid;
+      const res = await uploadFn(compressed, params);
+      if (progressTimer) clearInterval(progressTimer);
+      progressTimer = null;
+      if (res?.noclasificado) {
+        updateItem(item.id, { status: "done", progress: 100, detectedTypes: [l.unclassifiedType], detectedCount: 1 });
+        onToast?.({ type: "info", title: l.unclassifiedTitle, message: l.unclassifiedMessage(name) });
+        return { done: true, detectedCount: 1 };
+      }
+      const docs = res?.detectedDocuments || [];
+      const docLabels = docs.map((d) => d.label).filter(Boolean);
+      const count = docs.length || res?.count || 1;
+      if (count > 1) {
+        updateItem(item.id, {
+          status: "detected",
+          progress: 85,
+          detectedTypes: docLabels,
+          detectedCount: count
+        });
+        await wait(900);
+        const docItems = docs.map((d, i) => ({
+          id: `${item.id}-doc-${i}`,
+          file: item.file,
+          filename: d.label || l.documentN(i + 1),
+          status: "linking",
+          progress: 90,
+          detectedTypes: [],
+          detectedCount: 1,
+          isExpanded: true
+        }));
+        setItems((prev) => {
+          const idx = prev.findIndex((it) => it.id === item.id);
+          if (idx === -1) return [...prev, ...docItems];
+          return [...prev.slice(0, idx), ...docItems, ...prev.slice(idx + 1)];
+        });
+        for (let i = 0; i < docItems.length; i++) {
+          await wait(150);
+          updateItem(docItems[i].id, { status: "done", progress: 100 });
+        }
+        return { done: true, detectedCount: docItems.length };
+      }
+      updateItem(item.id, {
+        status: "detected",
+        progress: 85,
+        detectedTypes: docLabels,
+        detectedCount: count
+      });
+      await wait(800);
+      updateItem(item.id, { status: "linking", progress: 95 });
+      await wait(400);
+      updateItem(item.id, { status: "done", progress: 100 });
+      return { done: true, detectedCount: 1 };
+    } catch (err) {
+      let msg = err?.message || l.unknownError;
+      const parsed = safeJsonParse(msg);
+      if (parsed?.msg) msg = parsed.msg;
+      updateItem(item.id, {
+        status: "error",
+        error: msg
+      });
+      onToast?.({ type: "error", title: "Error", message: l.uploadErrorMessage(name) });
+      return { done: false, detectedCount: 0 };
+    } finally {
+      if (progressTimer) clearInterval(progressTimer);
+    }
+  }, [updateItem, uploadFn, onToast]);
+  const processFiles = useCallback(async (fileList, uploadOpts) => {
+    if (!fileList.length) return;
+    if (active) return;
+    const files = Array.from(fileList);
+    const newItems = files.map((f) => ({
+      id: crypto.randomUUID(),
+      file: f,
+      filename: f.name,
+      status: "queued",
+      progress: 0,
+      detectedTypes: [],
+      detectedCount: 0
+    }));
+    setItems(newItems);
+    setActive(true);
+    let nextIndex = 0;
+    let processing = 0;
+    const itemsCopy = [...newItems];
+    let totalDone = 0;
+    let totalErrors = 0;
+    let totalDetected = 0;
+    await new Promise((resolveAll) => {
+      const tryNext = () => {
+        while (processing < concurrency && nextIndex < itemsCopy.length) {
+          const item = itemsCopy[nextIndex++];
+          processing++;
+          processSingleFile(item, uploadOpts).then((outcome) => {
+            if (outcome.done) {
+              totalDone++;
+              totalDetected += outcome.detectedCount;
+            } else totalErrors++;
+          }).finally(() => {
+            processing--;
+            if (nextIndex >= itemsCopy.length && processing === 0) {
+              resolveAll();
+            } else {
+              tryNext();
+            }
+          });
+        }
+        if (itemsCopy.length === 0) resolveAll();
+      };
+      tryNext();
+    });
+    const l = labelsRef.current;
+    if (newItems.length > 1 && totalDone > 0) {
+      const docWord = l.documentsUploaded(totalDetected);
+      onToast?.({
+        type: totalErrors > 0 ? "warning" : "success",
+        title: totalErrors > 0 ? l.partialUploadTitle : l.completeUploadTitle,
+        message: totalErrors > 0 ? `${docWord}. ${l.filesWithError(totalErrors)}` : `${docWord} ${l.successSuffix}`
+      });
+    }
+    await wait(2e3);
+    setActive(false);
+    setItems([]);
+    optionsRef.current.onComplete?.();
+  }, [active, processSingleFile, onToast, concurrency]);
+  const summary = {
+    total: items.length,
+    done: items.filter((it) => it.status === "done").length,
+    errors: items.filter((it) => it.status === "error").length
+  };
+  const processDataTransfer = useCallback(async (captured, uploadOpts) => {
+    const files = await resolveFiles(captured);
+    if (files.length) await processFiles(files, uploadOpts);
+  }, [processFiles]);
+  return { active, items, summary, processFiles, processDataTransfer };
+}
+var DEFAULT_STATUS_LABELS = {
+  queued: "Queued",
+  compressing: "Compressing...",
+  uploading: "Uploading...",
+  analyzing: "Analyzing...",
+  done: "Done"
+};
+var statusConfig = {
+  queued: { icon: "Clock", color: "text-gray-400" },
+  compressing: { icon: "FileDown", color: "text-theme-500", spin: true },
+  uploading: { icon: "Upload", color: "text-theme-500", spin: true },
+  analyzing: { icon: "Sparkles", color: "text-theme-500", spin: true },
+  detected: { icon: "Sparkles", color: "text-theme-600" },
+  linking: { icon: "Link", color: "text-theme-500" },
+  done: { icon: "Check", color: "text-emerald-600" },
+  error: { icon: "X", color: "text-rose-500" }
+};
+var fileIcon = (filename) => {
+  const ext = filename.split(".").pop()?.toLowerCase();
+  if (ext === "pdf") return "FileText";
+  if (["jpg", "jpeg", "png", "webp", "gif", "heic"].includes(ext || "")) return "Image";
+  return "File";
+};
+var truncate = (s, max = 32) => s.length > max ? s.slice(0, max - 3) + "..." : s;
+function defaultLinkingLabel(requestLabel, role) {
+  if (requestLabel) {
+    const short = requestLabel.length > 20 ? requestLabel.slice(0, 18) + "..." : requestLabel;
+    return `Linking to ${short}`;
+  }
+  if (role === "analyst") return "Linking to request";
+  if (role === "client") return "Linking to your requests";
+  return "Saving to library";
+}
+function defaultDetectedLabel(types, count) {
+  if (types.length === 0) return count > 1 ? `${count} documents found` : "Document found";
+  if (types.length === 1) return `${types[0]}`;
+  return types.slice(0, 2).join(", ") + (types.length > 2 ? ` +${types.length - 2}` : "");
+}
+function defaultHeaderLabel(items, summary) {
+  const allDone = items.length > 0 && items.every((it) => it.status === "done" || it.status === "error");
+  if (allDone) {
+    const totalDetected = items.reduce((sum, it) => sum + (it.detectedCount || 0), 0);
+    if (totalDetected > 0) {
+      return `${totalDetected} document${totalDetected !== 1 ? "s" : ""} uploaded`;
+    }
+    return summary.errors === summary.total ? "Upload error" : "Done";
+  }
+  if (items.length === 1) return items[0]?.filename || "Uploading...";
+  const stillUploading = items.some((it) => ["queued", "compressing", "uploading", "analyzing"].includes(it.status));
+  if (!stillUploading) {
+    const detected = items.reduce((sum, it) => sum + (it.detectedCount || 0), 0);
+    return `${detected} document${detected !== 1 ? "s" : ""} found`;
+  }
+  return "Uploading files...";
+}
+function StatusLabel({ item, requestLabel, role, labels }) {
+  const getLinkingLabel = labels.linkingLabel ?? defaultLinkingLabel;
+  const getDetectedLabel = labels.detectedLabel ?? defaultDetectedLabel;
+  if (item.status === "error") return /* @__PURE__ */ jsx("span", { className: "text-xs text-rose-500", children: item.error || "Error" });
+  if (item.status === "detected") return /* @__PURE__ */ jsx("span", { className: "text-xs text-theme-600 font-medium", children: getDetectedLabel(item.detectedTypes, item.detectedCount) });
+  if (item.status === "linking") return /* @__PURE__ */ jsx("span", { className: "text-xs text-theme-500", children: getLinkingLabel(requestLabel, role) });
+  if (item.status === "done" && item.detectedTypes.length > 0) return /* @__PURE__ */ jsx("span", { className: "text-xs text-emerald-600", children: getDetectedLabel(item.detectedTypes, item.detectedCount) });
+  const statusLabel = labels[item.status] ?? "";
+  return /* @__PURE__ */ jsx("span", { className: "text-xs text-gray-500", children: statusLabel });
+}
+function ProgressBar({ item }) {
+  const isActive = ["compressing", "uploading", "analyzing"].includes(item.status);
+  const isDone = item.status === "done";
+  const isError = item.status === "error";
+  const barColor = isError ? "bg-rose-400" : isDone ? "bg-emerald-400" : "bg-theme-400";
+  const trackColor = isError ? "bg-rose-100" : isDone ? "bg-emerald-100" : "bg-theme-100";
+  return /* @__PURE__ */ jsx("div", { className: `h-1 rounded-full overflow-hidden ${trackColor}`, children: /* @__PURE__ */ jsx(
+    "div",
+    {
+      className: `h-full rounded-full transition-all duration-300 ease-out ${barColor} ${isActive ? "upload-progress-shimmer" : ""}`,
+      style: { width: `${item.progress}%` }
+    }
+  ) });
+}
+function StatusIcon({ item }) {
+  const id = useId().replace(/:/g, "");
+  const cfg = statusConfig[item.status];
+  if (cfg.spin) {
+    return /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx("style", { children: `
+          @keyframes upload-spin-${id} { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+          .upload-spin-${id} { animation: upload-spin-${id} 2s linear infinite; }
+        ` }),
+      /* @__PURE__ */ jsx("div", { className: `upload-spin-${id} ${cfg.color}`, children: /* @__PURE__ */ jsx(icon_default, { name: cfg.icon, size: 16 }) })
+    ] });
+  }
+  if (item.status === "done") {
+    return /* @__PURE__ */ jsx("div", { className: `animate-upload-check ${cfg.color}`, children: /* @__PURE__ */ jsx(icon_default, { name: cfg.icon, size: 16 }) });
+  }
+  return /* @__PURE__ */ jsx("div", { className: cfg.color, children: /* @__PURE__ */ jsx(icon_default, { name: cfg.icon, size: 16 }) });
+}
+function DetectedPills({ types }) {
+  if (types.length === 0) return null;
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-1 mt-1", children: [
+    types.slice(0, 4).map((label, i) => /* @__PURE__ */ jsx(
+      "span",
+      {
+        className: "px-1.5 py-0.5 text-[10px] rounded-full bg-theme-100 text-theme-600 font-medium animate-fade-in-up",
+        style: { animationDelay: `${i * 100}ms` },
+        children: label
+      },
+      `${i}-${label}`
+    )),
+    types.length > 4 && /* @__PURE__ */ jsxs(
+      "span",
+      {
+        className: "px-1.5 py-0.5 text-[10px] rounded-full bg-gray-100 text-gray-500 font-medium animate-fade-in-up",
+        style: { animationDelay: `${4 * 100}ms` },
+        children: [
+          "+",
+          types.length - 4
+        ]
+      }
+    )
+  ] });
+}
+function UploadCard({ item, index, requestLabel, role, labels }) {
+  const isDone = item.status === "done";
+  return /* @__PURE__ */ jsxs(
+    "div",
+    {
+      className: `flex items-start gap-3 px-3 py-2.5 rounded-xl transition-opacity duration-700 animate-upload-slide-in ${isDone ? "opacity-50" : "opacity-100"}`,
+      style: { animationDelay: `${index * 80}ms` },
+      children: [
+        /* @__PURE__ */ jsx("div", { className: `flex-shrink-0 mt-0.5 ${isDone ? "text-emerald-400" : "text-theme-400"}`, children: /* @__PURE__ */ jsx(icon_default, { name: isDone ? "Check" : item.isExpanded ? "FileText" : fileIcon(item.filename), size: 18 }) }),
+        /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
+          /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2", children: [
+            /* @__PURE__ */ jsx("span", { className: `text-sm font-medium truncate ${isDone ? "text-gray-400" : "text-gray-700"}`, children: item.isExpanded ? item.filename : truncate(item.filename) }),
+            /* @__PURE__ */ jsx(StatusIcon, { item })
+          ] }),
+          !item.isExpanded && /* @__PURE__ */ jsx(StatusLabel, { item, requestLabel, role, labels }),
+          !item.isExpanded && /* @__PURE__ */ jsx("div", { className: "mt-1.5", children: /* @__PURE__ */ jsx(ProgressBar, { item }) }),
+          item.status === "detected" && /* @__PURE__ */ jsx(DetectedPills, { types: item.detectedTypes })
+        ] })
+      ]
+    }
+  );
+}
+function UploadCards({ items, summary, requestLabel, role, labels: userLabels }) {
+  const labels = { ...DEFAULT_STATUS_LABELS, ...userLabels };
+  const getHeaderLabel = labels.headerLabel ?? defaultHeaderLabel;
+  const allDone = items.length > 0 && items.every((it) => it.status === "done" || it.status === "error");
+  const overallProgress = items.length > 0 ? Math.round(items.reduce((sum, it) => sum + it.progress, 0) / items.length) : 0;
+  const isSingle = items.length === 1;
+  return /* @__PURE__ */ jsx("div", { className: "absolute inset-0 bg-white/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in", children: /* @__PURE__ */ jsxs("div", { className: "w-full max-w-md", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between mb-3 px-1", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx("div", { className: `text-theme-500 ${!allDone ? "animate-pulse" : ""}`, children: /* @__PURE__ */ jsx(icon_default, { name: allDone ? "CircleCheck" : "Upload", size: 18 }) }),
+        /* @__PURE__ */ jsx("span", { className: "text-sm font-medium text-gray-600 truncate", children: getHeaderLabel(items, summary) })
+      ] }),
+      !isSingle && /* @__PURE__ */ jsxs("span", { className: "text-xs text-gray-400 tabular-nums", children: [
+        overallProgress,
+        "%"
+      ] })
+    ] }),
+    !isSingle && /* @__PURE__ */ jsx("div", { className: "h-1 rounded-full bg-theme-100 mb-3 overflow-hidden", children: /* @__PURE__ */ jsx(
+      "div",
+      {
+        className: `h-full rounded-full transition-all duration-500 ease-out ${allDone ? "bg-emerald-400" : "bg-theme-400"}`,
+        style: { width: `${overallProgress}%` }
+      }
+    ) }),
+    /* @__PURE__ */ jsx("div", { className: "bg-white/80 rounded-2xl shade-md border border-gray-100 divide-y divide-gray-100 max-h-[60vh] overflow-y-auto", children: items.map((item, i) => /* @__PURE__ */ jsx(
+      UploadCard,
+      {
+        item,
+        index: i,
+        requestLabel,
+        role,
+        labels
+      },
+      item.id
+    )) })
+  ] }) });
+}
+
+export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, MasterDetail, modal_default as Modal, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, UploadCards, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop2 as useIsDesktop, useIsMobile2 as useIsMobile, useRecords, useToast, useUploadFlow };
 //# sourceMappingURL=index.mjs.map
 //# sourceMappingURL=index.mjs.map

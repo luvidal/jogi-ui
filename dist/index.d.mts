@@ -32,6 +32,32 @@ declare const ToastProvider: ({ children }: {
     children: React__default.ReactNode;
 }) => react_jsx_runtime.JSX.Element;
 
+/**
+ * Factory that creates a dialog context (Provider + hook) from a dialog component.
+ *
+ * All dialog contexts follow the same pattern:
+ * - Provider holds state (options + resolve promise)
+ * - Trigger function opens the dialog and returns a promise
+ * - Dialog component receives { state, onDone }
+ *
+ * @param Dialog - Component that renders the dialog UI
+ * @param name - Hook name for error messages (e.g. "useConfirm")
+ * @param normalizeInput - Optional function to normalize shorthand input (e.g. string → options object)
+ */
+declare function createDialogContext<TOptions extends object, TResult>(Dialog: React__default.ComponentType<{
+    state: TOptions & {
+        resolve: (value: TResult) => void;
+    };
+    onDone: () => void;
+}>, name: string, normalizeInput?: (input: any) => TOptions): readonly [({ children }: {
+    children: React__default.ReactNode;
+}) => React__default.FunctionComponentElement<React__default.ProviderProps<{
+    trigger: (options: TOptions | string) => Promise<TResult>;
+} | undefined>>, () => (options: TOptions | string) => Promise<TResult>];
+
+declare const useIsMobile: () => boolean;
+declare const useIsDesktop: () => boolean;
+
 /** Section definition for the Accordion component */
 interface Section {
     /** Unique section ID */
@@ -580,4 +606,184 @@ interface PillTagProps {
 }
 declare const PillTag: ({ children, grip }: PillTagProps) => react_jsx_runtime.JSX.Element;
 
-export { Accordion, Anchor, Button, ButtonGroup, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, Icon, Input, MasterDetail, Modal, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, Scroll, type Section, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, useToast };
+interface SortOption {
+    value: string;
+    label: string;
+}
+interface UseRecordsOptions {
+    endpoint: string;
+    sortList: SortOption[];
+    /** Function to fetch data — receives endpoint + payload, returns data array */
+    fetchFn: (endpoint: string, payload: Record<string, any>) => Promise<any>;
+    /** Error handler for failed fetches */
+    onError?: (error: unknown, context: {
+        module: string;
+        action: string;
+    }) => void;
+    /** Function to extract ID from a record (default: item.id) */
+    getId?: (item: any) => string;
+    staticParams?: Record<string, any>;
+    filterId?: string;
+    limit?: number;
+    initialState?: {
+        page?: number;
+        search?: string;
+        sortBy?: string;
+        sortDir?: 'asc' | 'desc';
+    };
+}
+interface RefreshActions<T> {
+    fetch: () => void;
+    patch: (id: string, changes: Partial<T>) => void;
+    remove: (id: string) => void;
+}
+interface UseRecordsReturn<T> {
+    data: T[];
+    loading: boolean;
+    hasNext: boolean;
+    refresh: RefreshActions<T>;
+    page: number;
+    setPage: (p: number) => void;
+    search: string;
+    setSearch: (s: string) => void;
+    sortBy: string;
+    setSortBy: (s: string) => void;
+    thenBy: string;
+    setThenBy: (s: string) => void;
+    sortDir: 'asc' | 'desc';
+    setSortDir: (d: 'asc' | 'desc') => void;
+    thenDir: 'asc' | 'desc';
+    setThenDir: (d: 'asc' | 'desc') => void;
+    sortList: SortOption[];
+}
+declare function useRecords<T = any>({ endpoint, sortList, fetchFn, onError, getId, staticParams, filterId, limit, initialState, }: UseRecordsOptions): UseRecordsReturn<T>;
+
+/** Captured state from a DataTransfer — safe to use after the event handler returns */
+type CapturedTransfer = {
+    entries: FileSystemEntry[];
+} | {
+    files: File[];
+};
+/**
+ * Synchronously capture entries/files from a DataTransfer.
+ * MUST be called synchronously within the drop event handler,
+ * because browsers clear DataTransfer after the handler returns.
+ */
+declare function captureDataTransfer(dt: DataTransfer): CapturedTransfer;
+/**
+ * Resolve a captured transfer into a flat list of files.
+ * Recursively reads folders. Safe to call asynchronously.
+ */
+declare function resolveFiles(captured: CapturedTransfer): Promise<File[]>;
+
+/**
+ * Opens a native file chooser programmatically.
+ * Creates a hidden file input and triggers click.
+ */
+declare function openFilePicker(opts: {
+    accept?: string;
+    onFiles: (files: FileList) => void;
+}): void;
+
+type FileStatus = 'queued' | 'compressing' | 'uploading' | 'analyzing' | 'detected' | 'linking' | 'done' | 'error';
+interface FileUploadItem {
+    id: string;
+    file: File;
+    filename: string;
+    status: FileStatus;
+    progress: number;
+    detectedTypes: string[];
+    detectedCount: number;
+    error?: string;
+    /** true for items created from multi-doc PDF expansion */
+    isExpanded?: boolean;
+}
+interface UploadFlowLabels {
+    /** Fallback label for expanded multi-doc cards (receives 1-based index) */
+    documentN?: (index: number) => string;
+    unclassifiedType?: string;
+    unclassifiedTitle?: string;
+    /** Receives short filename */
+    unclassifiedMessage?: (name: string) => string;
+    unknownError?: string;
+    /** Receives short filename */
+    uploadErrorMessage?: (name: string) => string;
+    /** Receives detected count */
+    documentsUploaded?: (count: number) => string;
+    partialUploadTitle?: string;
+    completeUploadTitle?: string;
+    /** Receives error count */
+    filesWithError?: (count: number) => string;
+    successSuffix?: string;
+}
+interface UploadToast {
+    type: 'success' | 'error' | 'warning' | 'info';
+    title: string;
+    message: string;
+}
+interface UploadFlowOptions {
+    /** Upload function — receives file + params, returns response object */
+    uploadFn: (file: File, params: Record<string, string>) => Promise<any>;
+    /** Toast callback for notifications */
+    onToast?: (toast: UploadToast) => void;
+    /** Request ID to attach uploads to */
+    requestid?: string;
+    requestLabel?: string;
+    role?: 'client' | 'analyst';
+    /** Called after all uploads settle and display delay */
+    onComplete?: () => void;
+    /** Concurrency limit (default: 3) */
+    concurrency?: number;
+    /** UI labels — defaults to English */
+    labels?: UploadFlowLabels;
+}
+interface UploadSummary {
+    total: number;
+    done: number;
+    errors: number;
+}
+declare function useUploadFlow(options: UploadFlowOptions): {
+    active: boolean;
+    items: FileUploadItem[];
+    summary: UploadSummary;
+    processFiles: (fileList: FileList | File[], uploadOpts?: {
+        doctypeid?: string;
+        requestid?: string;
+    }) => Promise<void>;
+    processDataTransfer: (captured: CapturedTransfer, uploadOpts?: {
+        doctypeid?: string;
+        requestid?: string;
+    }) => Promise<void>;
+};
+
+interface UploadCardsLabels {
+    queued?: string;
+    compressing?: string;
+    uploading?: string;
+    analyzing?: string;
+    done?: string;
+    /** Receives request label or undefined */
+    linkingLabel?: (requestLabel?: string, role?: string) => string;
+    /** Receives types + count */
+    detectedLabel?: (types: string[], count: number) => string;
+    /** Receives items + summary */
+    headerLabel?: (items: FileUploadItem[], summary: {
+        total: number;
+        done: number;
+        errors: number;
+    }) => string;
+}
+interface UploadCardsProps {
+    items: FileUploadItem[];
+    summary: {
+        total: number;
+        done: number;
+        errors: number;
+    };
+    requestLabel?: string;
+    role?: 'client' | 'analyst';
+    labels?: UploadCardsLabels;
+}
+declare function UploadCards({ items, summary, requestLabel, role, labels: userLabels }: UploadCardsProps): react_jsx_runtime.JSX.Element;
+
+export { Accordion, Anchor, Button, ButtonGroup, type CapturedTransfer, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, type FileStatus, type FileUploadItem, Icon, Input, MasterDetail, Modal, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, type RefreshActions, Scroll, type Section, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, type SortOption, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, UploadCards, type UploadCardsLabels, type UploadFlowLabels, type UploadFlowOptions, type UploadSummary, type UploadToast, type UseRecordsOptions, type UseRecordsReturn, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop, useIsMobile, useRecords, useToast, useUploadFlow };

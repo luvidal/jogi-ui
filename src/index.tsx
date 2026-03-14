@@ -2,6 +2,8 @@
 
 // ── Hooks & Context ──
 export { useToast, ToastProvider } from './hooks'
+export { createDialogContext } from './hooks/dialog'
+export { useIsMobile, useIsDesktop } from './hooks/device'
 
 // ── Types ──
 export type { Section, CardItem } from './types'
@@ -71,3 +73,18 @@ export { default as DragHereOverlay } from './animations/draghereoverlay'
 
 // ── Display ──
 export { default as PillTag } from './pilltag'
+
+// ── Records ──
+export { useRecords } from './hooks/userecords'
+export type { SortOption, UseRecordsOptions, RefreshActions, UseRecordsReturn } from './hooks/userecords'
+
+// ── File Utilities ──
+export { captureDataTransfer, resolveFiles } from './common/folderutils'
+export type { CapturedTransfer } from './common/folderutils'
+export { openFilePicker } from './common/filepicker'
+
+// ── Upload ──
+export { useUploadFlow } from './upload/useuploadflow'
+export { default as UploadCards } from './upload/uploadcards'
+export type { FileUploadItem, FileStatus, UploadFlowOptions, UploadFlowLabels, UploadToast, UploadSummary } from './upload/useuploadflow'
+export type { UploadCardsLabels } from './upload/uploadcards'
