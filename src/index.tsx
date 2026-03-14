@@ -1,4 +1,4 @@
-// @avd/gizmos — UI component library
+// @jogi/gizmos — UI component library
 
 // ── Hooks & Context ──
 export { useToast, ToastProvider } from './hooks'
