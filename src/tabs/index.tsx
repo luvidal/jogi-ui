@@ -20,6 +20,10 @@ interface TabsProps {
     storageKey?: string
     children?: ReactNode
     className?: string
+    /** 'default' = underline tabs with content, 'pill' = compact dark pill tabs (no content rendering) */
+    variant?: 'default' | 'pill'
+    /** Optional suffix per tab (e.g. "(3/5)"), shown after the label */
+    suffix?: (tabId: string) => string
 }
 
 const Tabs = ({
@@ -29,7 +33,9 @@ const Tabs = ({
     onRefresh,
     storageKey,
     children,
-    className = ''
+    className = '',
+    variant = 'default',
+    suffix
 }: TabsProps) => {
     const [internalActive, setInternalActive] = useState<string>(() => {
         if (storageKey && controlledActive === undefined) {
@@ -89,6 +95,31 @@ const Tabs = ({
     const activeContent = tabs.find(t => t.id === activeId)?.content
 
     if (tabs.length === 0) return null
+
+    if (variant === 'pill') {
+        return (
+            <div className={`flex items-center gap-0.5 ${className}`}>
+                {tabs.map(tab => {
+                    const isActive = activeId === tab.id
+                    const sfx = suffix?.(tab.id)
+                    return (
+                        <div
+                            key={tab.id}
+                            className={`flex items-center gap-1.5 px-3 py-1 rounded cursor-pointer text-xs font-medium transition-all duration-200 select-none ${
+                                isActive
+                                    ? 'bg-white/20 text-white'
+                                    : 'text-white/50 hover:text-white/80 hover:bg-white/10'
+                            }`}
+                            onClick={() => handleTabClick(tab.id)}
+                        >
+                            {tab.icon && <Icon name={tab.icon} size={12} />}
+                            <span>{tab.label}{sfx || ''}</span>
+                        </div>
+                    )
+                })}
+            </div>
+        )
+    }
 
     return (
         <div className={className}>

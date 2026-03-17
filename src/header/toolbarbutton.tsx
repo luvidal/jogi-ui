@@ -9,6 +9,8 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onC
     onClick?: MouseEventHandler<HTMLButtonElement>
     active?: boolean
     variant?: 'dark' | 'light'
+    /** Color accent for icon-only floating toolbar buttons (e.g. destructive actions) */
+    color?: 'default' | 'amber' | 'red'
 }
 
 const Tooltip = ({ label, btnRef }: { label: string; btnRef: RefObject<HTMLButtonElement | null> }) => {
@@ -34,12 +36,19 @@ const Tooltip = ({ label, btnRef }: { label: string; btnRef: RefObject<HTMLButto
     )
 }
 
+const colorStyles = {
+    default: '',
+    amber: 'text-amber-300 hover:text-amber-200 hover:bg-amber-500/30',
+    red: 'text-red-300 hover:text-red-200 hover:bg-red-500/30',
+}
+
 const ToolbarButton = ({
     icon,
     label,
     onClick,
     active = false,
     variant = 'dark',
+    color,
     disabled,
     ...rest
 }: ButtonProps) => {
@@ -47,14 +56,19 @@ const ToolbarButton = ({
     const btnRef = useRef<HTMLButtonElement>(null)
 
     const disabledEffect = disabled ? 'opacity-40 blur-[0.5px]' : ''
+    const isIconOnly = color !== undefined
 
-    const variantStyles = variant === 'light'
-        ? 'bg-white hover:bg-gray-50 text-theme-700 hover:text-theme-800'
-        : 'bg-white/10 hover:bg-white/15 text-white/80 hover:text-white'
+    const variantStyles = color && color !== 'default'
+        ? colorStyles[color]
+        : variant === 'light'
+            ? 'bg-white hover:bg-gray-50 text-theme-700 hover:text-theme-800'
+            : isIconOnly
+                ? 'text-white/80 hover:text-white hover:bg-white/20'
+                : 'bg-white/10 hover:bg-white/15 text-white/80 hover:text-white'
 
     const activeStyles = variant === 'light'
         ? 'bg-gray-100 text-theme-600'
-        : 'bg-white/20 text-white'
+        : 'bg-white/30 text-white'
 
     return (
         <button
@@ -69,15 +83,14 @@ const ToolbarButton = ({
             onMouseLeave={() => setHovered(false)}
             aria-label={label}
             className={`
-                flex items-center justify-center h-9 px-3
+                flex items-center justify-center ${isIconOnly ? 'p-2 rounded-btn-sm' : 'h-9 px-3 first:rounded-l-btn last:rounded-r-btn'}
                 ${variantStyles}
-                backdrop-blur-sm transition-all duration-200
-                first:rounded-l-btn last:rounded-r-btn
+                ${isIconOnly ? '' : 'backdrop-blur-sm'} transition-all duration-200
                 ${active ? activeStyles : ''}
                 ${disabled ? 'cursor-not-allowed' : ''}
             `}
         >
-            <Icon name={icon} size={16} className={`${variant === 'dark' ? 'icon-shadow-sm' : ''} ${disabledEffect}`} />
+            <Icon name={icon} size={isIconOnly ? 15 : 16} className={`${variant === 'dark' && !isIconOnly ? 'icon-shadow-sm' : ''} ${disabledEffect}`} />
             {hovered && <Tooltip label={label} btnRef={btnRef} />}
         </button>
     )

@@ -268,12 +268,16 @@ interface Props$5 {
     description?: string;
     className?: string;
     variant?: 'light' | 'dark';
-    /** Lucide icon name to display instead of the default box illustration */
-    icon?: string;
+    /** Lucide icon name or custom ReactNode to display instead of the default box illustration */
+    icon?: string | ReactNode;
     /** Optional action button */
     action?: {
         label: string;
         onClick: () => void;
+        /** Lucide icon name shown before the label */
+        icon?: string;
+        /** Shows a spinner and disables the button */
+        loading?: boolean;
     };
 }
 declare const EmptyState: ({ title, description, className, variant, icon, action }: Props$5) => react_jsx_runtime.JSX.Element;
@@ -435,8 +439,10 @@ interface DetailBarProps {
     onRename?: (value: string) => void;
     /** When provided, subtitle becomes a clickable email link */
     onEmail?: () => void;
+    /** When provided, renders a ToolBack button and wraps dark variant in gradient background */
+    onBack?: () => void;
 }
-declare function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefix, variant, onRename, onEmail }: DetailBarProps): react_jsx_runtime.JSX.Element;
+declare function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefix, variant, onRename, onEmail, onBack }: DetailBarProps): react_jsx_runtime.JSX.Element;
 
 interface PropsCard {
     title: string;
@@ -487,8 +493,10 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onC
     onClick?: MouseEventHandler<HTMLButtonElement>;
     active?: boolean;
     variant?: 'dark' | 'light';
+    /** Color accent for icon-only floating toolbar buttons (e.g. destructive actions) */
+    color?: 'default' | 'amber' | 'red';
 }
-declare const ToolbarButton: ({ icon, label, onClick, active, variant, disabled, ...rest }: ButtonProps) => react_jsx_runtime.JSX.Element;
+declare const ToolbarButton: ({ icon, label, onClick, active, variant, color, disabled, ...rest }: ButtonProps) => react_jsx_runtime.JSX.Element;
 
 interface ToolBackProps {
     icon: string;
@@ -538,8 +546,12 @@ interface TabsProps {
     storageKey?: string;
     children?: ReactNode;
     className?: string;
+    /** 'default' = underline tabs with content, 'pill' = compact dark pill tabs (no content rendering) */
+    variant?: 'default' | 'pill';
+    /** Optional suffix per tab (e.g. "(3/5)"), shown after the label */
+    suffix?: (tabId: string) => string;
 }
-declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey, children, className }: TabsProps) => react_jsx_runtime.JSX.Element | null;
+declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey, children, className, variant, suffix }: TabsProps) => react_jsx_runtime.JSX.Element | null;
 
 interface PanelProps {
     open: boolean;

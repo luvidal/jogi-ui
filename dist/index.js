@@ -660,66 +660,79 @@ Skeleton.Welcome = function SkeletonWelcome({ className = "" }) {
 var skeleton_default = Skeleton;
 var EmptyState = ({ title = "Sin elementos", description, className = "", variant = "light", icon, action }) => {
   const isDark = variant === "dark";
+  const renderIcon = () => {
+    if (!icon) {
+      return (
+        /* Minimalist empty box illustration */
+        /* @__PURE__ */ jsxRuntime.jsxs(
+          "svg",
+          {
+            width: "120",
+            height: "100",
+            viewBox: "0 0 120 100",
+            fill: "none",
+            xmlns: "http://www.w3.org/2000/svg",
+            className: "mb-4 opacity-40",
+            children: [
+              /* @__PURE__ */ jsxRuntime.jsx(
+                "path",
+                {
+                  d: "M20 35 L60 15 L100 35 L60 55 Z",
+                  className: isDark ? "fill-white/20 stroke-white/40" : "fill-theme-200 stroke-theme-400",
+                  strokeWidth: "1.5"
+                }
+              ),
+              /* @__PURE__ */ jsxRuntime.jsx(
+                "path",
+                {
+                  d: "M20 35 L20 65 L60 85 L60 55 Z",
+                  className: isDark ? "fill-white/15 stroke-white/40" : "fill-theme-100 stroke-theme-400",
+                  strokeWidth: "1.5"
+                }
+              ),
+              /* @__PURE__ */ jsxRuntime.jsx(
+                "path",
+                {
+                  d: "M100 35 L100 65 L60 85 L60 55 Z",
+                  className: isDark ? "fill-white/10 stroke-white/40" : "fill-theme-50 stroke-theme-400",
+                  strokeWidth: "1.5"
+                }
+              ),
+              /* @__PURE__ */ jsxRuntime.jsx(
+                "path",
+                {
+                  d: "M40 45 L60 35 L80 45",
+                  className: isDark ? "stroke-white/30" : "stroke-theme-300",
+                  strokeWidth: "1.5",
+                  strokeDasharray: "4 3",
+                  strokeLinecap: "round",
+                  fill: "none"
+                }
+              )
+            ]
+          }
+        )
+      );
+    }
+    if (typeof icon === "string") {
+      return /* @__PURE__ */ jsxRuntime.jsx("div", { className: `mb-4 opacity-40 ${isDark ? "text-white/50" : "text-theme-400"}`, children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 48 }) });
+    }
+    return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "mb-4", children: icon });
+  };
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `flex flex-col items-center justify-center w-full h-full min-h-48 p-8 ${className}`, children: [
-    icon ? /* @__PURE__ */ jsxRuntime.jsx("div", { className: `mb-4 opacity-40 ${isDark ? "text-white/50" : "text-theme-400"}`, children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 48 }) }) : (
-      /* Minimalist empty box illustration */
-      /* @__PURE__ */ jsxRuntime.jsxs(
-        "svg",
-        {
-          width: "120",
-          height: "100",
-          viewBox: "0 0 120 100",
-          fill: "none",
-          xmlns: "http://www.w3.org/2000/svg",
-          className: "mb-4 opacity-40",
-          children: [
-            /* @__PURE__ */ jsxRuntime.jsx(
-              "path",
-              {
-                d: "M20 35 L60 15 L100 35 L60 55 Z",
-                className: isDark ? "fill-white/20 stroke-white/40" : "fill-theme-200 stroke-theme-400",
-                strokeWidth: "1.5"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntime.jsx(
-              "path",
-              {
-                d: "M20 35 L20 65 L60 85 L60 55 Z",
-                className: isDark ? "fill-white/15 stroke-white/40" : "fill-theme-100 stroke-theme-400",
-                strokeWidth: "1.5"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntime.jsx(
-              "path",
-              {
-                d: "M100 35 L100 65 L60 85 L60 55 Z",
-                className: isDark ? "fill-white/10 stroke-white/40" : "fill-theme-50 stroke-theme-400",
-                strokeWidth: "1.5"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntime.jsx(
-              "path",
-              {
-                d: "M40 45 L60 35 L80 45",
-                className: isDark ? "stroke-white/30" : "stroke-theme-300",
-                strokeWidth: "1.5",
-                strokeDasharray: "4 3",
-                strokeLinecap: "round",
-                fill: "none"
-              }
-            )
-          ]
-        }
-      )
-    ),
+    renderIcon(),
     /* @__PURE__ */ jsxRuntime.jsx("p", { className: `font-medium text-sm ${isDark ? "text-white/50" : "text-gray-500"}`, children: title }),
     description && /* @__PURE__ */ jsxRuntime.jsx("p", { className: `text-xs mt-1 text-center max-w-xs ${isDark ? "text-white/40" : "text-gray-400"}`, children: description }),
-    action && /* @__PURE__ */ jsxRuntime.jsx(
+    action && /* @__PURE__ */ jsxRuntime.jsxs(
       "button",
       {
         onClick: action.onClick,
-        className: `mt-4 text-xs font-semibold px-4 py-2 rounded-btn transition-all duration-200 ${isDark ? "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white" : "bg-theme-50 text-theme-600 hover:bg-theme-100"}`,
-        children: action.label
+        disabled: action.loading,
+        className: `mt-4 flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-btn transition-all duration-200 disabled:opacity-50 ${isDark ? "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white" : "bg-theme-50 text-theme-600 hover:bg-theme-100"}`,
+        children: [
+          action.icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: action.loading ? "Loader" : action.icon, size: 14, className: action.loading ? "animate-spin" : "" }),
+          action.label
+        ]
       }
     )
   ] });
@@ -1420,7 +1433,58 @@ var EmailLink = ({ label, email, onClick, className = "" }) => {
   );
 };
 var emaillink_default = EmailLink;
-function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefix, variant = "light", onRename, onEmail }) {
+var Tooltip2 = ({ label, btnRef }) => {
+  const [pos, setPos] = react.useState(null);
+  react.useEffect(() => {
+    const el = btnRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    setPos({ top: rect.bottom + 6, left: rect.left + rect.width / 2 });
+  }, [btnRef]);
+  if (!pos) return null;
+  return reactDom.createPortal(
+    /* @__PURE__ */ jsxRuntime.jsx(
+      "span",
+      {
+        className: "fixed pointer-events-none z-50 px-2 py-0.5 rounded text-[11px] whitespace-nowrap bg-gray-900 text-white shadow-lg -translate-x-1/2",
+        style: { top: pos.top, left: pos.left },
+        children: label
+      }
+    ),
+    document.body
+  );
+};
+var ToolBack = ({ icon, label = "Volver", onClick, variant = "light" }) => {
+  const [hovered, setHovered] = react.useState(false);
+  const btnRef = react.useRef(null);
+  const variantStyles = variant === "light" ? "bg-theme-100 hover:bg-theme-200 text-theme-700 hover:text-theme-800" : "bg-white/10 hover:bg-white/15 text-white/80 hover:text-white";
+  return /* @__PURE__ */ jsxRuntime.jsxs(
+    "button",
+    {
+      ref: btnRef,
+      onClick: (e) => {
+        e.stopPropagation();
+        onClick();
+      },
+      onMouseEnter: () => setHovered(true),
+      onMouseLeave: () => setHovered(false),
+      "aria-label": label,
+      className: `
+                flex items-center justify-center gap-0.5 h-9 px-2
+                ${variantStyles}
+                backdrop-blur-sm transition-all duration-200
+                rounded-btn
+            `,
+      children: [
+        /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "ChevronLeft", size: 16, className: variant === "dark" ? "icon-shadow-sm" : "" }),
+        /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 16, className: variant === "dark" ? "icon-shadow-sm" : "" }),
+        hovered && /* @__PURE__ */ jsxRuntime.jsx(Tooltip2, { label, btnRef })
+      ]
+    }
+  );
+};
+var toolback_default = ToolBack;
+function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefix, variant = "light", onRename, onEmail, onBack }) {
   const isDark = variant === "dark";
   const renderTitle = (className) => {
     if (typeof title === "string" && onRename) {
@@ -1442,21 +1506,24 @@ function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefi
     return subtitle;
   };
   if (isDark) {
-    return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center justify-between px-6 py-4", children: [
-      /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-3 min-w-0", children: [
-        icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 22, className: "text-white/80" }),
-        /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "group flex flex-col min-w-0", children: [
-          renderTitle("text-lg font-bold uppercase tracking-wide text-white text-shadow-md"),
-          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
-            subtitlePrefix && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-sm text-white/50", children: subtitlePrefix }),
-            renderSubtitle("text-sm text-white/70"),
-            extra && subtitle && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-white/30", children: "\xB7" }),
-            extra
-          ] })
+    const content = /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-4 px-4 py-3", children: [
+      onBack && icon && /* @__PURE__ */ jsxRuntime.jsx(toolback_default, { icon, onClick: onBack, variant: "dark" }),
+      !onBack && icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 22, className: "text-white/80" }),
+      /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex-1 min-w-0 flex flex-col items-start", children: [
+        renderTitle(onBack ? "text-base font-medium text-white text-shadow-sm" : "text-lg font-bold uppercase tracking-wide text-white text-shadow-md"),
+        /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-1.5 min-w-0 mt-0.5", children: [
+          subtitlePrefix && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-sm text-white/50", children: subtitlePrefix }),
+          renderSubtitle(onBack ? "text-sm text-white/70" : "text-sm text-white/70"),
+          extra && subtitle && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-white/30", children: "\xB7" }),
+          extra
         ] })
       ] }),
       toolbar && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-shrink-0", children: toolbar })
     ] });
+    if (onBack) {
+      return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "group/header bg-gradient-to-r from-theme-700 to-theme-600", children: content });
+    }
+    return content;
   }
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "relative border-b border-theme-100 bg-theme-50", children: [
     icon && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute -right-3 -bottom-6 opacity-[0.05] pointer-events-none", children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 120, className: "text-theme-600" }) }),
@@ -1753,70 +1820,6 @@ var Accordion = ({ sections, forceExpanded = false }) => {
   }) });
 };
 var section_default = Accordion;
-var Tooltip2 = ({ label, btnRef }) => {
-  const [pos, setPos] = react.useState(null);
-  react.useEffect(() => {
-    const el = btnRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    setPos({ top: rect.bottom + 6, left: rect.left + rect.width / 2 });
-  }, [btnRef]);
-  if (!pos) return null;
-  return reactDom.createPortal(
-    /* @__PURE__ */ jsxRuntime.jsx(
-      "span",
-      {
-        className: "fixed pointer-events-none z-50 px-2 py-0.5 rounded text-[11px] whitespace-nowrap bg-gray-900 text-white shadow-lg -translate-x-1/2",
-        style: { top: pos.top, left: pos.left },
-        children: label
-      }
-    ),
-    document.body
-  );
-};
-var ToolbarButton = ({
-  icon,
-  label,
-  onClick,
-  active = false,
-  variant = "dark",
-  disabled,
-  ...rest
-}) => {
-  const [hovered, setHovered] = react.useState(false);
-  const btnRef = react.useRef(null);
-  const disabledEffect = disabled ? "opacity-40 blur-[0.5px]" : "";
-  const variantStyles = variant === "light" ? "bg-white hover:bg-gray-50 text-theme-700 hover:text-theme-800" : "bg-white/10 hover:bg-white/15 text-white/80 hover:text-white";
-  const activeStyles = variant === "light" ? "bg-gray-100 text-theme-600" : "bg-white/20 text-white";
-  return /* @__PURE__ */ jsxRuntime.jsxs(
-    "button",
-    {
-      ...rest,
-      ref: btnRef,
-      disabled,
-      onClick: (e) => {
-        e.stopPropagation();
-        onClick?.(e);
-      },
-      onMouseEnter: () => setHovered(true),
-      onMouseLeave: () => setHovered(false),
-      "aria-label": label,
-      className: `
-                flex items-center justify-center h-9 px-3
-                ${variantStyles}
-                backdrop-blur-sm transition-all duration-200
-                first:rounded-l-btn last:rounded-r-btn
-                ${active ? activeStyles : ""}
-                ${disabled ? "cursor-not-allowed" : ""}
-            `,
-      children: [
-        /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 16, className: `${variant === "dark" ? "icon-shadow-sm" : ""} ${disabledEffect}` }),
-        hovered && /* @__PURE__ */ jsxRuntime.jsx(Tooltip2, { label, btnRef })
-      ]
-    }
-  );
-};
-var toolbarbutton_default = ToolbarButton;
 var Tooltip3 = ({ label, btnRef }) => {
   const [pos, setPos] = react.useState(null);
   react.useEffect(() => {
@@ -1838,36 +1841,55 @@ var Tooltip3 = ({ label, btnRef }) => {
     document.body
   );
 };
-var ToolBack = ({ icon, label = "Volver", onClick, variant = "light" }) => {
+var colorStyles = {
+  default: "",
+  amber: "text-amber-300 hover:text-amber-200 hover:bg-amber-500/30",
+  red: "text-red-300 hover:text-red-200 hover:bg-red-500/30"
+};
+var ToolbarButton = ({
+  icon,
+  label,
+  onClick,
+  active = false,
+  variant = "dark",
+  color,
+  disabled,
+  ...rest
+}) => {
   const [hovered, setHovered] = react.useState(false);
   const btnRef = react.useRef(null);
-  const variantStyles = variant === "light" ? "bg-theme-100 hover:bg-theme-200 text-theme-700 hover:text-theme-800" : "bg-white/10 hover:bg-white/15 text-white/80 hover:text-white";
+  const disabledEffect = disabled ? "opacity-40 blur-[0.5px]" : "";
+  const isIconOnly = color !== void 0;
+  const variantStyles = color && color !== "default" ? colorStyles[color] : variant === "light" ? "bg-white hover:bg-gray-50 text-theme-700 hover:text-theme-800" : isIconOnly ? "text-white/80 hover:text-white hover:bg-white/20" : "bg-white/10 hover:bg-white/15 text-white/80 hover:text-white";
+  const activeStyles = variant === "light" ? "bg-gray-100 text-theme-600" : "bg-white/30 text-white";
   return /* @__PURE__ */ jsxRuntime.jsxs(
     "button",
     {
+      ...rest,
       ref: btnRef,
+      disabled,
       onClick: (e) => {
         e.stopPropagation();
-        onClick();
+        onClick?.(e);
       },
       onMouseEnter: () => setHovered(true),
       onMouseLeave: () => setHovered(false),
       "aria-label": label,
       className: `
-                flex items-center justify-center gap-0.5 h-9 px-2
+                flex items-center justify-center ${isIconOnly ? "p-2 rounded-btn-sm" : "h-9 px-3 first:rounded-l-btn last:rounded-r-btn"}
                 ${variantStyles}
-                backdrop-blur-sm transition-all duration-200
-                rounded-btn
+                ${isIconOnly ? "" : "backdrop-blur-sm"} transition-all duration-200
+                ${active ? activeStyles : ""}
+                ${disabled ? "cursor-not-allowed" : ""}
             `,
       children: [
-        /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "ChevronLeft", size: 16, className: variant === "dark" ? "icon-shadow-sm" : "" }),
-        /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 16, className: variant === "dark" ? "icon-shadow-sm" : "" }),
+        /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: isIconOnly ? 15 : 16, className: `${variant === "dark" && !isIconOnly ? "icon-shadow-sm" : ""} ${disabledEffect}` }),
         hovered && /* @__PURE__ */ jsxRuntime.jsx(Tooltip3, { label, btnRef })
       ]
     }
   );
 };
-var toolback_default = ToolBack;
+var toolbarbutton_default = ToolbarButton;
 var ButtonGroup = ({ children, className = "", variant = "dark" }) => {
   const bg = variant === "dark" ? "bg-white/10" : "bg-gray-200 shadow-sm";
   return /* @__PURE__ */ jsxRuntime.jsx(
@@ -1887,7 +1909,9 @@ var Tabs = ({
   onRefresh,
   storageKey,
   children,
-  className = ""
+  className = "",
+  variant = "default",
+  suffix
 }) => {
   const [internalActive, setInternalActive] = react.useState(() => {
     if (storageKey && controlledActive === void 0) {
@@ -1950,6 +1974,27 @@ var Tabs = ({
   };
   const activeContent = tabs.find((t) => t.id === activeId)?.content;
   if (tabs.length === 0) return null;
+  if (variant === "pill") {
+    return /* @__PURE__ */ jsxRuntime.jsx("div", { className: `flex items-center gap-0.5 ${className}`, children: tabs.map((tab) => {
+      const isActive = activeId === tab.id;
+      const sfx = suffix?.(tab.id);
+      return /* @__PURE__ */ jsxRuntime.jsxs(
+        "div",
+        {
+          className: `flex items-center gap-1.5 px-3 py-1 rounded cursor-pointer text-xs font-medium transition-all duration-200 select-none ${isActive ? "bg-white/20 text-white" : "text-white/50 hover:text-white/80 hover:bg-white/10"}`,
+          onClick: () => handleTabClick(tab.id),
+          children: [
+            tab.icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: tab.icon, size: 12 }),
+            /* @__PURE__ */ jsxRuntime.jsxs("span", { children: [
+              tab.label,
+              sfx || ""
+            ] })
+          ]
+        },
+        tab.id
+      );
+    }) });
+  }
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className, children: [
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-shrink-0", children: tabs.map((tab) => {
       const isActive = activeId === tab.id;

@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import Icon from './icon'
 import EditableTitle from '../header/editabletitle'
 import EmailLink from '../header/emaillink'
+import ToolBack from '../header/toolback'
 
 interface DetailBarProps {
   title: string | ReactNode
@@ -18,9 +19,11 @@ interface DetailBarProps {
   onRename?: (value: string) => void
   /** When provided, subtitle becomes a clickable email link */
   onEmail?: () => void
+  /** When provided, renders a ToolBack button and wraps dark variant in gradient background */
+  onBack?: () => void
 }
 
-export default function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefix, variant = 'light', onRename, onEmail }: DetailBarProps) {
+export default function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefix, variant = 'light', onRename, onEmail, onBack }: DetailBarProps) {
   const isDark = variant === 'dark'
 
   /** Render title — editable when onRename is provided and title is a string */
@@ -47,23 +50,26 @@ export default function DetailBar({ title, subtitle, email, icon, toolbar, extra
   }
 
   if (isDark) {
-    return (
-      <div className='flex items-center justify-between px-6 py-4'>
-        <div className='flex items-center gap-3 min-w-0'>
-          {icon && <Icon name={icon} size={22} className='text-white/80' />}
-          <div className='group flex flex-col min-w-0'>
-            {renderTitle('text-lg font-bold uppercase tracking-wide text-white text-shadow-md')}
-            <div className='flex items-center gap-1.5 min-w-0'>
-              {subtitlePrefix && <span className='text-sm text-white/50'>{subtitlePrefix}</span>}
-              {renderSubtitle('text-sm text-white/70')}
-              {extra && subtitle && <span className='text-white/30'>·</span>}
-              {extra}
-            </div>
+    const content = (
+      <div className='flex items-center gap-4 px-4 py-3'>
+        {onBack && icon && <ToolBack icon={icon} onClick={onBack} variant='dark' />}
+        {!onBack && icon && <Icon name={icon} size={22} className='text-white/80' />}
+        <div className='flex-1 min-w-0 flex flex-col items-start'>
+          {renderTitle(onBack ? 'text-base font-medium text-white text-shadow-sm' : 'text-lg font-bold uppercase tracking-wide text-white text-shadow-md')}
+          <div className='flex items-center gap-1.5 min-w-0 mt-0.5'>
+            {subtitlePrefix && <span className='text-sm text-white/50'>{subtitlePrefix}</span>}
+            {renderSubtitle(onBack ? 'text-sm text-white/70' : 'text-sm text-white/70')}
+            {extra && subtitle && <span className='text-white/30'>·</span>}
+            {extra}
           </div>
         </div>
         {toolbar && <div className='flex-shrink-0'>{toolbar}</div>}
       </div>
     )
+    if (onBack) {
+      return <div className='group/header bg-gradient-to-r from-theme-700 to-theme-600'>{content}</div>
+    }
+    return content
   }
 
   return (

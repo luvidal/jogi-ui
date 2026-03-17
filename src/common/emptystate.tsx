@@ -1,5 +1,6 @@
 
 
+import { ReactNode } from 'react'
 import Icon from './icon'
 
 interface Props {
@@ -7,22 +8,25 @@ interface Props {
     description?: string
     className?: string
     variant?: 'light' | 'dark'
-    /** Lucide icon name to display instead of the default box illustration */
-    icon?: string
+    /** Lucide icon name or custom ReactNode to display instead of the default box illustration */
+    icon?: string | ReactNode
     /** Optional action button */
-    action?: { label: string; onClick: () => void }
+    action?: {
+        label: string
+        onClick: () => void
+        /** Lucide icon name shown before the label */
+        icon?: string
+        /** Shows a spinner and disables the button */
+        loading?: boolean
+    }
 }
 
 const EmptyState = ({ title = 'Sin elementos', description, className = '', variant = 'light', icon, action }: Props) => {
     const isDark = variant === 'dark'
 
-    return (
-        <div className={`flex flex-col items-center justify-center w-full h-full min-h-48 p-8 ${className}`}>
-            {icon ? (
-                <div className={`mb-4 opacity-40 ${isDark ? 'text-white/50' : 'text-theme-400'}`}>
-                    <Icon name={icon} size={48} />
-                </div>
-            ) : (
+    const renderIcon = () => {
+        if (!icon) {
+            return (
                 /* Minimalist empty box illustration */
                 <svg
                     width='120'
@@ -60,7 +64,21 @@ const EmptyState = ({ title = 'Sin elementos', description, className = '', vari
                         fill='none'
                     />
                 </svg>
-            )}
+            )
+        }
+        if (typeof icon === 'string') {
+            return (
+                <div className={`mb-4 opacity-40 ${isDark ? 'text-white/50' : 'text-theme-400'}`}>
+                    <Icon name={icon} size={48} />
+                </div>
+            )
+        }
+        return <div className='mb-4'>{icon}</div>
+    }
+
+    return (
+        <div className={`flex flex-col items-center justify-center w-full h-full min-h-48 p-8 ${className}`}>
+            {renderIcon()}
 
             <p className={`font-medium text-sm ${isDark ? 'text-white/50' : 'text-gray-500'}`}>{title}</p>
             {description && (
@@ -69,11 +87,13 @@ const EmptyState = ({ title = 'Sin elementos', description, className = '', vari
             {action && (
                 <button
                     onClick={action.onClick}
-                    className={`mt-4 text-xs font-semibold px-4 py-2 rounded-btn transition-all duration-200 ${isDark
+                    disabled={action.loading}
+                    className={`mt-4 flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-btn transition-all duration-200 disabled:opacity-50 ${isDark
                         ? 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white'
                         : 'bg-theme-50 text-theme-600 hover:bg-theme-100'
                     }`}
                 >
+                    {action.icon && <Icon name={action.loading ? 'Loader' : action.icon} size={14} className={action.loading ? 'animate-spin' : ''} />}
                     {action.label}
                 </button>
             )}
