@@ -27,6 +27,9 @@ export { default as SelectField } from './forms/selectfield'
 
 // ── Common ──
 export { default as Modal } from './common/modal'
+export { default as ModalOverlayPanel } from './common/modaloverlaypanel'
+export { default as ModalToolbar } from './common/modaltoolbar'
+export { default as ModalFormLayout } from './common/modalformlayout'
 export { default as Tooltip } from './common/tooltip'
 export { default as Skeleton } from './common/skeleton'
 export { default as EmptyState } from './common/emptystate'

@@ -453,6 +453,28 @@ var Modal = ({ title, icon, children, onClose, size: sizeProp = "md", headerActi
   ) });
 };
 var modal_default = Modal;
+var ModalOverlayPanel = ({ open, width = "w-72", className = "", children }) => {
+  if (!open) return null;
+  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: `absolute right-0 top-0 bottom-0 ${width} bg-white border-l border-gray-200 shadow-lg overflow-y-auto z-20 px-3 pt-14 pb-3 ${className}`, children });
+};
+var modaloverlaypanel_default = ModalOverlayPanel;
+var base = "absolute z-20 flex items-center gap-0.5 px-1 py-1 rounded-xl transition-all";
+var ModalToolbar = ({ position = "left", offset, variant = "transparent", className = "", children }) => {
+  const pos = position === "left" ? "left-3" : "right-3";
+  const top = offset || "top-3";
+  const bg = variant === "dark" ? "bg-[#3d3d3d]" : "bg-black/50 backdrop-blur-sm";
+  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: `${base} ${pos} ${top} ${bg} ${className}`, children });
+};
+var Group = ({ children, className = "" }) => /* @__PURE__ */ jsxRuntime.jsx("div", { className: `flex items-center gap-0.5 ${className}`, children });
+var Divider = () => /* @__PURE__ */ jsxRuntime.jsx("div", { className: "w-px h-4 bg-white/20 mx-0.5" });
+ModalToolbar.Group = Group;
+ModalToolbar.Divider = Divider;
+var modaltoolbar_default = ModalToolbar;
+var ModalFormLayout = ({ footer, className = "", children }) => /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `flex flex-col h-full ${className}`, children: [
+  /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-1 min-h-0 overflow-y-auto", children }),
+  /* @__PURE__ */ jsxRuntime.jsx("div", { className: "shrink-0", children: footer })
+] });
+var modalformlayout_default = ModalFormLayout;
 var Tooltip = ({ text }) => {
   const [open, setOpen] = react.useState(false);
   const [pos, setPos] = react.useState({ top: 0, left: 0 });
@@ -2849,6 +2871,9 @@ exports.Icon = icon_default;
 exports.Input = input_default;
 exports.MasterDetail = MasterDetail;
 exports.Modal = modal_default;
+exports.ModalFormLayout = modalformlayout_default;
+exports.ModalOverlayPanel = modaloverlaypanel_default;
+exports.ModalToolbar = modaltoolbar_default;
 exports.NumberField = numberfield_default;
 exports.Panel = panel_default;
 exports.PillTag = pilltag_default;

@@ -451,6 +451,28 @@ var Modal = ({ title, icon, children, onClose, size: sizeProp = "md", headerActi
   ) });
 };
 var modal_default = Modal;
+var ModalOverlayPanel = ({ open, width = "w-72", className = "", children }) => {
+  if (!open) return null;
+  return /* @__PURE__ */ jsx("div", { className: `absolute right-0 top-0 bottom-0 ${width} bg-white border-l border-gray-200 shadow-lg overflow-y-auto z-20 px-3 pt-14 pb-3 ${className}`, children });
+};
+var modaloverlaypanel_default = ModalOverlayPanel;
+var base = "absolute z-20 flex items-center gap-0.5 px-1 py-1 rounded-xl transition-all";
+var ModalToolbar = ({ position = "left", offset, variant = "transparent", className = "", children }) => {
+  const pos = position === "left" ? "left-3" : "right-3";
+  const top = offset || "top-3";
+  const bg = variant === "dark" ? "bg-[#3d3d3d]" : "bg-black/50 backdrop-blur-sm";
+  return /* @__PURE__ */ jsx("div", { className: `${base} ${pos} ${top} ${bg} ${className}`, children });
+};
+var Group = ({ children, className = "" }) => /* @__PURE__ */ jsx("div", { className: `flex items-center gap-0.5 ${className}`, children });
+var Divider = () => /* @__PURE__ */ jsx("div", { className: "w-px h-4 bg-white/20 mx-0.5" });
+ModalToolbar.Group = Group;
+ModalToolbar.Divider = Divider;
+var modaltoolbar_default = ModalToolbar;
+var ModalFormLayout = ({ footer, className = "", children }) => /* @__PURE__ */ jsxs("div", { className: `flex flex-col h-full ${className}`, children: [
+  /* @__PURE__ */ jsx("div", { className: "flex-1 min-h-0 overflow-y-auto", children }),
+  /* @__PURE__ */ jsx("div", { className: "shrink-0", children: footer })
+] });
+var modalformlayout_default = ModalFormLayout;
 var Tooltip = ({ text }) => {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
@@ -2823,6 +2845,6 @@ function UploadCards({ items, summary, requestLabel, role, labels: userLabels })
   ] }) });
 }
 
-export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, MasterDetail, modal_default as Modal, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, UploadCards, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop2 as useIsDesktop, useIsMobile2 as useIsMobile, useRecords, useToast, useUploadFlow };
+export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, MasterDetail, modal_default as Modal, modalformlayout_default as ModalFormLayout, modaloverlaypanel_default as ModalOverlayPanel, modaltoolbar_default as ModalToolbar, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, UploadCards, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop2 as useIsDesktop, useIsMobile2 as useIsMobile, useRecords, useToast, useUploadFlow };
 //# sourceMappingURL=index.mjs.map
 //# sourceMappingURL=index.mjs.map
