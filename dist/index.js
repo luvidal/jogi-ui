@@ -2529,9 +2529,9 @@ function useUploadFlow(options) {
       await wait(200);
       updateItem(item.id, { status: "analyzing" });
       const params = {};
-      if (uploadOpts?.requestid) params.requestid = uploadOpts.requestid;
-      else if (optionsRef.current.requestid) params.requestid = optionsRef.current.requestid;
-      if (uploadOpts?.doctypeid) params.doctypeid = uploadOpts.doctypeid;
+      if (uploadOpts?.requestId) params.requestId = uploadOpts.requestId;
+      else if (optionsRef.current.requestId) params.requestId = optionsRef.current.requestId;
+      if (uploadOpts?.docTypeId) params.docTypeId = uploadOpts.docTypeId;
       const res = await uploadFn(compressed, params);
       if (progressTimer) clearInterval(progressTimer);
       progressTimer = null;

@@ -48,7 +48,7 @@ export interface UploadFlowOptions {
   /** Toast callback for notifications */
   onToast?: (toast: UploadToast) => void
   /** Request ID to attach uploads to */
-  requestid?: string
+  requestId?: string
   requestLabel?: string
   role?: 'client' | 'analyst'
   /** Called after all uploads settle and display delay */
@@ -112,7 +112,7 @@ export function useUploadFlow(options: UploadFlowOptions) {
     return new File([c], file.name, { type: c.type })
   }
 
-  const processSingleFile = useCallback(async (item: FileUploadItem, uploadOpts?: { doctypeid?: string; requestid?: string }): Promise<{ done: boolean; detectedCount: number }> => {
+  const processSingleFile = useCallback(async (item: FileUploadItem, uploadOpts?: { docTypeId?: string; requestId?: string }): Promise<{ done: boolean; detectedCount: number }> => {
     const name = shortName(item.file.name)
     const l = labelsRef.current
     let progressTimer: ReturnType<typeof setInterval> | null = null
@@ -136,9 +136,9 @@ export function useUploadFlow(options: UploadFlowOptions) {
       updateItem(item.id, { status: 'analyzing' })
 
       const params: Record<string, string> = {}
-      if (uploadOpts?.requestid) params.requestid = uploadOpts.requestid
-      else if (optionsRef.current.requestid) params.requestid = optionsRef.current.requestid
-      if (uploadOpts?.doctypeid) params.doctypeid = uploadOpts.doctypeid
+      if (uploadOpts?.requestId) params.requestId = uploadOpts.requestId
+      else if (optionsRef.current.requestId) params.requestId = optionsRef.current.requestId
+      if (uploadOpts?.docTypeId) params.docTypeId = uploadOpts.docTypeId
       const res = await uploadFn(compressed, params)
 
       if (progressTimer) clearInterval(progressTimer)
@@ -225,7 +225,7 @@ export function useUploadFlow(options: UploadFlowOptions) {
     }
   }, [updateItem, uploadFn, onToast])
 
-  const processFiles = useCallback(async (fileList: FileList | File[], uploadOpts?: { doctypeid?: string; requestid?: string }) => {
+  const processFiles = useCallback(async (fileList: FileList | File[], uploadOpts?: { docTypeId?: string; requestId?: string }) => {
     if (!fileList.length) return
     // Guard against double-upload
     if (active) return
@@ -309,7 +309,7 @@ export function useUploadFlow(options: UploadFlowOptions) {
    * Call captureDataTransfer() synchronously in the event handler,
    * then pass the result here for async resolution + upload.
    */
-  const processDataTransfer = useCallback(async (captured: CapturedTransfer, uploadOpts?: { doctypeid?: string; requestid?: string }) => {
+  const processDataTransfer = useCallback(async (captured: CapturedTransfer, uploadOpts?: { docTypeId?: string; requestId?: string }) => {
     const files = await resolveFiles(captured)
     if (files.length) await processFiles(files, uploadOpts)
   }, [processFiles])

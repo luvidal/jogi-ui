@@ -770,7 +770,7 @@ interface UploadFlowOptions {
     /** Toast callback for notifications */
     onToast?: (toast: UploadToast) => void;
     /** Request ID to attach uploads to */
-    requestid?: string;
+    requestId?: string;
     requestLabel?: string;
     role?: 'client' | 'analyst';
     /** Called after all uploads settle and display delay */
@@ -790,12 +790,12 @@ declare function useUploadFlow(options: UploadFlowOptions): {
     items: FileUploadItem[];
     summary: UploadSummary;
     processFiles: (fileList: FileList | File[], uploadOpts?: {
-        doctypeid?: string;
-        requestid?: string;
+        docTypeId?: string;
+        requestId?: string;
     }) => Promise<void>;
     processDataTransfer: (captured: CapturedTransfer, uploadOpts?: {
-        doctypeid?: string;
-        requestid?: string;
+        docTypeId?: string;
+        requestId?: string;
     }) => Promise<void>;
 };
 
