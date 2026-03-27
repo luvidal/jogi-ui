@@ -1,4 +1,5 @@
 import Icon from '../common/icon'
+import { disabledEffect as disabledCls } from './inputstyles'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: string
@@ -9,7 +10,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = ({ icon, text, loading = false, className = '', ...props }: ButtonProps) => {
     const isDisabled = props.disabled || loading
-    const disabledEffect = isDisabled ? 'opacity-40 blur-[0.5px]' : ''
+    const disabledStyle = isDisabled ? disabledCls : ''
 
     return (
         <button
@@ -23,9 +24,9 @@ const Button = ({ icon, text, loading = false, className = '', ...props }: Butto
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
             ) : (
-                icon && <Icon name={icon} size={16} className={`text-shadow-sm ${disabledEffect}`} />
+                icon && <Icon name={icon} size={16} className={`text-shadow-sm ${disabledStyle}`} />
             )}
-            {text && <span className={`text-shadow-sm truncate font-semibold uppercase tracking-wide ${disabledEffect}`}>{text}</span>}
+            {text && <span className={`text-shadow-sm truncate font-semibold uppercase tracking-wide ${disabledStyle}`}>{text}</span>}
         </button>
     )
 }

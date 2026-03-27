@@ -1,4 +1,4 @@
-
+import { colClass } from './colclass'
 
 interface Props {
     className?: string
@@ -142,15 +142,8 @@ Skeleton.StatRow = function SkeletonStatRow({ className = '' }: { className?: st
 
 /** Skeleton matching Card dashboard tiles (h-96 with title + subtitle + content) */
 Skeleton.DashCard = function SkeletonDashCard({ colSpan = 6 }: { colSpan?: number }) {
-    const colClass = {
-        12: 'sm:col-span-12 md:col-span-12 lg:col-span-12',
-        8: 'sm:col-span-12 md:col-span-8 lg:col-span-8',
-        6: 'sm:col-span-12 md:col-span-6 lg:col-span-6',
-        4: 'sm:col-span-6 md:col-span-6 lg:col-span-4',
-    }[colSpan] || 'sm:col-span-12 md:col-span-6 lg:col-span-6'
-
     return (
-        <div className={`flex flex-col h-96 bg-white shadow-lg rounded-2xl p-6 ${colClass}`}>
+        <div className={`flex flex-col h-96 bg-white shadow-lg rounded-2xl p-6 ${colClass(colSpan)}`}>
             <div className="flex-shrink-0 mb-4 space-y-2">
                 <div className="animate-shimmer rounded h-5 w-40" />
                 <div className="animate-shimmer rounded h-4 w-28" />

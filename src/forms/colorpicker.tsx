@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import FieldWrapper from './fieldwrapper'
+import { useClickOutside } from '../hooks/useclickoutside'
 
 interface Props {
   label?: string
@@ -18,15 +19,7 @@ const ColorPicker = ({ label, value = '#000000', onChange, className = '', visib
     setLocalValue(value)
   }, [value])
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
-        setShowPicker(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  useClickOutside(pickerRef, () => setShowPicker(false))
 
   const handleChange = (newValue: string) => {
     setLocalValue(newValue)

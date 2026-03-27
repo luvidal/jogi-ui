@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
-import { createPortal } from 'react-dom'
-import type { ButtonHTMLAttributes, MouseEventHandler, RefObject } from 'react'
+import { useState, useRef } from 'react'
+import type { ButtonHTMLAttributes, MouseEventHandler } from 'react'
 import Icon from '../common/icon'
+import HoverTooltip from './hovertooltip'
+import { disabledEffect as disabledCls } from '../forms/inputstyles'
 
 interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
     icon: string
@@ -11,29 +12,6 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onC
     variant?: 'dark' | 'light'
     /** Color accent for icon-only floating toolbar buttons (e.g. destructive actions) */
     color?: 'default' | 'amber' | 'red'
-}
-
-const Tooltip = ({ label, btnRef }: { label: string; btnRef: RefObject<HTMLButtonElement | null> }) => {
-    const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
-
-    useEffect(() => {
-        const el = btnRef.current
-        if (!el) return
-        const rect = el.getBoundingClientRect()
-        setPos({ top: rect.bottom + 6, left: rect.left + rect.width / 2 })
-    }, [btnRef])
-
-    if (!pos) return null
-
-    return createPortal(
-        <span
-            className='fixed pointer-events-none z-50 px-2 py-0.5 rounded text-[11px] whitespace-nowrap bg-gray-900 text-white shadow-lg -translate-x-1/2'
-            style={{ top: pos.top, left: pos.left }}
-        >
-            {label}
-        </span>,
-        document.body
-    )
 }
 
 const colorStyles = {
@@ -55,7 +33,7 @@ const ToolbarButton = ({
     const [hovered, setHovered] = useState(false)
     const btnRef = useRef<HTMLButtonElement>(null)
 
-    const disabledEffect = disabled ? 'opacity-40 blur-[0.5px]' : ''
+    const disabledStyle = disabled ? disabledCls : ''
     const isIconOnly = color !== undefined
 
     const variantStyles = color && color !== 'default'
@@ -90,8 +68,8 @@ const ToolbarButton = ({
                 ${disabled ? 'cursor-not-allowed' : ''}
             `}
         >
-            <Icon name={icon} size={isIconOnly ? 15 : 16} className={`${variant === 'dark' && !isIconOnly ? 'icon-shadow-sm' : ''} ${disabledEffect}`} />
-            {hovered && <Tooltip label={label} btnRef={btnRef} />}
+            <Icon name={icon} size={isIconOnly ? 15 : 16} className={`${variant === 'dark' && !isIconOnly ? 'icon-shadow-sm' : ''} ${disabledStyle}`} />
+            {hovered && <HoverTooltip label={label} btnRef={btnRef} />}
         </button>
     )
 }

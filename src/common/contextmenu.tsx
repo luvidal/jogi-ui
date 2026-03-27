@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
 import Icon from './icon'
+import { useClickOutside } from '../hooks/useclickoutside'
 
 type MenuItem = {
   icon?: string
@@ -45,13 +46,10 @@ const ContextMenu = ({ open, position, items, onClose }: Props) => {
     setAdjustedPos({ x, y })
   }, [open, position.x, position.y])
 
+  useClickOutside(menuRef, () => { if (open) onClose() })
+
   useEffect(() => {
     if (!open) return
-
-    const onDown = (e: MouseEvent) => {
-      if (menuRef.current && menuRef.current.contains(e.target as Node)) return
-      onClose()
-    }
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -59,14 +57,10 @@ const ContextMenu = ({ open, position, items, onClose }: Props) => {
 
     const onScroll = () => onClose()
 
-    document.addEventListener('mousedown', onDown, true)
-    document.addEventListener('click', onDown, true)
     document.addEventListener('keydown', onKey)
     window.addEventListener('scroll', onScroll, true)
 
     return () => {
-      document.removeEventListener('mousedown', onDown, true)
-      document.removeEventListener('click', onDown, true)
       document.removeEventListener('keydown', onKey)
       window.removeEventListener('scroll', onScroll, true)
     }

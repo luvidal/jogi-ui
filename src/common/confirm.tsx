@@ -1,6 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Icon from './icon'
+import { variantConfig } from './dialogvariants'
+import { useDialogAnim } from '../hooks/usedialoganim'
+import { useTabTrap } from '../hooks/usetabtrap'
 
 export interface ConfirmOptions {
   title?: string
@@ -12,70 +15,16 @@ interface ConfirmState extends ConfirmOptions {
   resolve: (value: boolean) => void
 }
 
-const variantConfig = {
-  danger: {
-    icon: 'Trash2',
-    iconBg: 'bg-rose-50',
-    iconColor: 'text-rose-500',
-    confirmBg: 'bg-rose-600 hover:bg-rose-700',
-  },
-  warning: {
-    icon: 'TriangleAlert',
-    iconBg: 'bg-amber-50',
-    iconColor: 'text-amber-500',
-    confirmBg: 'bg-amber-600 hover:bg-amber-700',
-  },
-  info: {
-    icon: 'Info',
-    iconBg: 'bg-theme-50',
-    iconColor: 'text-theme-600',
-    confirmBg: 'bg-theme-700 hover:bg-theme-600',
-  },
-}
-
 const ConfirmDialog = ({ state, onDone }: { state: ConfirmState, onDone: () => void }) => {
-  const [visible, setVisible] = useState(false)
-  const [leaving, setLeaving] = useState(false)
   const dialogRef = useRef<HTMLDivElement>(null)
+  const { visible, leaving, close } = useDialogAnim<boolean>(state.resolve, onDone)
+
+  useTabTrap(dialogRef, () => close(false), 'button')
 
   useEffect(() => {
-    requestAnimationFrame(() => setVisible(true))
-  }, [])
-
-  const close = useCallback((result: boolean) => {
-    setLeaving(true)
-    setTimeout(() => {
-      state.resolve(result)
-      onDone()
-    }, 200)
-  }, [state, onDone])
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close(false)
-      if (e.key === 'Enter') close(true)
-
-      if (e.key === 'Tab' && dialogRef.current) {
-        const focusable = dialogRef.current.querySelectorAll<HTMLElement>('button')
-        if (focusable.length === 0) return
-        const first = focusable[0]
-        const last = focusable[focusable.length - 1]
-
-        if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault()
-            last.focus()
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault()
-            first.focus()
-          }
-        }
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    const onEnter = (e: KeyboardEvent) => { if (e.key === 'Enter') close(true) }
+    window.addEventListener('keydown', onEnter)
+    return () => window.removeEventListener('keydown', onEnter)
   }, [close])
 
   useEffect(() => {
@@ -84,8 +33,7 @@ const ConfirmDialog = ({ state, onDone }: { state: ConfirmState, onDone: () => v
     }
   }, [visible])
 
-  const v = state.variant || 'danger'
-  const cfg = variantConfig[v]
+  const cfg = variantConfig[state.variant || 'danger']
 
   return createPortal(
     <div

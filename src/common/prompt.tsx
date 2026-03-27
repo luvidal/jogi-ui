@@ -1,6 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Icon from './icon'
+import { variantConfig } from './dialogvariants'
+import { useDialogAnim } from '../hooks/usedialoganim'
+import { useTabTrap } from '../hooks/usetabtrap'
 
 export interface PromptOptions {
   title?: string
@@ -14,72 +17,13 @@ export interface PromptState extends PromptOptions {
   resolve: (value: string | null) => void
 }
 
-const variantConfig = {
-  danger: {
-    icon: 'Trash2',
-    iconBg: 'bg-rose-50',
-    iconColor: 'text-rose-500',
-    confirmBg: 'bg-rose-600 hover:bg-rose-700',
-  },
-  warning: {
-    icon: 'TriangleAlert',
-    iconBg: 'bg-amber-50',
-    iconColor: 'text-amber-500',
-    confirmBg: 'bg-amber-600 hover:bg-amber-700',
-  },
-  info: {
-    icon: 'Pencil',
-    iconBg: 'bg-theme-50',
-    iconColor: 'text-theme-600',
-    confirmBg: 'bg-theme-700 hover:bg-theme-600',
-  },
-}
-
 const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => void }) => {
-  const [visible, setVisible] = useState(false)
-  const [leaving, setLeaving] = useState(false)
   const [value, setValue] = useState(state.defaultValue ?? '')
   const dialogRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const { visible, leaving, close } = useDialogAnim<string | null>(state.resolve, onDone)
 
-  useEffect(() => {
-    requestAnimationFrame(() => setVisible(true))
-  }, [])
-
-  const close = useCallback((result: string | null) => {
-    setLeaving(true)
-    setTimeout(() => {
-      state.resolve(result)
-      onDone()
-    }, 200)
-  }, [state, onDone])
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close(null)
-
-      if (e.key === 'Tab' && dialogRef.current) {
-        const focusable = dialogRef.current.querySelectorAll<HTMLElement>('input, button')
-        if (focusable.length === 0) return
-        const first = focusable[0]
-        const last = focusable[focusable.length - 1]
-
-        if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault()
-            last.focus()
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault()
-            first.focus()
-          }
-        }
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [close])
+  useTabTrap(dialogRef, () => close(null))
 
   useEffect(() => {
     if (visible && inputRef.current) {
@@ -90,6 +34,7 @@ const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => voi
 
   const v = state.variant || 'info'
   const cfg = variantConfig[v]
+  const defaultIcon = v === 'info' ? 'Pencil' : cfg.icon
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -119,7 +64,7 @@ const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => voi
         <form onSubmit={handleSubmit}>
           <div className='flex flex-col items-center text-center px-6 pt-7 pb-4'>
             <div className={`w-12 h-12 rounded-xl ${cfg.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 ${visible && !leaving ? 'scale-100' : 'scale-75'}`}>
-              <Icon name={state.icon || cfg.icon} size={24} className={cfg.iconColor} />
+              <Icon name={state.icon || defaultIcon} size={24} className={cfg.iconColor} />
             </div>
             <h3 id='prompt-title' className='text-[15px] font-semibold text-gray-900 mb-1'>{state.title || 'Ingresa un valor'}</h3>
             <p id='prompt-message' className='text-sm text-gray-500 leading-relaxed whitespace-pre-line'>{state.message}</p>

@@ -3,6 +3,9 @@ import * as React$1 from 'react';
 import React__default, { ReactNode, AnchorHTMLAttributes, ButtonHTMLAttributes, MouseEventHandler } from 'react';
 import { LucideProps } from 'lucide-react';
 
+declare const useIsMobile: () => boolean;
+declare const useIsDesktop: () => boolean;
+
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 interface ToastData {
     id: string;
@@ -54,9 +57,6 @@ declare function createDialogContext<TOptions extends object, TResult>(Dialog: R
 }) => React__default.FunctionComponentElement<React__default.ProviderProps<{
     trigger: (options: TOptions | string) => Promise<TResult>;
 } | undefined>>, () => (options: TOptions | string) => Promise<TResult>];
-
-declare const useIsMobile: () => boolean;
-declare const useIsDesktop: () => boolean;
 
 /** Section definition for the Accordion component */
 interface Section {

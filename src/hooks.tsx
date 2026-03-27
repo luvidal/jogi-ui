@@ -1,31 +1,8 @@
-import { useState, useEffect, useContext, useCallback, useMemo, createContext } from 'react'
+import { useState, useContext, useCallback, useMemo, createContext } from 'react'
 import type React from 'react'
 
-// ── useIsMobile ──
-
-export const useIsMobile = () => {
-  const [m, setM] = useState(false)
-  useEffect(() => {
-    const mql = window.matchMedia('(max-width: 639px)')
-    setM(mql.matches)
-    const h = (e: MediaQueryListEvent) => setM(e.matches)
-    mql.addEventListener('change', h)
-    return () => mql.removeEventListener('change', h)
-  }, [])
-  return m
-}
-
-export const useIsDesktop = () => {
-  const [d, setD] = useState(false)
-  useEffect(() => {
-    const mql = window.matchMedia('(min-width: 1024px)')
-    setD(mql.matches)
-    const h = (e: MediaQueryListEvent) => setD(e.matches)
-    mql.addEventListener('change', h)
-    return () => mql.removeEventListener('change', h)
-  }, [])
-  return d
-}
+// ── Device hooks (canonical source: hooks/device.ts) ──
+export { useIsMobile, useIsDesktop } from './hooks/device'
 
 // ── Toast ──
 

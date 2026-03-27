@@ -1,6 +1,7 @@
 import { createPortal } from 'react-dom'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import Icon from './icon'
+import { useClickOutside } from '../hooks/useclickoutside'
 
 type TooltipProps = {
     text: string
@@ -41,16 +42,7 @@ const Tooltip = ({ text }: TooltipProps) => {
         }
     }, [open, updatePosition])
 
-    useEffect(() => {
-        const onDown = (e: MouseEvent) => {
-            if (ref.current && !ref.current.contains(e.target as Node) &&
-                tooltipRef.current && !tooltipRef.current.contains(e.target as Node)) {
-                setOpen(false)
-            }
-        }
-        document.addEventListener('mousedown', onDown)
-        return () => document.removeEventListener('mousedown', onDown)
-    }, [])
+    useClickOutside([ref, tooltipRef], () => setOpen(false))
 
     return (
         <span ref={ref} className='relative inline-block left-1'>

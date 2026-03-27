@@ -1,30 +1,30 @@
-import { createContext, useContext, useState, useCallback, useMemo, useEffect, useRef, useLayoutEffect, useId, createElement } from 'react';
+import { createContext, useState, useEffect, useContext, useCallback, useMemo, useRef, useLayoutEffect, useId, createElement } from 'react';
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import { icons, CircleHelp } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
 // src/hooks.tsx
 var useIsMobile = () => {
-  const [m, setM] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 639px)");
-    setM(mql.matches);
-    const h = (e) => setM(e.matches);
-    mql.addEventListener("change", h);
-    return () => mql.removeEventListener("change", h);
+    setIsMobile(mql.matches);
+    const handler = (e) => setIsMobile(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
   }, []);
-  return m;
+  return isMobile;
 };
 var useIsDesktop = () => {
-  const [d, setD] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   useEffect(() => {
     const mql = window.matchMedia("(min-width: 1024px)");
-    setD(mql.matches);
-    const h = (e) => setD(e.matches);
-    mql.addEventListener("change", h);
-    return () => mql.removeEventListener("change", h);
+    setIsDesktop(mql.matches);
+    const handler = (e) => setIsDesktop(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
   }, []);
-  return d;
+  return isDesktop;
 };
 var ToastContext = createContext(void 0);
 var useToast = () => {
@@ -87,28 +87,6 @@ function createDialogContext(Dialog, name, normalizeInput) {
   };
   return [Provider, useHook];
 }
-var useIsMobile2 = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 639px)");
-    setIsMobile(mql.matches);
-    const handler = (e) => setIsMobile(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
-  return isMobile;
-};
-var useIsDesktop2 = () => {
-  const [isDesktop, setIsDesktop] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(min-width: 1024px)");
-    setIsDesktop(mql.matches);
-    const handler = (e) => setIsDesktop(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
-  return isDesktop;
-};
 var reported = /* @__PURE__ */ new Set();
 var Icon = ({ name, ...props }) => {
   const LucideIcon = name ? icons[name] : void 0;
@@ -122,9 +100,15 @@ var Icon = ({ name, ...props }) => {
   return /* @__PURE__ */ jsx(Component, { ...props });
 };
 var icon_default = Icon;
+
+// src/forms/inputstyles.ts
+var inputBase = "border rounded-xl w-full text-sm px-3 py-2 text-gray-950";
+var inputEditable = "bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200";
+var inputReadOnly = "bg-gray-50 border-gray-200 cursor-default";
+var disabledEffect = "opacity-40 blur-[0.5px]";
 var Button = ({ icon, text, loading = false, className = "", ...props }) => {
   const isDisabled = props.disabled || loading;
-  const disabledEffect = isDisabled ? "opacity-40 blur-[0.5px]" : "";
+  const disabledStyle = isDisabled ? disabledEffect : "";
   return /* @__PURE__ */ jsxs(
     "button",
     {
@@ -135,8 +119,8 @@ var Button = ({ icon, text, loading = false, className = "", ...props }) => {
         loading ? /* @__PURE__ */ jsxs("svg", { className: "animate-spin h-4 w-4 text-current", viewBox: "0 0 24 24", fill: "none", children: [
           /* @__PURE__ */ jsx("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "3" }),
           /* @__PURE__ */ jsx("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" })
-        ] }) : icon && /* @__PURE__ */ jsx(icon_default, { name: icon, size: 16, className: `text-shadow-sm ${disabledEffect}` }),
-        text && /* @__PURE__ */ jsx("span", { className: `text-shadow-sm truncate font-semibold uppercase tracking-wide ${disabledEffect}`, children: text })
+        ] }) : icon && /* @__PURE__ */ jsx(icon_default, { name: icon, size: 16, className: `text-shadow-sm ${disabledStyle}` }),
+        text && /* @__PURE__ */ jsx("span", { className: `text-shadow-sm truncate font-semibold uppercase tracking-wide ${disabledStyle}`, children: text })
       ]
     }
   );
@@ -166,6 +150,18 @@ function FieldWrapper({ label, className = "", visible = true, children }) {
     children
   ] });
 }
+var useClickOutside = (refs, onClose) => {
+  useEffect(() => {
+    const refList = Array.isArray(refs) ? refs : [refs];
+    const onDown = (e) => {
+      const target = e.target;
+      if (refList.some((r) => r.current?.contains(target))) return;
+      onClose();
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [refs, onClose]);
+};
 var ColorPicker = ({ label, value = "#000000", onChange, className = "", visible = true }) => {
   const [localValue, setLocalValue] = useState(value);
   const [showPicker, setShowPicker] = useState(false);
@@ -173,15 +169,7 @@ var ColorPicker = ({ label, value = "#000000", onChange, className = "", visible
   useEffect(() => {
     setLocalValue(value);
   }, [value]);
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (pickerRef.current && !pickerRef.current.contains(e.target)) {
-        setShowPicker(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  useClickOutside(pickerRef, () => setShowPicker(false));
   const handleChange = (newValue) => {
     setLocalValue(newValue);
     onChange?.(newValue);
@@ -310,9 +298,6 @@ var ComputedField = ({ label, value, suffix, className = "" }) => {
   ] });
 };
 var computedfield_default = ComputedField;
-var inputBase = "border rounded-xl w-full text-sm px-3 py-2 text-gray-950";
-var inputEditable = "bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200";
-var inputReadOnly = "bg-gray-50 border-gray-200 cursor-default";
 var NumberField = ({ label, value, onChange, suffix, step = "any", readOnly }) => {
   return /* @__PURE__ */ jsxs("div", { children: [
     /* @__PURE__ */ jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
@@ -337,9 +322,6 @@ var NumberField = ({ label, value, onChange, suffix, step = "any", readOnly }) =
   ] });
 };
 var numberfield_default = NumberField;
-var inputBase2 = "border rounded-xl w-full text-sm px-3 py-2 text-gray-950";
-var inputEditable2 = "bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200";
-var inputReadOnly2 = "bg-gray-50 border-gray-200 cursor-default";
 var TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth, icon, onIconClick }) => {
   const hasIcon = !!icon;
   const isInteractive = hasIcon && !!onIconClick;
@@ -355,7 +337,7 @@ var TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth, ico
           tabIndex: readOnly ? -1 : void 0,
           placeholder: readOnly ? void 0 : placeholder,
           onChange: readOnly ? void 0 : (e) => onChange?.(e.target.value || void 0),
-          className: `${inputBase2} ${hasIcon ? "pr-8" : ""} ${readOnly ? inputReadOnly2 : inputEditable2}`
+          className: `${inputBase} ${hasIcon ? "pr-8" : ""} ${readOnly ? inputReadOnly : inputEditable}`
         }
       ),
       hasIcon && isInteractive && /* @__PURE__ */ jsx(
@@ -373,9 +355,6 @@ var TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth, ico
   ] });
 };
 var textfield_default = TextField;
-var inputBase3 = "border rounded-xl w-full text-sm px-3 py-2 text-gray-950";
-var inputEditable3 = "bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200";
-var inputReadOnly3 = "bg-gray-50 border-gray-200 cursor-default";
 var SelectField = ({ label, value, options, onChange, readOnly }) => {
   return /* @__PURE__ */ jsxs("div", { children: [
     /* @__PURE__ */ jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
@@ -385,7 +364,7 @@ var SelectField = ({ label, value, options, onChange, readOnly }) => {
         value: value ?? "",
         disabled: readOnly,
         onChange: readOnly ? void 0 : (e) => onChange?.(e.target.value || void 0),
-        className: `${inputBase3} ${readOnly ? inputReadOnly3 : inputEditable3}`,
+        className: `${inputBase} ${readOnly ? inputReadOnly : inputEditable}`,
         children: [
           /* @__PURE__ */ jsx("option", { value: "", children: "\u2014" }),
           options.map((o) => /* @__PURE__ */ jsx("option", { value: o.value, children: o.label }, o.value))
@@ -395,17 +374,6 @@ var SelectField = ({ label, value, options, onChange, readOnly }) => {
   ] });
 };
 var selectfield_default = SelectField;
-var useIsMobile3 = () => {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 639px)");
-    setM(mql.matches);
-    const h = (e) => setM(e.matches);
-    mql.addEventListener("change", h);
-    return () => mql.removeEventListener("change", h);
-  }, []);
-  return m;
-};
 var SIZE_CONFIG = {
   xl: { w: 1200, h: 900, maxW: 95, maxH: 90 },
   lg: { w: 960, h: 800, maxW: 92, maxH: 88 },
@@ -414,7 +382,7 @@ var SIZE_CONFIG = {
   xs: { w: 400, h: 500, maxW: 85, maxH: 80 }
 };
 var Modal = ({ title, icon, children, onClose, size: sizeProp = "md", headerActions }) => {
-  const mobile = useIsMobile3();
+  const mobile = useIsMobile();
   const sizeConfig3 = SIZE_CONFIG[sizeProp];
   const effectiveSize = useMemo(() => {
     if (mobile || typeof window === "undefined") return null;
@@ -504,15 +472,7 @@ var Tooltip = ({ text }) => {
       setVisible(false);
     }
   }, [open, updatePosition]);
-  useEffect(() => {
-    const onDown = (e) => {
-      if (ref.current && !ref.current.contains(e.target) && tooltipRef.current && !tooltipRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
-  }, []);
+  useClickOutside([ref, tooltipRef], () => setOpen(false));
   return /* @__PURE__ */ jsxs("span", { ref, className: "relative inline-block left-1", children: [
     /* @__PURE__ */ jsx(
       "button",
@@ -545,6 +505,17 @@ var Tooltip = ({ text }) => {
   ] });
 };
 var tooltip_default = Tooltip;
+
+// src/common/colclass.ts
+var colSpanMap = {
+  12: "sm:col-span-12 md:col-span-12 lg:col-span-12",
+  8: "sm:col-span-12 md:col-span-8 lg:col-span-8",
+  6: "sm:col-span-12 md:col-span-6 lg:col-span-6",
+  4: "sm:col-span-6 md:col-span-6 lg:col-span-4",
+  3: "sm:col-span-6 md:col-span-4 lg:col-span-3"
+};
+var defaultCol = "sm:col-span-12 md:col-span-6 lg:col-span-6";
+var colClass = (span) => colSpanMap[span] || defaultCol;
 var Skeleton = ({ className = "" }) => /* @__PURE__ */ jsx("div", { className: `animate-shimmer rounded ${className}` });
 Skeleton.Card = function SkeletonCard({ variant = "light", compact = false }) {
   const isLight = variant === "light";
@@ -617,13 +588,7 @@ Skeleton.StatRow = function SkeletonStatRow({ className = "" }) {
   return /* @__PURE__ */ jsx("div", { className: `grid grid-cols-2 md:grid-cols-4 gap-4 ${className}`, children: Array.from({ length: 4 }).map((_, i) => /* @__PURE__ */ jsx("div", { className: "animate-fade-in", style: { animationDelay: `${i * 80}ms` }, children: /* @__PURE__ */ jsx(Skeleton.StatCard, {}) }, i)) });
 };
 Skeleton.DashCard = function SkeletonDashCard({ colSpan = 6 }) {
-  const colClass = {
-    12: "sm:col-span-12 md:col-span-12 lg:col-span-12",
-    8: "sm:col-span-12 md:col-span-8 lg:col-span-8",
-    6: "sm:col-span-12 md:col-span-6 lg:col-span-6",
-    4: "sm:col-span-6 md:col-span-6 lg:col-span-4"
-  }[colSpan] || "sm:col-span-12 md:col-span-6 lg:col-span-6";
-  return /* @__PURE__ */ jsxs("div", { className: `flex flex-col h-96 bg-white shadow-lg rounded-2xl p-6 ${colClass}`, children: [
+  return /* @__PURE__ */ jsxs("div", { className: `flex flex-col h-96 bg-white shadow-lg rounded-2xl p-6 ${colClass(colSpan)}`, children: [
     /* @__PURE__ */ jsxs("div", { className: "flex-shrink-0 mb-4 space-y-2", children: [
       /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-5 w-40" }),
       /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-4 w-28" })
@@ -758,6 +723,8 @@ var EmptyState = ({ title = "Sin elementos", description, className = "", varian
   ] });
 };
 var emptystate_default = EmptyState;
+
+// src/common/dialogvariants.ts
 var variantConfig = {
   danger: {
     icon: "Trash2",
@@ -778,26 +745,27 @@ var variantConfig = {
     confirmBg: "bg-theme-700 hover:bg-theme-600"
   }
 };
-var ConfirmDialog = ({ state, onDone }) => {
+var useDialogAnim = (onResolve, onDone) => {
   const [visible, setVisible] = useState(false);
   const [leaving, setLeaving] = useState(false);
-  const dialogRef = useRef(null);
   useEffect(() => {
     requestAnimationFrame(() => setVisible(true));
   }, []);
   const close = useCallback((result) => {
     setLeaving(true);
     setTimeout(() => {
-      state.resolve(result);
+      onResolve(result);
       onDone();
     }, 200);
-  }, [state, onDone]);
+  }, [onResolve, onDone]);
+  return { visible, leaving, close };
+};
+var useTabTrap = (dialogRef, onEscape, selector = "input, button") => {
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "Escape") close(false);
-      if (e.key === "Enter") close(true);
+      if (e.key === "Escape") onEscape();
       if (e.key === "Tab" && dialogRef.current) {
-        const focusable = dialogRef.current.querySelectorAll("button");
+        const focusable = dialogRef.current.querySelectorAll(selector);
         if (focusable.length === 0) return;
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
@@ -816,14 +784,25 @@ var ConfirmDialog = ({ state, onDone }) => {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+  }, [dialogRef, onEscape, selector]);
+};
+var ConfirmDialog = ({ state, onDone }) => {
+  const dialogRef = useRef(null);
+  const { visible, leaving, close } = useDialogAnim(state.resolve, onDone);
+  useTabTrap(dialogRef, () => close(false), "button");
+  useEffect(() => {
+    const onEnter = (e) => {
+      if (e.key === "Enter") close(true);
+    };
+    window.addEventListener("keydown", onEnter);
+    return () => window.removeEventListener("keydown", onEnter);
   }, [close]);
   useEffect(() => {
     if (visible && dialogRef.current) {
       dialogRef.current.focus();
     }
   }, [visible]);
-  const v = state.variant || "danger";
-  const cfg = variantConfig[v];
+  const cfg = variantConfig[state.variant || "danger"];
   return createPortal(
     /* @__PURE__ */ jsx(
       "div",
@@ -880,66 +859,12 @@ var ConfirmDialog = ({ state, onDone }) => {
   );
 };
 var confirm_default = ConfirmDialog;
-var variantConfig2 = {
-  danger: {
-    icon: "Trash2",
-    iconBg: "bg-rose-50",
-    iconColor: "text-rose-500",
-    confirmBg: "bg-rose-600 hover:bg-rose-700"
-  },
-  warning: {
-    icon: "TriangleAlert",
-    iconBg: "bg-amber-50",
-    iconColor: "text-amber-500",
-    confirmBg: "bg-amber-600 hover:bg-amber-700"
-  },
-  info: {
-    icon: "Pencil",
-    iconBg: "bg-theme-50",
-    iconColor: "text-theme-600",
-    confirmBg: "bg-theme-700 hover:bg-theme-600"
-  }
-};
 var PromptDialog = ({ state, onDone }) => {
-  const [visible, setVisible] = useState(false);
-  const [leaving, setLeaving] = useState(false);
   const [value, setValue] = useState(state.defaultValue ?? "");
   const dialogRef = useRef(null);
   const inputRef = useRef(null);
-  useEffect(() => {
-    requestAnimationFrame(() => setVisible(true));
-  }, []);
-  const close = useCallback((result) => {
-    setLeaving(true);
-    setTimeout(() => {
-      state.resolve(result);
-      onDone();
-    }, 200);
-  }, [state, onDone]);
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") close(null);
-      if (e.key === "Tab" && dialogRef.current) {
-        const focusable = dialogRef.current.querySelectorAll("input, button");
-        if (focusable.length === 0) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
-        }
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [close]);
+  const { visible, leaving, close } = useDialogAnim(state.resolve, onDone);
+  useTabTrap(dialogRef, () => close(null));
   useEffect(() => {
     if (visible && inputRef.current) {
       inputRef.current.focus();
@@ -947,7 +872,8 @@ var PromptDialog = ({ state, onDone }) => {
     }
   }, [visible]);
   const v = state.variant || "info";
-  const cfg = variantConfig2[v];
+  const cfg = variantConfig[v];
+  const defaultIcon = v === "info" ? "Pencil" : cfg.icon;
   const handleSubmit = (e) => {
     e.preventDefault();
     if (value.trim()) close(value.trim());
@@ -976,7 +902,7 @@ var PromptDialog = ({ state, onDone }) => {
             onClick: (e) => e.stopPropagation(),
             children: /* @__PURE__ */ jsxs("form", { onSubmit: handleSubmit, children: [
               /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center text-center px-6 pt-7 pb-4", children: [
-                /* @__PURE__ */ jsx("div", { className: `w-12 h-12 rounded-xl ${cfg.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 ${visible && !leaving ? "scale-100" : "scale-75"}`, children: /* @__PURE__ */ jsx(icon_default, { name: state.icon || cfg.icon, size: 24, className: cfg.iconColor }) }),
+                /* @__PURE__ */ jsx("div", { className: `w-12 h-12 rounded-xl ${cfg.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 ${visible && !leaving ? "scale-100" : "scale-75"}`, children: /* @__PURE__ */ jsx(icon_default, { name: state.icon || defaultIcon, size: 24, className: cfg.iconColor }) }),
                 /* @__PURE__ */ jsx("h3", { id: "prompt-title", className: "text-[15px] font-semibold text-gray-900 mb-1", children: state.title || "Ingresa un valor" }),
                 /* @__PURE__ */ jsx("p", { id: "prompt-message", className: "text-sm text-gray-500 leading-relaxed whitespace-pre-line", children: state.message })
               ] }),
@@ -1037,23 +963,18 @@ var ContextMenu = ({ open, position, items, onClose }) => {
     if (y + r.height > window.innerHeight - pad) y = Math.max(pad, window.innerHeight - r.height - pad);
     setAdjustedPos({ x, y });
   }, [open, position.x, position.y]);
+  useClickOutside(menuRef, () => {
+    if (open) onClose();
+  });
   useEffect(() => {
     if (!open) return;
-    const onDown = (e) => {
-      if (menuRef.current && menuRef.current.contains(e.target)) return;
-      onClose();
-    };
     const onKey = (e) => {
       if (e.key === "Escape") onClose();
     };
     const onScroll = () => onClose();
-    document.addEventListener("mousedown", onDown, true);
-    document.addEventListener("click", onDown, true);
     document.addEventListener("keydown", onKey);
     window.addEventListener("scroll", onScroll, true);
     return () => {
-      document.removeEventListener("mousedown", onDown, true);
-      document.removeEventListener("click", onDown, true);
       document.removeEventListener("keydown", onKey);
       window.removeEventListener("scroll", onScroll, true);
     };
@@ -1453,7 +1374,7 @@ var EmailLink = ({ label, email, onClick, className = "" }) => {
   );
 };
 var emaillink_default = EmailLink;
-var Tooltip2 = ({ label, btnRef }) => {
+var HoverTooltip = ({ label, btnRef }) => {
   const [pos, setPos] = useState(null);
   useEffect(() => {
     const el = btnRef.current;
@@ -1474,6 +1395,7 @@ var Tooltip2 = ({ label, btnRef }) => {
     document.body
   );
 };
+var hovertooltip_default = HoverTooltip;
 var ToolBack = ({ icon, label = "Volver", onClick, variant = "light" }) => {
   const [hovered, setHovered] = useState(false);
   const btnRef = useRef(null);
@@ -1498,7 +1420,7 @@ var ToolBack = ({ icon, label = "Volver", onClick, variant = "light" }) => {
       children: [
         /* @__PURE__ */ jsx(icon_default, { name: "ChevronLeft", size: 16, className: variant === "dark" ? "icon-shadow-sm" : "" }),
         /* @__PURE__ */ jsx(icon_default, { name: icon, size: 16, className: variant === "dark" ? "icon-shadow-sm" : "" }),
-        hovered && /* @__PURE__ */ jsx(Tooltip2, { label, btnRef })
+        hovered && /* @__PURE__ */ jsx(hovertooltip_default, { label, btnRef })
       ]
     }
   );
@@ -1578,14 +1500,7 @@ function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefi
   ] });
 }
 var Card2 = ({ title, subtitle, children, colSpan = 6 }) => {
-  const colClass = {
-    12: "sm:col-span-12 md:col-span-12 lg:col-span-12",
-    8: "sm:col-span-12 md:col-span-8 lg:col-span-8",
-    6: "sm:col-span-12 md:col-span-6 lg:col-span-6",
-    4: "sm:col-span-6 md:col-span-6 lg:col-span-4",
-    3: "sm:col-span-6 md:col-span-4 lg:col-span-3"
-  }[colSpan] || "sm:col-span-12 md:col-span-6 lg:col-span-6";
-  return /* @__PURE__ */ jsxs("div", { className: `flex flex-col h-96 bg-white shadow-lg hover:shadow-xl rounded-2xl p-6 ${colClass} transition-all duration-300`, children: [
+  return /* @__PURE__ */ jsxs("div", { className: `flex flex-col h-96 bg-white shadow-lg hover:shadow-xl rounded-2xl p-6 ${colClass(colSpan)} transition-all duration-300`, children: [
     /* @__PURE__ */ jsxs("div", { className: "flex-shrink-0 text-lg sm:text-xl md:text-xl lg:text-xl xl:text-2xl font-bold text-theme-700 mb-4 whitespace-nowrap overflow-hidden text-ellipsis", children: [
       title,
       subtitle && /* @__PURE__ */ jsx("div", { className: "text-base sm:text-md md:text-md lg:text-base xl:text-lg font-semibold text-theme-500 mt-1 whitespace-nowrap overflow-hidden text-ellipsis", children: subtitle })
@@ -1853,27 +1768,6 @@ var Accordion = ({ sections, forceExpanded = false }) => {
   }) });
 };
 var section_default = Accordion;
-var Tooltip3 = ({ label, btnRef }) => {
-  const [pos, setPos] = useState(null);
-  useEffect(() => {
-    const el = btnRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    setPos({ top: rect.bottom + 6, left: rect.left + rect.width / 2 });
-  }, [btnRef]);
-  if (!pos) return null;
-  return createPortal(
-    /* @__PURE__ */ jsx(
-      "span",
-      {
-        className: "fixed pointer-events-none z-50 px-2 py-0.5 rounded text-[11px] whitespace-nowrap bg-gray-900 text-white shadow-lg -translate-x-1/2",
-        style: { top: pos.top, left: pos.left },
-        children: label
-      }
-    ),
-    document.body
-  );
-};
 var colorStyles = {
   default: "",
   amber: "text-amber-300 hover:text-amber-200 hover:bg-amber-500/30",
@@ -1891,7 +1785,7 @@ var ToolbarButton = ({
 }) => {
   const [hovered, setHovered] = useState(false);
   const btnRef = useRef(null);
-  const disabledEffect = disabled ? "opacity-40 blur-[0.5px]" : "";
+  const disabledStyle = disabled ? disabledEffect : "";
   const isIconOnly = color !== void 0;
   const variantStyles = color && color !== "default" ? colorStyles[color] : variant === "light" ? "bg-white hover:bg-gray-50 text-theme-700 hover:text-theme-800" : isIconOnly ? "text-white/80 hover:text-white hover:bg-white/20" : "bg-white/10 hover:bg-white/15 text-white/80 hover:text-white";
   const activeStyles = variant === "light" ? "bg-gray-100 text-theme-600" : "bg-white/30 text-white";
@@ -1916,8 +1810,8 @@ var ToolbarButton = ({
                 ${disabled ? "cursor-not-allowed" : ""}
             `,
       children: [
-        /* @__PURE__ */ jsx(icon_default, { name: icon, size: isIconOnly ? 15 : 16, className: `${variant === "dark" && !isIconOnly ? "icon-shadow-sm" : ""} ${disabledEffect}` }),
-        hovered && /* @__PURE__ */ jsx(Tooltip3, { label, btnRef })
+        /* @__PURE__ */ jsx(icon_default, { name: icon, size: isIconOnly ? 15 : 16, className: `${variant === "dark" && !isIconOnly ? "icon-shadow-sm" : ""} ${disabledStyle}` }),
+        hovered && /* @__PURE__ */ jsx(hovertooltip_default, { label, btnRef })
       ]
     }
   );
@@ -2845,6 +2739,6 @@ function UploadCards({ items, summary, requestLabel, role, labels: userLabels })
   ] }) });
 }
 
-export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, MasterDetail, modal_default as Modal, modalformlayout_default as ModalFormLayout, modaloverlaypanel_default as ModalOverlayPanel, modaltoolbar_default as ModalToolbar, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, UploadCards, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop2 as useIsDesktop, useIsMobile2 as useIsMobile, useRecords, useToast, useUploadFlow };
+export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, MasterDetail, modal_default as Modal, modalformlayout_default as ModalFormLayout, modaloverlaypanel_default as ModalOverlayPanel, modaltoolbar_default as ModalToolbar, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, UploadCards, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop, useIsMobile, useRecords, useToast, useUploadFlow };
 //# sourceMappingURL=index.mjs.map
 //# sourceMappingURL=index.mjs.map

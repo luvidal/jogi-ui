@@ -1,4 +1,4 @@
-// @jogi/gizmos — UI component library
+// @jogi/ui — UI component library
 
 // ── Hooks & Context ──
 export { useToast, ToastProvider } from './hooks'

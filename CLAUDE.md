@@ -1,4 +1,4 @@
-# Gizmos
+# @jogi/ui
 
 UI component library extracted from [jogi](../jogi). Provides themed, reusable components: buttons, inputs, selects, modals, accordions, tooltips, skeletons, cards, and more.
 
@@ -89,21 +89,19 @@ Tailwind config maps `theme-*` classes to these variables. Semantic colors (dang
 ## Exports
 
 ```ts
-// Will be populated as components are migrated
-// Placeholder:
-VERSION
+// Re-exports all components, hooks, and utilities from src/
 ```
 
 ## Consumer Setup (jogi)
 
 ```ts
 // jogi/tailwind.config.ts — content array
-'./node_modules/@avd/gizmos/dist/**/*.{js,mjs}'
+'./node_modules/@jogi/ui/dist/**/*.{js,mjs}'
 ```
 
 ```json
 // jogi/package.json — dependencies
-"@avd/gizmos": "github:luvidal/gizmos"
+"@jogi/ui": "github:luvidal/jogi-ui"
 ```
 
 ## Key Behaviors

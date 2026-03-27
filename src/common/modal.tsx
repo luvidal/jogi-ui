@@ -1,17 +1,6 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import Icon from './icon'
-
-const useIsMobile = () => {
-  const [m, setM] = useState(false)
-  useEffect(() => {
-    const mql = window.matchMedia('(max-width: 639px)')
-    setM(mql.matches)
-    const h = (e: MediaQueryListEvent) => setM(e.matches)
-    mql.addEventListener('change', h)
-    return () => mql.removeEventListener('change', h)
-  }, [])
-  return m
-}
+import { useIsMobile } from '../hooks/device'
 
 type ModalSize = 'xl' | 'lg' | 'md' | 'sm' | 'xs'
 
