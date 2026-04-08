@@ -1831,6 +1831,10 @@ var ButtonGroup = ({ children, className = "", variant = "dark" }) => {
   );
 };
 var buttongroup_default = ButtonGroup;
+var COLOR_SETS = {
+  default: { activeBg: "bg-white", activeText: "text-theme-700", activeIcon: "text-theme-500" },
+  violet: { activeBg: "bg-violet-100", activeText: "text-violet-700", activeIcon: "text-violet-500" }
+};
 var Tabs = ({
   tabs,
   activeTab: controlledActive,
@@ -1840,7 +1844,8 @@ var Tabs = ({
   children,
   className = "",
   suffix,
-  dark = false
+  dark = false,
+  colorSet = "default"
 }) => {
   const [internalActive, setInternalActive] = react.useState(() => {
     if (storageKey && controlledActive === void 0) {
@@ -1904,6 +1909,7 @@ var Tabs = ({
   const activeContent = tabs.find((t) => t.id === activeId)?.content;
   if (tabs.length === 0) return null;
   const hasContent = children !== void 0 || activeContent !== void 0;
+  const colors = COLOR_SETS[colorSet];
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className, children: [
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: `flex p-1 rounded-xl flex-shrink-0 ${dark ? "bg-white/10" : "bg-gray-100"}`, children: tabs.map((tab) => {
       const isActive = activeId === tab.id;
@@ -1915,10 +1921,10 @@ var Tabs = ({
             e.stopPropagation();
             handleTabClick(tab.id);
           },
-          className: `flex-1 flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${dark ? isActive ? "bg-white/20 text-white" : "text-white/50 hover:text-white/80 hover:bg-white/10" : isActive ? "bg-white text-theme-700 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-white/50"}`,
+          className: `flex-1 flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${dark ? isActive ? "bg-white/25 text-white shadow-sm" : "text-white/50 hover:text-white/80 hover:bg-white/10" : isActive ? `${colors.activeBg} ${colors.activeText} shadow-sm` : "text-gray-500 hover:text-gray-700 hover:bg-white/50"}`,
           children: [
-            tab.icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: tab.icon, size: 16, className: `flex-shrink-0 ${dark ? isActive ? "text-white" : "text-white/50" : isActive ? "text-theme-500" : "text-gray-400"}` }),
-            /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "truncate", children: [
+            tab.icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: tab.icon, size: 16, className: `flex-shrink-0 ${dark ? isActive ? "text-white" : "text-white/50" : isActive ? colors.activeIcon : "text-gray-400"}` }),
+            /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "truncate", title: tab.label, children: [
               tab.shortLabel ? /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
                 /* @__PURE__ */ jsxRuntime.jsx("span", { className: "sm:hidden", children: tab.shortLabel }),
                 /* @__PURE__ */ jsxRuntime.jsx("span", { className: "hidden sm:inline", children: tab.label })

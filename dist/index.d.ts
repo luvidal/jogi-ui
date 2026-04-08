@@ -569,6 +569,7 @@ interface Tab {
     content?: ReactNode;
 }
 
+type ColorSet = 'default' | 'violet';
 interface TabsProps {
     tabs: Tab[];
     activeTab?: string;
@@ -581,8 +582,10 @@ interface TabsProps {
     suffix?: (tabId: string) => string;
     /** Dark mode for use on dark backgrounds (e.g. modal headers) */
     dark?: boolean;
+    /** Color palette for active tab styling */
+    colorSet?: ColorSet;
 }
-declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey, children, className, suffix, dark }: TabsProps) => react_jsx_runtime.JSX.Element | null;
+declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey, children, className, suffix, dark, colorSet }: TabsProps) => react_jsx_runtime.JSX.Element | null;
 
 interface PanelProps {
     open: boolean;

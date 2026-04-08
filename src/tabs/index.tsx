@@ -12,6 +12,13 @@ export interface Tab {
 
 export type { Tab as TabType }
 
+export type ColorSet = 'default' | 'violet'
+
+const COLOR_SETS: Record<ColorSet, { activeBg: string; activeText: string; activeIcon: string }> = {
+    default: { activeBg: 'bg-white', activeText: 'text-theme-700', activeIcon: 'text-theme-500' },
+    violet:  { activeBg: 'bg-violet-100', activeText: 'text-violet-700', activeIcon: 'text-violet-500' },
+}
+
 interface TabsProps {
     tabs: Tab[]
     activeTab?: string
@@ -24,6 +31,8 @@ interface TabsProps {
     suffix?: (tabId: string) => string
     /** Dark mode for use on dark backgrounds (e.g. modal headers) */
     dark?: boolean
+    /** Color palette for active tab styling */
+    colorSet?: ColorSet
 }
 
 const Tabs = ({
@@ -35,7 +44,8 @@ const Tabs = ({
     children,
     className = '',
     suffix,
-    dark = false
+    dark = false,
+    colorSet = 'default'
 }: TabsProps) => {
     const [internalActive, setInternalActive] = useState<string>(() => {
         if (storageKey && controlledActive === undefined) {
@@ -97,6 +107,7 @@ const Tabs = ({
     if (tabs.length === 0) return null
 
     const hasContent = children !== undefined || activeContent !== undefined
+    const colors = COLOR_SETS[colorSet]
 
     return (
         <div className={className}>
@@ -110,16 +121,16 @@ const Tabs = ({
                             onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
                             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${
                                 dark
-                                    ? (isActive ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80 hover:bg-white/10')
-                                    : (isActive ? 'bg-white text-theme-700 shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-white/50')
+                                    ? (isActive ? 'bg-white/25 text-white shadow-sm' : 'text-white/50 hover:text-white/80 hover:bg-white/10')
+                                    : (isActive ? `${colors.activeBg} ${colors.activeText} shadow-sm` : 'text-gray-500 hover:text-gray-700 hover:bg-white/50')
                             }`}
                         >
                             {tab.icon && <Icon name={tab.icon} size={16} className={`flex-shrink-0 ${
                                 dark
                                     ? (isActive ? 'text-white' : 'text-white/50')
-                                    : (isActive ? 'text-theme-500' : 'text-gray-400')
+                                    : (isActive ? colors.activeIcon : 'text-gray-400')
                             }`} />}
-                            <span className='truncate'>{tab.shortLabel ? (<><span className="sm:hidden">{tab.shortLabel}</span><span className="hidden sm:inline">{tab.label}</span></>) : tab.label}{sfx || ''}</span>
+                            <span className='truncate' title={tab.label}>{tab.shortLabel ? (<><span className="sm:hidden">{tab.shortLabel}</span><span className="hidden sm:inline">{tab.label}</span></>) : tab.label}{sfx || ''}</span>
                         </button>
                     )
                 })}
