@@ -20,10 +20,10 @@ interface TabsProps {
     storageKey?: string
     children?: ReactNode
     className?: string
-    /** 'default' = underline tabs with content, 'pill' = compact dark pill tabs (no content rendering) */
-    variant?: 'default' | 'pill'
     /** Optional suffix per tab (e.g. "(3/5)"), shown after the label */
     suffix?: (tabId: string) => string
+    /** Dark mode for use on dark backgrounds (e.g. modal headers) */
+    dark?: boolean
 }
 
 const Tabs = ({
@@ -34,8 +34,8 @@ const Tabs = ({
     storageKey,
     children,
     className = '',
-    variant = 'default',
-    suffix
+    suffix,
+    dark = false
 }: TabsProps) => {
     const [internalActive, setInternalActive] = useState<string>(() => {
         if (storageKey && controlledActive === undefined) {
@@ -96,54 +96,39 @@ const Tabs = ({
 
     if (tabs.length === 0) return null
 
-    if (variant === 'pill') {
-        return (
-            <div className={`flex items-center gap-0.5 ${className}`}>
+    const hasContent = children !== undefined || activeContent !== undefined
+
+    return (
+        <div className={className}>
+            <div className={`flex p-1 rounded-xl flex-shrink-0 ${dark ? 'bg-white/10' : 'bg-gray-100'}`}>
                 {tabs.map(tab => {
                     const isActive = activeId === tab.id
                     const sfx = suffix?.(tab.id)
                     return (
-                        <div
-                            key={tab.id}
-                            className={`flex items-center gap-1.5 px-3 py-1 rounded cursor-pointer text-xs font-medium transition-all duration-200 select-none ${
-                                isActive
-                                    ? 'bg-white/20 text-white'
-                                    : 'text-white/50 hover:text-white/80 hover:bg-white/10'
-                            }`}
-                            onClick={() => handleTabClick(tab.id)}
-                        >
-                            {tab.icon && <Icon name={tab.icon} size={12} />}
-                            <span>{tab.label}{sfx || ''}</span>
-                        </div>
-                    )
-                })}
-            </div>
-        )
-    }
-
-    return (
-        <div className={className}>
-            <div className="flex flex-shrink-0">
-                {tabs.map(tab => {
-                    const isActive = activeId === tab.id
-                    return (
                         <button
                             key={tab.id}
                             onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
-                            className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold py-3 sm:py-4 px-2 sm:px-4 md:px-5 truncate whitespace-nowrap overflow-hidden transition-all duration-200 md:first:rounded-tl-btn md:last:rounded-tr-btn ${isActive
-                                ? 'text-theme-700 bg-white'
-                                : 'text-gray-300 bg-gray-50 hover:text-gray-400 hover:bg-gray-100'
-                                }`}
+                            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${
+                                dark
+                                    ? (isActive ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white/80 hover:bg-white/10')
+                                    : (isActive ? 'bg-white text-theme-700 shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-white/50')
+                            }`}
                         >
-                            {tab.icon && <Icon name={tab.icon} size={16} className={`flex-shrink-0 ${isActive ? 'text-theme-500' : 'text-gray-300'}`} />}
-                            <span className='truncate'>{tab.shortLabel ? (<><span className="sm:hidden">{tab.shortLabel}</span><span className="hidden sm:inline">{tab.label}</span></>) : tab.label}</span>
+                            {tab.icon && <Icon name={tab.icon} size={16} className={`flex-shrink-0 ${
+                                dark
+                                    ? (isActive ? 'text-white' : 'text-white/50')
+                                    : (isActive ? 'text-theme-500' : 'text-gray-400')
+                            }`} />}
+                            <span className='truncate'>{tab.shortLabel ? (<><span className="sm:hidden">{tab.shortLabel}</span><span className="hidden sm:inline">{tab.label}</span></>) : tab.label}{sfx || ''}</span>
                         </button>
                     )
                 })}
             </div>
-            <div className="flex-1 min-h-0 flex flex-col">
-                {children ?? activeContent}
-            </div>
+            {hasContent && (
+                <div className="flex-1 min-h-0 flex flex-col">
+                    {children ?? activeContent}
+                </div>
+            )}
         </div>
     )
 }

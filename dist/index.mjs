@@ -1837,8 +1837,8 @@ var Tabs = ({
   storageKey,
   children,
   className = "",
-  variant = "default",
-  suffix
+  suffix,
+  dark = false
 }) => {
   const [internalActive, setInternalActive] = useState(() => {
     if (storageKey && controlledActive === void 0) {
@@ -1901,30 +1901,11 @@ var Tabs = ({
   };
   const activeContent = tabs.find((t) => t.id === activeId)?.content;
   if (tabs.length === 0) return null;
-  if (variant === "pill") {
-    return /* @__PURE__ */ jsx("div", { className: `flex items-center gap-0.5 ${className}`, children: tabs.map((tab) => {
+  const hasContent = children !== void 0 || activeContent !== void 0;
+  return /* @__PURE__ */ jsxs("div", { className, children: [
+    /* @__PURE__ */ jsx("div", { className: `flex p-1 rounded-xl flex-shrink-0 ${dark ? "bg-white/10" : "bg-gray-100"}`, children: tabs.map((tab) => {
       const isActive = activeId === tab.id;
       const sfx = suffix?.(tab.id);
-      return /* @__PURE__ */ jsxs(
-        "div",
-        {
-          className: `flex items-center gap-1.5 px-3 py-1 rounded cursor-pointer text-xs font-medium transition-all duration-200 select-none ${isActive ? "bg-white/20 text-white" : "text-white/50 hover:text-white/80 hover:bg-white/10"}`,
-          onClick: () => handleTabClick(tab.id),
-          children: [
-            tab.icon && /* @__PURE__ */ jsx(icon_default, { name: tab.icon, size: 12 }),
-            /* @__PURE__ */ jsxs("span", { children: [
-              tab.label,
-              sfx || ""
-            ] })
-          ]
-        },
-        tab.id
-      );
-    }) });
-  }
-  return /* @__PURE__ */ jsxs("div", { className, children: [
-    /* @__PURE__ */ jsx("div", { className: "flex flex-shrink-0", children: tabs.map((tab) => {
-      const isActive = activeId === tab.id;
       return /* @__PURE__ */ jsxs(
         "button",
         {
@@ -1932,19 +1913,22 @@ var Tabs = ({
             e.stopPropagation();
             handleTabClick(tab.id);
           },
-          className: `flex-1 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold py-3 sm:py-4 px-2 sm:px-4 md:px-5 truncate whitespace-nowrap overflow-hidden transition-all duration-200 md:first:rounded-tl-btn md:last:rounded-tr-btn ${isActive ? "text-theme-700 bg-white" : "text-gray-300 bg-gray-50 hover:text-gray-400 hover:bg-gray-100"}`,
+          className: `flex-1 flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${dark ? isActive ? "bg-white/20 text-white" : "text-white/50 hover:text-white/80 hover:bg-white/10" : isActive ? "bg-white text-theme-700 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-white/50"}`,
           children: [
-            tab.icon && /* @__PURE__ */ jsx(icon_default, { name: tab.icon, size: 16, className: `flex-shrink-0 ${isActive ? "text-theme-500" : "text-gray-300"}` }),
-            /* @__PURE__ */ jsx("span", { className: "truncate", children: tab.shortLabel ? /* @__PURE__ */ jsxs(Fragment, { children: [
-              /* @__PURE__ */ jsx("span", { className: "sm:hidden", children: tab.shortLabel }),
-              /* @__PURE__ */ jsx("span", { className: "hidden sm:inline", children: tab.label })
-            ] }) : tab.label })
+            tab.icon && /* @__PURE__ */ jsx(icon_default, { name: tab.icon, size: 16, className: `flex-shrink-0 ${dark ? isActive ? "text-white" : "text-white/50" : isActive ? "text-theme-500" : "text-gray-400"}` }),
+            /* @__PURE__ */ jsxs("span", { className: "truncate", children: [
+              tab.shortLabel ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx("span", { className: "sm:hidden", children: tab.shortLabel }),
+                /* @__PURE__ */ jsx("span", { className: "hidden sm:inline", children: tab.label })
+              ] }) : tab.label,
+              sfx || ""
+            ] })
           ]
         },
         tab.id
       );
     }) }),
-    /* @__PURE__ */ jsx("div", { className: "flex-1 min-h-0 flex flex-col", children: children ?? activeContent })
+    hasContent && /* @__PURE__ */ jsx("div", { className: "flex-1 min-h-0 flex flex-col", children: children ?? activeContent })
   ] });
 };
 var tabs_default = Tabs;
