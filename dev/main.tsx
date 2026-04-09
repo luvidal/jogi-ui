@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import Tabs from '../src/tabs'
-import type { Tab } from '../src/tabs'
+import type { Tab, TabSize } from '../src/tabs'
 import './tailwind.css'
 
 const Section = ({ title, bg, children }: { title: string; bg?: string; children: React.ReactNode }) => (
@@ -111,6 +111,24 @@ const App = () => {
                     suffix={(id) => id === 'perfil' ? ' (3/5)' : id === 'situacion' ? ' (2/4)' : ''}
                 />
             </Section>
+
+            <h2 className="text-lg font-bold pt-4">Sizes</h2>
+
+            {(['xs', 'sm', 'md', 'lg'] as TabSize[]).map(s => (
+                <Section key={s} title={`size="${s}" — with icons`}>
+                    <Tabs tabs={iconTabs} activeTab={icon} onChange={setIcon} size={s} />
+                </Section>
+            ))}
+
+            <Section title="size='xs' + violet — RolePill replacement">
+                <Tabs tabs={roleTabs} activeTab={role} onChange={setRole} colorSet="violet" size="xs" />
+            </Section>
+
+            {(['xs', 'sm', 'md', 'lg'] as TabSize[]).map(s => (
+                <Section key={s} title={`size="${s}" — dark`} bg="bg-gray-800">
+                    <Tabs tabs={creditTabs} activeTab={credit} onChange={setCredit} dark size={s} />
+                </Section>
+            ))}
         </div>
     )
 }

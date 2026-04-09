@@ -1833,6 +1833,12 @@ var COLOR_SETS = {
   default: { activeBg: "bg-white", activeText: "text-theme-700", activeIcon: "text-theme-500" },
   violet: { activeBg: "bg-violet-100", activeText: "text-violet-700", activeIcon: "text-violet-500" }
 };
+var SIZE_CONFIG2 = {
+  xs: { button: "px-2 py-1.5 text-xs gap-1", icon: 14, track: "p-0.5" },
+  sm: { button: "px-3 py-2 sm:py-2.5 text-xs sm:text-sm gap-1.5", icon: 16, track: "p-1" },
+  md: { button: "px-4 py-2.5 text-sm gap-1.5", icon: 18, track: "p-1" },
+  lg: { button: "px-5 py-3 text-base gap-2", icon: 20, track: "p-1.5" }
+};
 var Tabs = ({
   tabs,
   activeTab: controlledActive,
@@ -1843,7 +1849,8 @@ var Tabs = ({
   className = "",
   suffix,
   dark = false,
-  colorSet = "default"
+  colorSet = "default",
+  size = "sm"
 }) => {
   const [internalActive, setInternalActive] = useState(() => {
     if (storageKey && controlledActive === void 0) {
@@ -1908,8 +1915,9 @@ var Tabs = ({
   if (tabs.length === 0) return null;
   const hasContent = children !== void 0 || activeContent !== void 0;
   const colors = COLOR_SETS[colorSet];
+  const sizeConfig3 = SIZE_CONFIG2[size];
   return /* @__PURE__ */ jsxs("div", { className, children: [
-    /* @__PURE__ */ jsx("div", { className: `flex p-1 rounded-xl flex-shrink-0 ${dark ? "bg-white/10" : "bg-gray-100"}`, children: tabs.map((tab) => {
+    /* @__PURE__ */ jsx("div", { className: `flex ${sizeConfig3.track} rounded-xl flex-shrink-0 ${dark ? "bg-white/10" : "bg-gray-100"}`, children: tabs.map((tab) => {
       const isActive = activeId === tab.id;
       const sfx = suffix?.(tab.id);
       return /* @__PURE__ */ jsxs(
@@ -1919,9 +1927,9 @@ var Tabs = ({
             e.stopPropagation();
             handleTabClick(tab.id);
           },
-          className: `flex-1 flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${dark ? isActive ? "bg-white/25 text-white shadow-sm" : "text-white/50 hover:text-white/80 hover:bg-white/10" : isActive ? `${colors.activeBg} ${colors.activeText} shadow-sm` : "text-gray-500 hover:text-gray-700 hover:bg-white/50"}`,
+          className: `flex-1 flex items-center justify-center ${sizeConfig3.button} rounded-lg font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${dark ? isActive ? "bg-white/25 text-white shadow-sm" : "text-white/50 hover:text-white/80 hover:bg-white/10" : isActive ? `${colors.activeBg} ${colors.activeText} shadow-sm` : "text-gray-500 hover:text-gray-700 hover:bg-white/50"}`,
           children: [
-            tab.icon && /* @__PURE__ */ jsx(icon_default, { name: tab.icon, size: 16, className: `flex-shrink-0 ${dark ? isActive ? "text-white" : "text-white/50" : isActive ? colors.activeIcon : "text-gray-400"}` }),
+            tab.icon && /* @__PURE__ */ jsx(icon_default, { name: tab.icon, size: sizeConfig3.icon, className: `flex-shrink-0 ${dark ? isActive ? "text-white" : "text-white/50" : isActive ? colors.activeIcon : "text-gray-400"}` }),
             /* @__PURE__ */ jsxs("span", { className: "truncate", title: tab.label, children: [
               tab.shortLabel ? /* @__PURE__ */ jsxs(Fragment, { children: [
                 /* @__PURE__ */ jsx("span", { className: "sm:hidden", children: tab.shortLabel }),

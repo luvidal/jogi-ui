@@ -13,10 +13,18 @@ export interface Tab {
 export type { Tab as TabType }
 
 export type ColorSet = 'default' | 'violet'
+export type TabSize = 'xs' | 'sm' | 'md' | 'lg'
 
 const COLOR_SETS: Record<ColorSet, { activeBg: string; activeText: string; activeIcon: string }> = {
     default: { activeBg: 'bg-white', activeText: 'text-theme-700', activeIcon: 'text-theme-500' },
     violet:  { activeBg: 'bg-violet-100', activeText: 'text-violet-700', activeIcon: 'text-violet-500' },
+}
+
+const SIZE_CONFIG: Record<TabSize, { button: string; icon: number; track: string }> = {
+    xs: { button: 'px-2 py-1.5 text-xs gap-1',       icon: 14, track: 'p-0.5' },
+    sm: { button: 'px-3 py-2 sm:py-2.5 text-xs sm:text-sm gap-1.5', icon: 16, track: 'p-1' },
+    md: { button: 'px-4 py-2.5 text-sm gap-1.5',     icon: 18, track: 'p-1' },
+    lg: { button: 'px-5 py-3 text-base gap-2',        icon: 20, track: 'p-1.5' },
 }
 
 interface TabsProps {
@@ -33,6 +41,8 @@ interface TabsProps {
     dark?: boolean
     /** Color palette for active tab styling */
     colorSet?: ColorSet
+    /** Tab density: font size, icon size, padding */
+    size?: TabSize
 }
 
 const Tabs = ({
@@ -45,7 +55,8 @@ const Tabs = ({
     className = '',
     suffix,
     dark = false,
-    colorSet = 'default'
+    colorSet = 'default',
+    size = 'sm'
 }: TabsProps) => {
     const [internalActive, setInternalActive] = useState<string>(() => {
         if (storageKey && controlledActive === undefined) {
@@ -108,10 +119,11 @@ const Tabs = ({
 
     const hasContent = children !== undefined || activeContent !== undefined
     const colors = COLOR_SETS[colorSet]
+    const sizeConfig = SIZE_CONFIG[size]
 
     return (
         <div className={className}>
-            <div className={`flex p-1 rounded-xl flex-shrink-0 ${dark ? 'bg-white/10' : 'bg-gray-100'}`}>
+            <div className={`flex ${sizeConfig.track} rounded-xl flex-shrink-0 ${dark ? 'bg-white/10' : 'bg-gray-100'}`}>
                 {tabs.map(tab => {
                     const isActive = activeId === tab.id
                     const sfx = suffix?.(tab.id)
@@ -119,13 +131,13 @@ const Tabs = ({
                         <button
                             key={tab.id}
                             onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
-                            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${
+                            className={`flex-1 flex items-center justify-center ${sizeConfig.button} rounded-lg font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${
                                 dark
                                     ? (isActive ? 'bg-white/25 text-white shadow-sm' : 'text-white/50 hover:text-white/80 hover:bg-white/10')
                                     : (isActive ? `${colors.activeBg} ${colors.activeText} shadow-sm` : 'text-gray-500 hover:text-gray-700 hover:bg-white/50')
                             }`}
                         >
-                            {tab.icon && <Icon name={tab.icon} size={16} className={`flex-shrink-0 ${
+                            {tab.icon && <Icon name={tab.icon} size={sizeConfig.icon} className={`flex-shrink-0 ${
                                 dark
                                     ? (isActive ? 'text-white' : 'text-white/50')
                                     : (isActive ? colors.activeIcon : 'text-gray-400')

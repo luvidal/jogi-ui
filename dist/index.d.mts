@@ -570,6 +570,7 @@ interface Tab {
 }
 
 type ColorSet = 'default' | 'violet';
+type TabSize = 'xs' | 'sm' | 'md' | 'lg';
 interface TabsProps {
     tabs: Tab[];
     activeTab?: string;
@@ -584,8 +585,10 @@ interface TabsProps {
     dark?: boolean;
     /** Color palette for active tab styling */
     colorSet?: ColorSet;
+    /** Tab density: font size, icon size, padding */
+    size?: TabSize;
 }
-declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey, children, className, suffix, dark, colorSet }: TabsProps) => react_jsx_runtime.JSX.Element | null;
+declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey, children, className, suffix, dark, colorSet, size }: TabsProps) => react_jsx_runtime.JSX.Element | null;
 
 interface PanelProps {
     open: boolean;
