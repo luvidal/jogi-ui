@@ -27,12 +27,20 @@ const SIZE_CONFIG: Record<TabSize, { button: string; icon: number; track: string
     lg: { button: 'px-5 py-3 text-base gap-2',        icon: 20, track: 'p-1.5' },
 }
 
+function buildTabsKey(tabs: Tab[], storageKey?: string): string | undefined {
+    if (storageKey) return storageKey
+    const ids = tabs.map(t => t.id).join(',')
+    return `jogi_tabs_${ids}`
+}
+
 interface TabsProps {
     tabs: Tab[]
     activeTab?: string
     onChange?: (tabId: string) => void
     onRefresh?: (tabId: string) => void
     storageKey?: string
+    /** Persist active tab in localStorage. Default true. */
+    rememberTab?: boolean
     children?: ReactNode
     className?: string
     /** Optional suffix per tab (e.g. "(3/5)"), shown after the label */
@@ -50,7 +58,8 @@ const Tabs = ({
     activeTab: controlledActive,
     onChange,
     onRefresh,
-    storageKey,
+    storageKey: explicitStorageKey,
+    rememberTab = true,
     children,
     className = '',
     suffix,
@@ -58,6 +67,8 @@ const Tabs = ({
     colorSet = 'default',
     size = 'sm'
 }: TabsProps) => {
+    const storageKey = rememberTab ? buildTabsKey(tabs, explicitStorageKey) : undefined
+
     const [internalActive, setInternalActive] = useState<string>(() => {
         if (storageKey && controlledActive === undefined) {
             try {

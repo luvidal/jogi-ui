@@ -509,6 +509,10 @@ interface AccordionProps {
     sections: Section[];
     /** Force all sections expanded (useful for PDF generation) */
     forceExpanded?: boolean;
+    /** Persist open section in localStorage. Default true. */
+    rememberOpen?: boolean;
+    /** Explicit localStorage key. Auto-generated from section IDs if omitted. */
+    storageKey?: string;
 }
 /**
  * Accordion — collapsible sections with colored headers.
@@ -516,7 +520,7 @@ interface AccordionProps {
  * Colors are provided per section via `section.colors`. Falls back to neutral gray.
  * Only one section can be open at a time (mutual exclusivity).
  */
-declare const Accordion: ({ sections, forceExpanded }: AccordionProps) => react_jsx_runtime.JSX.Element;
+declare const Accordion: ({ sections, forceExpanded, rememberOpen, storageKey }: AccordionProps) => react_jsx_runtime.JSX.Element;
 
 interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
     icon: string;
@@ -577,6 +581,8 @@ interface TabsProps {
     onChange?: (tabId: string) => void;
     onRefresh?: (tabId: string) => void;
     storageKey?: string;
+    /** Persist active tab in localStorage. Default true. */
+    rememberTab?: boolean;
     children?: ReactNode;
     className?: string;
     /** Optional suffix per tab (e.g. "(3/5)"), shown after the label */
@@ -588,7 +594,7 @@ interface TabsProps {
     /** Tab density: font size, icon size, padding */
     size?: TabSize;
 }
-declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey, children, className, suffix, dark, colorSet, size }: TabsProps) => react_jsx_runtime.JSX.Element | null;
+declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey: explicitStorageKey, rememberTab, children, className, suffix, dark, colorSet, size }: TabsProps) => react_jsx_runtime.JSX.Element | null;
 
 interface PanelProps {
     open: boolean;

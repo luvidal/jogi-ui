@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Icon from '../common/icon'
 import SectionIcon from '../common/sectionicon'
 import type { Section } from '../types'
@@ -7,11 +7,21 @@ export type { Section }
 
 const DEFAULT_COLORS = { bg: 'bg-gray-50', text: 'text-gray-700', iconBg: 'bg-gray-100' }
 
+function buildAccordionKey(sections: Section[], storageKey?: string): string {
+    if (storageKey) return storageKey
+    const ids = sections.map(s => s.id).join(',')
+    return `jogi_accordion_${ids}`
+}
+
 interface AccordionProps {
     /** Array of sections to render */
     sections: Section[]
     /** Force all sections expanded (useful for PDF generation) */
     forceExpanded?: boolean
+    /** Persist open section in localStorage. Default true. */
+    rememberOpen?: boolean
+    /** Explicit localStorage key. Auto-generated from section IDs if omitted. */
+    storageKey?: string
 }
 
 /**
@@ -20,8 +30,24 @@ interface AccordionProps {
  * Colors are provided per section via `section.colors`. Falls back to neutral gray.
  * Only one section can be open at a time (mutual exclusivity).
  */
-const Accordion = ({ sections, forceExpanded = false }: AccordionProps) => {
-    const [openId, setOpenId] = useState<string | null>(sections[0]?.id ?? null)
+const Accordion = ({ sections, forceExpanded = false, rememberOpen = true, storageKey }: AccordionProps) => {
+    const key = rememberOpen ? buildAccordionKey(sections, storageKey) : null
+
+    const [openId, setOpenId] = useState<string | null>(() => {
+        if (key) {
+            try {
+                const stored = localStorage.getItem(key)
+                if (stored === '__closed__') return null
+                if (stored && sections.some(s => s.id === stored)) return stored
+            } catch {}
+        }
+        return sections[0]?.id ?? null
+    })
+
+    useEffect(() => {
+        if (!key) return
+        try { localStorage.setItem(key, openId ?? '__closed__') } catch {}
+    }, [openId, key])
 
     const handleToggle = (sectionId: string) => {
         if (forceExpanded) return

@@ -1720,8 +1720,31 @@ var SectionIcon = ({
 };
 var sectionicon_default = SectionIcon;
 var DEFAULT_COLORS2 = { bg: "bg-gray-50", text: "text-gray-700", iconBg: "bg-gray-100" };
-var Accordion = ({ sections, forceExpanded = false }) => {
-  const [openId, setOpenId] = useState(sections[0]?.id ?? null);
+function buildAccordionKey(sections, storageKey) {
+  if (storageKey) return storageKey;
+  const ids = sections.map((s) => s.id).join(",");
+  return `jogi_accordion_${ids}`;
+}
+var Accordion = ({ sections, forceExpanded = false, rememberOpen = true, storageKey }) => {
+  const key = rememberOpen ? buildAccordionKey(sections, storageKey) : null;
+  const [openId, setOpenId] = useState(() => {
+    if (key) {
+      try {
+        const stored = localStorage.getItem(key);
+        if (stored === "__closed__") return null;
+        if (stored && sections.some((s) => s.id === stored)) return stored;
+      } catch {
+      }
+    }
+    return sections[0]?.id ?? null;
+  });
+  useEffect(() => {
+    if (!key) return;
+    try {
+      localStorage.setItem(key, openId ?? "__closed__");
+    } catch {
+    }
+  }, [openId, key]);
   const handleToggle = (sectionId) => {
     if (forceExpanded) return;
     setOpenId((prev) => prev === sectionId ? null : sectionId);
@@ -1839,12 +1862,18 @@ var SIZE_CONFIG2 = {
   md: { button: "px-4 py-2.5 text-sm gap-1.5", icon: 18, track: "p-1" },
   lg: { button: "px-5 py-3 text-base gap-2", icon: 20, track: "p-1.5" }
 };
+function buildTabsKey(tabs, storageKey) {
+  if (storageKey) return storageKey;
+  const ids = tabs.map((t) => t.id).join(",");
+  return `jogi_tabs_${ids}`;
+}
 var Tabs = ({
   tabs,
   activeTab: controlledActive,
   onChange,
   onRefresh,
-  storageKey,
+  storageKey: explicitStorageKey,
+  rememberTab = true,
   children,
   className = "",
   suffix,
@@ -1852,6 +1881,7 @@ var Tabs = ({
   colorSet = "default",
   size = "sm"
 }) => {
+  const storageKey = rememberTab ? buildTabsKey(tabs, explicitStorageKey) : void 0;
   const [internalActive, setInternalActive] = useState(() => {
     if (storageKey && controlledActive === void 0) {
       try {
