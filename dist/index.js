@@ -1361,7 +1361,7 @@ var EmailLink = ({ label, email, onClick, className = "" }) => {
   return /* @__PURE__ */ jsxRuntime.jsxs(
     "span",
     {
-      className: `group/name text-sm inline-flex items-center gap-1 ${hasCustomColor ? "" : "text-gray-500 hover:text-theme-600"} ${onClick ? "cursor-pointer" : ""} ${className}`,
+      className: `group/name inline-flex items-center ${hasCustomColor ? "" : "text-gray-500 hover:text-theme-600"} ${onClick ? "cursor-pointer" : ""} ${className}`,
       onClick: (e) => {
         e.stopPropagation();
         onClick?.();
@@ -1370,7 +1370,7 @@ var EmailLink = ({ label, email, onClick, className = "" }) => {
       children: [
         /* @__PURE__ */ jsxRuntime.jsx("span", { className: `truncate ${email ? "group-hover/name:hidden" : ""}`, children: label }),
         email && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "hidden group-hover/name:inline truncate", children: email }),
-        onClick && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "Mail", size: 10, className: `opacity-0 group-hover/name:opacity-100 transition-opacity flex-shrink-0 ${hasCustomColor ? "text-current" : "text-gray-400"}` })
+        onClick && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "Mail", size: 10, className: `hidden group-hover/name:inline ml-1 flex-shrink-0 ${hasCustomColor ? "text-current" : "text-gray-400"}` })
       ]
     }
   );
