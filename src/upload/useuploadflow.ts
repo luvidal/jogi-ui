@@ -139,7 +139,23 @@ export function useUploadFlow(options: UploadFlowOptions) {
       if (uploadOpts?.requestId) params.requestId = uploadOpts.requestId
       else if (optionsRef.current.requestId) params.requestId = optionsRef.current.requestId
       if (uploadOpts?.docTypeId) params.docTypeId = uploadOpts.docTypeId
-      const res = await uploadFn(compressed, params)
+
+      // Retry with backoff on 429 (rate limit)
+      let res: any
+      const maxRetries = 4
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+          res = await uploadFn(compressed, params)
+          break
+        } catch (retryErr: any) {
+          const is429 = retryErr?.status === 429 || /429|rate.?limit|too many/i.test(retryErr?.message || '')
+          if (is429 && attempt < maxRetries) {
+            await wait(2000 * (attempt + 1))
+            continue
+          }
+          throw retryErr
+        }
+      }
 
       if (progressTimer) clearInterval(progressTimer)
       progressTimer = null
