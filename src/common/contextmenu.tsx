@@ -97,9 +97,9 @@ const ContextMenu = ({ open, position, items, onClose }: Props) => {
                 item.disabled
                   ? 'opacity-40 cursor-not-allowed'
                   : item.variant === 'red'
-                    ? 'text-red-600 hover:bg-red-50'
+                    ? 'text-status-pending hover:bg-status-pending/10'
                     : item.variant === 'amber'
-                      ? 'text-amber-600 hover:bg-amber-50'
+                      ? 'text-status-warn hover:bg-status-warn/10'
                       : 'text-gray-700 hover:bg-gray-100'
               }`}
               onClick={e => {
@@ -110,7 +110,7 @@ const ContextMenu = ({ open, position, items, onClose }: Props) => {
               }}
             >
               {item.icon && <Icon name={item.icon} size={16} className={
-                item.disabled ? '' : item.variant === 'red' ? 'text-red-500' : item.variant === 'amber' ? 'text-amber-500' : 'text-gray-700'
+                item.disabled ? '' : item.variant === 'red' ? 'text-status-pending' : item.variant === 'amber' ? 'text-status-warn' : 'text-gray-700'
               } />}
               <span className='text-sm'>{item.label}</span>
             </button>

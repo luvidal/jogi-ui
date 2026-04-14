@@ -728,15 +728,15 @@ var emptystate_default = EmptyState;
 var variantConfig = {
   danger: {
     icon: "Trash2",
-    iconBg: "bg-rose-50",
-    iconColor: "text-rose-500",
-    confirmBg: "bg-rose-600 hover:bg-rose-700"
+    iconBg: "bg-status-pending/10",
+    iconColor: "text-status-pending",
+    confirmBg: "bg-status-pending hover:bg-status-pending/80"
   },
   warning: {
     icon: "TriangleAlert",
-    iconBg: "bg-amber-50",
-    iconColor: "text-amber-500",
-    confirmBg: "bg-amber-600 hover:bg-amber-700"
+    iconBg: "bg-status-warn/10",
+    iconColor: "text-status-warn",
+    confirmBg: "bg-status-warn hover:bg-status-warn/80"
   },
   info: {
     icon: "Info",
@@ -1000,7 +1000,7 @@ var ContextMenu = ({ open, position, items, onClose }) => {
           {
             type: "button",
             disabled: item.disabled,
-            className: `w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left ${item.disabled ? "opacity-40 cursor-not-allowed" : item.variant === "red" ? "text-red-600 hover:bg-red-50" : item.variant === "amber" ? "text-amber-600 hover:bg-amber-50" : "text-gray-700 hover:bg-gray-100"}`,
+            className: `w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left ${item.disabled ? "opacity-40 cursor-not-allowed" : item.variant === "red" ? "text-status-pending hover:bg-status-pending/10" : item.variant === "amber" ? "text-status-warn hover:bg-status-warn/10" : "text-gray-700 hover:bg-gray-100"}`,
             onClick: (e) => {
               e.stopPropagation();
               if (item.disabled) return;
@@ -1008,7 +1008,7 @@ var ContextMenu = ({ open, position, items, onClose }) => {
               item.action?.();
             },
             children: [
-              item.icon && /* @__PURE__ */ jsx(icon_default, { name: item.icon, size: 16, className: item.disabled ? "" : item.variant === "red" ? "text-red-500" : item.variant === "amber" ? "text-amber-500" : "text-gray-700" }),
+              item.icon && /* @__PURE__ */ jsx(icon_default, { name: item.icon, size: 16, className: item.disabled ? "" : item.variant === "red" ? "text-status-pending" : item.variant === "amber" ? "text-status-warn" : "text-gray-700" }),
               /* @__PURE__ */ jsx("span", { className: "text-sm", children: item.label })
             ]
           },
@@ -1214,9 +1214,9 @@ function MasterDetail({
 }
 var colorConfig = {
   default: { bg: "bg-theme-50", text: "text-theme-700", iconBg: "bg-theme-100", iconColor: "text-theme-500" },
-  success: { bg: "bg-emerald-50", text: "text-emerald-700", iconBg: "bg-emerald-100", iconColor: "text-emerald-500" },
-  warning: { bg: "bg-amber-50", text: "text-amber-700", iconBg: "bg-amber-100", iconColor: "text-amber-500" },
-  danger: { bg: "bg-rose-50", text: "text-rose-700", iconBg: "bg-rose-100", iconColor: "text-rose-500" }
+  success: { bg: "bg-status-ok/10", text: "text-status-ok", iconBg: "bg-status-ok/20", iconColor: "text-status-ok" },
+  warning: { bg: "bg-status-warn/10", text: "text-status-warn", iconBg: "bg-status-warn/20", iconColor: "text-status-warn" },
+  danger: { bg: "bg-status-pending/10", text: "text-status-pending", iconBg: "bg-status-pending/20", iconColor: "text-status-pending" }
 };
 var StatCard = ({ label, value, icon, subtitle, color = "default" }) => {
   const cfg = colorConfig[color];
@@ -1623,13 +1623,13 @@ var Toast = ({ toast, onClose }) => {
   const getToastStyles = () => {
     switch (toast.type) {
       case "success":
-        return { bg: "bg-emerald-50", iconBg: "bg-emerald-100", text: "text-emerald-700", icon: "CircleCheck" };
+        return { bg: "bg-status-ok/10", iconBg: "bg-status-ok/20", text: "text-status-ok", icon: "CircleCheck" };
       case "error":
-        return { bg: "bg-rose-50", iconBg: "bg-rose-100", text: "text-rose-700", icon: "CircleX" };
+        return { bg: "bg-status-pending/10", iconBg: "bg-status-pending/20", text: "text-status-pending", icon: "CircleX" };
       case "warning":
-        return { bg: "bg-amber-50", iconBg: "bg-amber-100", text: "text-amber-700", icon: "TriangleAlert" };
+        return { bg: "bg-status-warn/10", iconBg: "bg-status-warn/20", text: "text-status-warn", icon: "TriangleAlert" };
       default:
-        return { bg: "bg-violet-50", iconBg: "bg-violet-100", text: "text-violet-700", icon: "Info" };
+        return { bg: "bg-status-info/10", iconBg: "bg-status-info/20", text: "text-status-info", icon: "Info" };
     }
   };
   const styles = getToastStyles();
@@ -1793,8 +1793,8 @@ var Accordion = ({ sections, forceExpanded = false, rememberOpen = true, storage
 var section_default = Accordion;
 var colorStyles = {
   default: "",
-  amber: "text-amber-300 hover:text-amber-200 hover:bg-amber-500/30",
-  red: "text-red-300 hover:text-red-200 hover:bg-red-500/30"
+  amber: "text-status-warn hover:text-status-warn/80 hover:bg-status-warn/30",
+  red: "text-status-pending hover:text-status-pending/80 hover:bg-status-pending/30"
 };
 var ToolbarButton = ({
   icon,
@@ -1854,7 +1854,7 @@ var ButtonGroup = ({ children, className = "", variant = "dark" }) => {
 var buttongroup_default = ButtonGroup;
 var COLOR_SETS = {
   default: { activeBg: "bg-white", activeText: "text-theme-700", activeIcon: "text-theme-500" },
-  violet: { activeBg: "bg-violet-100", activeText: "text-violet-700", activeIcon: "text-violet-500" }
+  violet: { activeBg: "bg-status-info/20", activeText: "text-status-info", activeIcon: "text-status-info" }
 };
 var SIZE_CONFIG2 = {
   xs: { button: "px-2 py-1.5 text-xs gap-1", icon: 14, track: "p-0.5" },
@@ -2614,8 +2614,8 @@ var statusConfig = {
   analyzing: { icon: "Sparkles", color: "text-theme-500", spin: true },
   detected: { icon: "Sparkles", color: "text-theme-600" },
   linking: { icon: "Link", color: "text-theme-500" },
-  done: { icon: "Check", color: "text-emerald-600" },
-  error: { icon: "X", color: "text-rose-500" }
+  done: { icon: "Check", color: "text-status-ok" },
+  error: { icon: "X", color: "text-status-pending" }
 };
 var fileIcon = (filename) => {
   const ext = filename.split(".").pop()?.toLowerCase();
@@ -2658,10 +2658,10 @@ function defaultHeaderLabel(items, summary) {
 function StatusLabel({ item, requestLabel, role, labels }) {
   const getLinkingLabel = labels.linkingLabel ?? defaultLinkingLabel;
   const getDetectedLabel = labels.detectedLabel ?? defaultDetectedLabel;
-  if (item.status === "error") return /* @__PURE__ */ jsx("span", { className: "text-xs text-rose-500", children: item.error || "Error" });
+  if (item.status === "error") return /* @__PURE__ */ jsx("span", { className: "text-xs text-status-pending", children: item.error || "Error" });
   if (item.status === "detected") return /* @__PURE__ */ jsx("span", { className: "text-xs text-theme-600 font-medium", children: getDetectedLabel(item.detectedTypes, item.detectedCount) });
   if (item.status === "linking") return /* @__PURE__ */ jsx("span", { className: "text-xs text-theme-500", children: getLinkingLabel(requestLabel, role) });
-  if (item.status === "done" && item.detectedTypes.length > 0) return /* @__PURE__ */ jsx("span", { className: "text-xs text-emerald-600", children: getDetectedLabel(item.detectedTypes, item.detectedCount) });
+  if (item.status === "done" && item.detectedTypes.length > 0) return /* @__PURE__ */ jsx("span", { className: "text-xs text-status-ok", children: getDetectedLabel(item.detectedTypes, item.detectedCount) });
   const statusLabel = labels[item.status] ?? "";
   return /* @__PURE__ */ jsx("span", { className: "text-xs text-gray-500", children: statusLabel });
 }
@@ -2669,8 +2669,8 @@ function ProgressBar({ item }) {
   const isActive = ["compressing", "uploading", "analyzing"].includes(item.status);
   const isDone = item.status === "done";
   const isError = item.status === "error";
-  const barColor = isError ? "bg-rose-400" : isDone ? "bg-emerald-400" : "bg-theme-400";
-  const trackColor = isError ? "bg-rose-100" : isDone ? "bg-emerald-100" : "bg-theme-100";
+  const barColor = isError ? "bg-status-pending" : isDone ? "bg-status-ok" : "bg-theme-400";
+  const trackColor = isError ? "bg-status-pending/20" : isDone ? "bg-status-ok/20" : "bg-theme-100";
   return /* @__PURE__ */ jsx("div", { className: `h-1 rounded-full overflow-hidden ${trackColor}`, children: /* @__PURE__ */ jsx(
     "div",
     {
@@ -2729,7 +2729,7 @@ function UploadCard({ item, index, requestLabel, role, labels }) {
       className: `flex items-start gap-3 px-3 py-2.5 rounded-xl transition-opacity duration-700 animate-upload-slide-in ${isDone ? "opacity-50" : "opacity-100"}`,
       style: { animationDelay: `${index * 80}ms` },
       children: [
-        /* @__PURE__ */ jsx("div", { className: `flex-shrink-0 mt-0.5 ${isDone ? "text-emerald-400" : "text-theme-400"}`, children: /* @__PURE__ */ jsx(icon_default, { name: isDone ? "Check" : item.isExpanded ? "FileText" : fileIcon(item.filename), size: 18 }) }),
+        /* @__PURE__ */ jsx("div", { className: `flex-shrink-0 mt-0.5 ${isDone ? "text-status-ok" : "text-theme-400"}`, children: /* @__PURE__ */ jsx(icon_default, { name: isDone ? "Check" : item.isExpanded ? "FileText" : fileIcon(item.filename), size: 18 }) }),
         /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2", children: [
             /* @__PURE__ */ jsx("span", { className: `text-sm font-medium truncate ${isDone ? "text-gray-400" : "text-gray-700"}`, children: item.isExpanded ? item.filename : truncate(item.filename) }),
@@ -2763,7 +2763,7 @@ function UploadCards({ items, summary, requestLabel, role, labels: userLabels })
     !isSingle && /* @__PURE__ */ jsx("div", { className: "h-1 rounded-full bg-theme-100 mb-3 overflow-hidden", children: /* @__PURE__ */ jsx(
       "div",
       {
-        className: `h-full rounded-full transition-all duration-500 ease-out ${allDone ? "bg-emerald-400" : "bg-theme-400"}`,
+        className: `h-full rounded-full transition-all duration-500 ease-out ${allDone ? "bg-status-ok" : "bg-theme-400"}`,
         style: { width: `${overallProgress}%` }
       }
     ) }),

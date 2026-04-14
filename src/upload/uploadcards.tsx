@@ -39,8 +39,8 @@ const statusConfig: Record<string, { icon: string; color: string; spin?: boolean
   analyzing:   { icon: 'Sparkles',   color: 'text-theme-500',   spin: true },
   detected:    { icon: 'Sparkles',   color: 'text-theme-600' },
   linking:     { icon: 'Link',       color: 'text-theme-500' },
-  done:        { icon: 'Check',      color: 'text-emerald-600' },
-  error:       { icon: 'X',          color: 'text-rose-500' },
+  done:        { icon: 'Check',      color: 'text-status-ok' },
+  error:       { icon: 'X',          color: 'text-status-pending' },
 }
 
 const fileIcon = (filename: string) => {
@@ -91,11 +91,11 @@ function StatusLabel({ item, requestLabel, role, labels }: { item: FileUploadIte
   const getLinkingLabel = labels.linkingLabel ?? defaultLinkingLabel
   const getDetectedLabel = labels.detectedLabel ?? defaultDetectedLabel
 
-  if (item.status === 'error') return <span className='text-xs text-rose-500'>{item.error || 'Error'}</span>
+  if (item.status === 'error') return <span className='text-xs text-status-pending'>{item.error || 'Error'}</span>
   if (item.status === 'detected') return <span className='text-xs text-theme-600 font-medium'>{getDetectedLabel(item.detectedTypes, item.detectedCount)}</span>
   if (item.status === 'linking') return <span className='text-xs text-theme-500'>{getLinkingLabel(requestLabel, role)}</span>
   // For non-expanded done items with detected types, show what was found instead of generic "Done"
-  if (item.status === 'done' && item.detectedTypes.length > 0) return <span className='text-xs text-emerald-600'>{getDetectedLabel(item.detectedTypes, item.detectedCount)}</span>
+  if (item.status === 'done' && item.detectedTypes.length > 0) return <span className='text-xs text-status-ok'>{getDetectedLabel(item.detectedTypes, item.detectedCount)}</span>
   const statusLabel = labels[item.status as keyof typeof DEFAULT_STATUS_LABELS] ?? ''
   return <span className='text-xs text-gray-500'>{statusLabel}</span>
 }
@@ -106,12 +106,12 @@ function ProgressBar({ item }: { item: FileUploadItem }) {
   const isError = item.status === 'error'
 
   const barColor = isError
-    ? 'bg-rose-400'
+    ? 'bg-status-pending'
     : isDone
-    ? 'bg-emerald-400'
+    ? 'bg-status-ok'
     : 'bg-theme-400'
 
-  const trackColor = isError ? 'bg-rose-100' : isDone ? 'bg-emerald-100' : 'bg-theme-100'
+  const trackColor = isError ? 'bg-status-pending/20' : isDone ? 'bg-status-ok/20' : 'bg-theme-100'
 
   return (
     <div className={`h-1 rounded-full overflow-hidden ${trackColor}`}>
@@ -189,7 +189,7 @@ function UploadCard({ item, index, requestLabel, role, labels }: { item: FileUpl
       style={{ animationDelay: `${index * 80}ms` }}
     >
       {/* File type icon */}
-      <div className={`flex-shrink-0 mt-0.5 ${isDone ? 'text-emerald-400' : 'text-theme-400'}`}>
+      <div className={`flex-shrink-0 mt-0.5 ${isDone ? 'text-status-ok' : 'text-theme-400'}`}>
         <Icon name={isDone ? 'Check' : (item.isExpanded ? 'FileText' : fileIcon(item.filename))} size={18} />
       </div>
 
@@ -247,7 +247,7 @@ export default function UploadCards({ items, summary, requestLabel, role, labels
         {!isSingle && (
           <div className='h-1 rounded-full bg-theme-100 mb-3 overflow-hidden'>
             <div
-              className={`h-full rounded-full transition-all duration-500 ease-out ${allDone ? 'bg-emerald-400' : 'bg-theme-400'}`}
+              className={`h-full rounded-full transition-all duration-500 ease-out ${allDone ? 'bg-status-ok' : 'bg-theme-400'}`}
               style={{ width: `${overallProgress}%` }}
             />
           </div>

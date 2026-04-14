@@ -49,13 +49,13 @@ const Toast = ({ toast, onClose }: ToastProps) => {
   const getToastStyles = () => {
     switch (toast.type) {
       case 'success':
-        return { bg: 'bg-emerald-50', iconBg: 'bg-emerald-100', text: 'text-emerald-700', icon: 'CircleCheck' }
+        return { bg: 'bg-status-ok/10', iconBg: 'bg-status-ok/20', text: 'text-status-ok', icon: 'CircleCheck' }
       case 'error':
-        return { bg: 'bg-rose-50', iconBg: 'bg-rose-100', text: 'text-rose-700', icon: 'CircleX' }
+        return { bg: 'bg-status-pending/10', iconBg: 'bg-status-pending/20', text: 'text-status-pending', icon: 'CircleX' }
       case 'warning':
-        return { bg: 'bg-amber-50', iconBg: 'bg-amber-100', text: 'text-amber-700', icon: 'TriangleAlert' }
+        return { bg: 'bg-status-warn/10', iconBg: 'bg-status-warn/20', text: 'text-status-warn', icon: 'TriangleAlert' }
       default:
-        return { bg: 'bg-violet-50', iconBg: 'bg-violet-100', text: 'text-violet-700', icon: 'Info' }
+        return { bg: 'bg-status-info/10', iconBg: 'bg-status-info/20', text: 'text-status-info', icon: 'Info' }
     }
   }
 

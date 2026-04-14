@@ -12,9 +12,9 @@ interface Props {
 
 const colorConfig: Record<Color, { bg: string; text: string; iconBg: string; iconColor: string }> = {
     default:  { bg: 'bg-theme-50',   text: 'text-theme-700',   iconBg: 'bg-theme-100',   iconColor: 'text-theme-500' },
-    success:  { bg: 'bg-emerald-50', text: 'text-emerald-700', iconBg: 'bg-emerald-100', iconColor: 'text-emerald-500' },
-    warning:  { bg: 'bg-amber-50',   text: 'text-amber-700',   iconBg: 'bg-amber-100',   iconColor: 'text-amber-500' },
-    danger:   { bg: 'bg-rose-50',    text: 'text-rose-700',    iconBg: 'bg-rose-100',    iconColor: 'text-rose-500' },
+    success:  { bg: 'bg-status-ok/10',      text: 'text-status-ok',      iconBg: 'bg-status-ok/20',      iconColor: 'text-status-ok' },
+    warning:  { bg: 'bg-status-warn/10',    text: 'text-status-warn',    iconBg: 'bg-status-warn/20',    iconColor: 'text-status-warn' },
+    danger:   { bg: 'bg-status-pending/10', text: 'text-status-pending', iconBg: 'bg-status-pending/20', iconColor: 'text-status-pending' },
 }
 
 const StatCard = ({ label, value, icon, subtitle, color = 'default' }: Props) => {

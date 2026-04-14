@@ -17,7 +17,7 @@ export type TabSize = 'xs' | 'sm' | 'md' | 'lg'
 
 const COLOR_SETS: Record<ColorSet, { activeBg: string; activeText: string; activeIcon: string }> = {
     default: { activeBg: 'bg-white', activeText: 'text-theme-700', activeIcon: 'text-theme-500' },
-    violet:  { activeBg: 'bg-violet-100', activeText: 'text-violet-700', activeIcon: 'text-violet-500' },
+    violet:  { activeBg: 'bg-status-info/20', activeText: 'text-status-info', activeIcon: 'text-status-info' },
 }
 
 const SIZE_CONFIG: Record<TabSize, { button: string; icon: number; track: string }> = {

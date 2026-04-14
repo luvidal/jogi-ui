@@ -11,8 +11,8 @@
 import Icon from './icon'
 
 export interface SectionIconColors {
-  iconBg: string  // e.g. 'bg-violet-100'
-  text: string    // e.g. 'text-violet-700'
+  iconBg: string  // e.g. 'bg-status-info/20'
+  text: string    // e.g. 'text-status-info'
 }
 
 interface Props {

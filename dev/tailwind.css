@@ -14,4 +14,22 @@
     --theme-800: 30  64  175;
     --theme-900: 30  58  138;
     --theme-950: 23  37  84;
+
+    /* Semantic status tokens — mirror of host styles/tokens.css so the
+       Vite sandbox renders the same palette the host does. */
+    --status-ok:               52  211 153;
+    --status-ok-muted:         52  211 153;
+    --status-ok-contrast:      4   47  46;
+    --status-warn:             251 191 36;
+    --status-warn-muted:       251 191 36;
+    --status-warn-contrast:    69  26  3;
+    --status-late:             251 146 60;
+    --status-late-muted:       251 146 60;
+    --status-late-contrast:    67  20  7;
+    --status-pending:          251 113 133;
+    --status-pending-muted:    251 113 133;
+    --status-pending-contrast: 76  5   25;
+    --status-info:             96  165 250;
+    --status-info-muted:       96  165 250;
+    --status-info-contrast:    23  37  84;
 }
