@@ -91,10 +91,10 @@ interface CardItem {
     right?: ReactNode;
 }
 
-interface Props$f extends LucideProps {
+interface Props$g extends LucideProps {
     name?: string;
 }
-declare const Icon: ({ name, ...props }: Props$f) => react_jsx_runtime.JSX.Element;
+declare const Icon: ({ name, ...props }: Props$g) => react_jsx_runtime.JSX.Element;
 
 interface ButtonProps$1 extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: string;
@@ -104,22 +104,22 @@ interface ButtonProps$1 extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 declare const Button: ({ icon, text, loading, className, ...props }: ButtonProps$1) => react_jsx_runtime.JSX.Element;
 
-interface Props$e {
+interface Props$f {
     label: string;
     checked: boolean;
     className?: string;
     onChange: (checked: boolean) => void;
 }
-declare const Checkbox: ({ label, checked, className, onChange }: Props$e) => react_jsx_runtime.JSX.Element;
+declare const Checkbox: ({ label, checked, className, onChange }: Props$f) => react_jsx_runtime.JSX.Element;
 
-interface Props$d {
+interface Props$e {
     label?: string;
     value?: string;
     onChange?: (value: string) => void;
     className?: string;
     visible?: boolean;
 }
-declare const ColorPicker: ({ label, value, onChange, className, visible }: Props$d) => react_jsx_runtime.JSX.Element;
+declare const ColorPicker: ({ label, value, onChange, className, visible }: Props$e) => react_jsx_runtime.JSX.Element;
 
 interface FieldWrapperProps {
     label?: string;
@@ -131,7 +131,7 @@ interface FieldWrapperProps {
 }
 declare function FieldWrapper({ label, tooltip, className, visible, children }: FieldWrapperProps): react_jsx_runtime.JSX.Element | null;
 
-interface Props$c {
+interface Props$d {
     label?: string;
     /** Optional tooltip — renders "?" icon next to the label */
     tooltip?: string;
@@ -141,19 +141,19 @@ interface Props$c {
     className?: string;
     visible?: boolean;
 }
-type InputProps = Props$c & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'readOnly'>;
+type InputProps = Props$d & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'readOnly'>;
 declare const Input: ({ label, tooltip, className, readOnly, onChange, value, visible, ...rest }: InputProps) => react_jsx_runtime.JSX.Element;
 
-interface Props$b<T extends string = string> {
+interface Props$c<T extends string = string> {
     label: string;
     value: T;
     selected: T;
     onChange?: (value: T) => void;
     className?: string;
 }
-declare const Radio: <T extends string = string>({ label, value, selected, onChange, className }: Props$b<T>) => react_jsx_runtime.JSX.Element;
+declare const Radio: <T extends string = string>({ label, value, selected, onChange, className }: Props$c<T>) => react_jsx_runtime.JSX.Element;
 
-interface Props$a {
+interface Props$b {
     label?: string;
     value: string;
     placeholder?: string;
@@ -165,7 +165,7 @@ interface Props$a {
     tooltip?: string;
     onChange: (value: string) => void;
 }
-declare const Select: ({ label, value, placeholder, options, className, onChange }: Props$a) => react_jsx_runtime.JSX.Element;
+declare const Select: ({ label, value, placeholder, options, className, onChange }: Props$b) => react_jsx_runtime.JSX.Element;
 
 interface ComputedFieldProps {
     label: string;
@@ -210,7 +210,7 @@ interface SelectFieldProps {
 declare const SelectField: ({ label, value, options, onChange, readOnly }: SelectFieldProps) => react_jsx_runtime.JSX.Element;
 
 type ModalSize = 'xl' | 'lg' | 'md' | 'sm' | 'xs';
-interface Props$9 {
+interface Props$a {
     title?: string;
     icon?: string;
     children?: React.ReactNode;
@@ -218,15 +218,15 @@ interface Props$9 {
     size?: ModalSize;
     headerActions?: React.ReactNode;
 }
-declare const Modal: ({ title, icon, children, onClose, size: sizeProp, headerActions }: Props$9) => react_jsx_runtime.JSX.Element;
+declare const Modal: ({ title, icon, children, onClose, size: sizeProp, headerActions }: Props$a) => react_jsx_runtime.JSX.Element;
 
-interface Props$8 {
+interface Props$9 {
     open: boolean;
     width?: string;
     className?: string;
     children: React.ReactNode;
 }
-declare const ModalOverlayPanel: ({ open, width, className, children }: Props$8) => react_jsx_runtime.JSX.Element | null;
+declare const ModalOverlayPanel: ({ open, width, className, children }: Props$9) => react_jsx_runtime.JSX.Element | null;
 
 interface ToolbarProps {
     position?: 'left' | 'right';
@@ -244,12 +244,12 @@ declare const ModalToolbar: {
     Divider: () => react_jsx_runtime.JSX.Element;
 };
 
-interface Props$7 {
+interface Props$8 {
     footer: React.ReactNode;
     className?: string;
     children: React.ReactNode;
 }
-declare const ModalFormLayout: ({ footer, className, children }: Props$7) => react_jsx_runtime.JSX.Element;
+declare const ModalFormLayout: ({ footer, className, children }: Props$8) => react_jsx_runtime.JSX.Element;
 
 type TooltipProps = {
     text: string;
@@ -265,6 +265,13 @@ interface LabelProps {
     className?: string;
 }
 declare const Label: ({ text, tooltip, className }: LabelProps) => react_jsx_runtime.JSX.Element;
+
+type Props$7 = {
+    label: string;
+    first?: boolean;
+    className?: string;
+};
+declare function SectionSeparator({ label, first, className }: Props$7): react_jsx_runtime.JSX.Element;
 
 interface Props$6 {
     className?: string;
@@ -867,4 +874,4 @@ interface UploadCardsProps {
 }
 declare function UploadCards({ items, summary, requestLabel, role, labels: userLabels }: UploadCardsProps): react_jsx_runtime.JSX.Element;
 
-export { Accordion, Anchor, Button, ButtonGroup, type CapturedTransfer, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, type FileStatus, type FileUploadItem, Icon, Input, Label, MasterDetail, Modal, ModalFormLayout, ModalOverlayPanel, ModalToolbar, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, type RefreshActions, Scroll, type Section, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, type SortOption, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, UploadCards, type UploadCardsLabels, type UploadFlowLabels, type UploadFlowOptions, type UploadSummary, type UploadToast, type UseRecordsOptions, type UseRecordsReturn, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop, useIsMobile, useRecords, useToast, useUploadFlow };
+export { Accordion, Anchor, Button, ButtonGroup, type CapturedTransfer, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, type FileStatus, type FileUploadItem, Icon, Input, Label, MasterDetail, Modal, ModalFormLayout, ModalOverlayPanel, ModalToolbar, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, type RefreshActions, Scroll, type Section, SectionSeparator, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, type SortOption, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, UploadCards, type UploadCardsLabels, type UploadFlowLabels, type UploadFlowOptions, type UploadSummary, type UploadToast, type UseRecordsOptions, type UseRecordsReturn, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop, useIsMobile, useRecords, useToast, useUploadFlow };

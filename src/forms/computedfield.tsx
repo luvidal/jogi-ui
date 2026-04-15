@@ -1,3 +1,5 @@
+import Label from '../common/label'
+
 interface ComputedFieldProps {
   label: string
   value: string
@@ -8,13 +10,13 @@ interface ComputedFieldProps {
 const ComputedField = ({ label, value, suffix, className = '' }: ComputedFieldProps) => {
   return (
     <div className={className}>
-      <label className="block text-xs text-gray-500 mb-1">{label}</label>
+      {label && <Label text={label} className='mb-1' />}
       <div className="relative">
-        <div className="border border-dashed border-theme-300 rounded-xl w-full text-sm px-3 py-2 tabular-nums bg-theme-50 text-theme-700 font-medium cursor-default select-none">
+        <div className="border border-dashed border-edge-subtle/30 rounded-xl w-full text-sm px-3 py-2 tabular-nums bg-surface-0 text-ink-primary font-medium cursor-default select-none">
           {value}
         </div>
         {suffix && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-theme-400 pointer-events-none">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-tertiary pointer-events-none">
             {suffix}
           </span>
         )}

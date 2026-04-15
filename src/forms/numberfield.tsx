@@ -1,3 +1,4 @@
+import Label from '../common/label'
 import { inputBase, inputEditable, inputReadOnly } from './inputstyles'
 
 interface NumberFieldProps {
@@ -12,7 +13,7 @@ interface NumberFieldProps {
 const NumberField = ({ label, value, onChange, suffix, step = 'any', readOnly }: NumberFieldProps) => {
   return (
     <div>
-      <label className="block text-xs text-gray-500 mb-1">{label}</label>
+      <Label text={label} className='mb-1' />
       <div className="relative">
         <input
           type="number"
@@ -29,7 +30,7 @@ const NumberField = ({ label, value, onChange, suffix, step = 'any', readOnly }:
           }`}
         />
         {suffix && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-tertiary pointer-events-none">
             {suffix}
           </span>
         )}

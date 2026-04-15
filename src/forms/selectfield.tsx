@@ -1,3 +1,4 @@
+import Label from '../common/label'
 import { inputBase, inputEditable, inputReadOnly } from './inputstyles'
 
 interface SelectFieldProps {
@@ -11,7 +12,7 @@ interface SelectFieldProps {
 const SelectField = ({ label, value, options, onChange, readOnly }: SelectFieldProps) => {
   return (
     <div>
-      <label className="block text-xs text-gray-500 mb-1">{label}</label>
+      <Label text={label} className='mb-1' />
       <select
         value={value ?? ''}
         disabled={readOnly}

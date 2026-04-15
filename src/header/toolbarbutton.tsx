@@ -33,6 +33,9 @@ const ToolbarButton = ({
     const [hovered, setHovered] = useState(false)
     const btnRef = useRef<HTMLButtonElement>(null)
 
+    // DIRECTIVE: Same rule as Button (see src/forms/button.README.md) — disabled
+    // state must never change the <button>'s bg/border/shadow/ring. Only the
+    // icon/text gets dimmed via opacity-40. No blur, no grayscale, no filter.
     const disabledStyle = disabled ? disabledCls : ''
     const isIconOnly = color !== undefined
 

@@ -1,4 +1,5 @@
 import Icon from '../common/icon'
+import Label from '../common/label'
 import { inputBase, inputEditable, inputReadOnly } from './inputstyles'
 
 interface TextFieldProps {
@@ -18,7 +19,7 @@ const TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth, i
 
   return (
     <div className={fullWidth ? 'col-span-2' : ''}>
-      <label className="block text-xs text-gray-500 mb-1">{label}</label>
+      <Label text={label} className='mb-1' />
       <div className="relative">
         <input
           type="text"

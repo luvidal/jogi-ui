@@ -14,9 +14,9 @@ const Radio = <T extends string = string>({ label, value, selected, onChange, cl
                 value={value}
                 checked={selected === value}
                 onChange={() => onChange?.(value)}
-                className='mr-2 w-4 h-4 accent-theme-700'
+                className='mr-2 w-4 h-4 accent-brand'
             />
-            <span className='text-gray-800'>{label}</span>
+            <span className='text-ink-secondary'>{label}</span>
         </label>
     )
 }

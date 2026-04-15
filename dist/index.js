@@ -132,8 +132,8 @@ var Checkbox = ({ label, checked, className = "", onChange }) => {
       onClick: () => onChange(!checked),
       className: `group flex items-center gap-3 cursor-pointer select-none ${className}`,
       children: [
-        /* @__PURE__ */ jsxRuntime.jsx("span", { className: `flex items-center justify-center w-5 h-5 rounded-md border-2 transition-all duration-200 ${checked ? "bg-theme-600 border-theme-600" : "bg-white border-gray-300 group-hover:border-theme-400"}`, children: checked && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "Check", size: 14, className: "text-white", strokeWidth: 3 }) }),
-        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-sm text-gray-700 group-hover:text-gray-900 transition-colors", children: label })
+        /* @__PURE__ */ jsxRuntime.jsx("span", { className: `flex items-center justify-center w-5 h-5 rounded-md border-2 transition-all duration-200 ${checked ? "bg-brand border-brand" : "bg-surface-0 border-edge-subtle/30 group-hover:border-brand/60"}`, children: checked && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "Check", size: 14, className: "text-brand-contrast", strokeWidth: 3 }) }),
+        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-sm text-ink-secondary group-hover:text-ink-primary transition-colors", children: label })
       ]
     }
   );
@@ -254,7 +254,7 @@ var ColorPicker = ({ label, value = "#000000", onChange, className = "", visible
         {
           type: "button",
           onClick: () => setShowPicker(!showPicker),
-          className: "w-12 h-12 rounded-xl border-2 border-gray-200 cursor-pointer transition-all hover:border-gray-300 shadow-sm",
+          className: "w-12 h-12 rounded-xl border-2 border-edge-subtle/30 cursor-pointer transition-all hover:border-edge-subtle/60 shadow-md",
           style: { backgroundColor: isValidHex(localValue) ? localValue : "#ffffff" },
           "aria-label": "Seleccionar color"
         }
@@ -266,12 +266,12 @@ var ColorPicker = ({ label, value = "#000000", onChange, className = "", visible
           value: localValue,
           onChange: (e) => handleTextChange(e.target.value),
           maxLength: 7,
-          className: "border-1 rounded-xl w-28 text-gray-950 bg-white text-base px-4 py-3 font-mono uppercase",
+          className: "border border-edge-subtle/20 rounded-xl w-28 text-ink-primary bg-surface-0 text-base px-4 py-3 font-mono uppercase focus:ring-2 focus:ring-brand/30 focus:border-brand/60 outline-none",
           placeholder: "#000000"
         }
       )
     ] }),
-    showPicker && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute top-full left-0 mt-2 p-3 bg-white rounded-xl shadow-lg border z-50", children: /* @__PURE__ */ jsxRuntime.jsx(
+    showPicker && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute top-full left-0 mt-2 p-3 bg-surface-1 rounded-xl shadow-lg border border-edge-subtle/20 z-50", children: /* @__PURE__ */ jsxRuntime.jsx(
       "input",
       {
         type: "color",
@@ -320,10 +320,10 @@ var Radio = ({ label, value, selected, onChange, className = "" }) => {
         value,
         checked: selected === value,
         onChange: () => onChange?.(value),
-        className: "mr-2 w-4 h-4 accent-theme-700"
+        className: "mr-2 w-4 h-4 accent-brand"
       }
     ),
-    /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-gray-800", children: label })
+    /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-ink-secondary", children: label })
   ] });
 };
 var radio_default = Radio;
@@ -355,10 +355,10 @@ var Select = ({ label, value, placeholder, options, className = "", onChange }) 
 var select_default = Select;
 var ComputedField = ({ label, value, suffix, className = "" }) => {
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className, children: [
-    /* @__PURE__ */ jsxRuntime.jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    label && /* @__PURE__ */ jsxRuntime.jsx(label_default, { text: label, className: "mb-1" }),
     /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "relative", children: [
-      /* @__PURE__ */ jsxRuntime.jsx("div", { className: "border border-dashed border-theme-300 rounded-xl w-full text-sm px-3 py-2 tabular-nums bg-theme-50 text-theme-700 font-medium cursor-default select-none", children: value }),
-      suffix && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute right-3 top-1/2 -translate-y-1/2 text-xs text-theme-400 pointer-events-none", children: suffix })
+      /* @__PURE__ */ jsxRuntime.jsx("div", { className: "border border-dashed border-edge-subtle/30 rounded-xl w-full text-sm px-3 py-2 tabular-nums bg-surface-0 text-ink-primary font-medium cursor-default select-none", children: value }),
+      suffix && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-tertiary pointer-events-none", children: suffix })
     ] })
   ] });
 };
@@ -368,10 +368,10 @@ var computedfield_default = ComputedField;
 var inputBase = "border border-edge-subtle/20 rounded-xl w-full text-sm px-3 py-2 text-ink-primary placeholder:text-ink-tertiary/25";
 var inputEditable = "bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 transition-all duration-200 outline-none";
 var inputReadOnly = "bg-surface-1 border-edge-subtle/15 cursor-default text-ink-tertiary";
-var disabledEffect = "opacity-40 blur-[0.5px]";
+var disabledEffect = "opacity-40";
 var NumberField = ({ label, value, onChange, suffix, step = "any", readOnly }) => {
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { children: [
-    /* @__PURE__ */ jsxRuntime.jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    /* @__PURE__ */ jsxRuntime.jsx(label_default, { text: label, className: "mb-1" }),
     /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "relative", children: [
       /* @__PURE__ */ jsxRuntime.jsx(
         "input",
@@ -388,7 +388,7 @@ var NumberField = ({ label, value, onChange, suffix, step = "any", readOnly }) =
           className: `${inputBase} tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${readOnly ? inputReadOnly : inputEditable}`
         }
       ),
-      suffix && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none", children: suffix })
+      suffix && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-tertiary pointer-events-none", children: suffix })
     ] })
   ] });
 };
@@ -397,7 +397,7 @@ var TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth, ico
   const hasIcon = !!icon;
   const isInteractive = hasIcon && !!onIconClick;
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: fullWidth ? "col-span-2" : "", children: [
-    /* @__PURE__ */ jsxRuntime.jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    /* @__PURE__ */ jsxRuntime.jsx(label_default, { text: label, className: "mb-1" }),
     /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "relative", children: [
       /* @__PURE__ */ jsxRuntime.jsx(
         "input",
@@ -428,7 +428,7 @@ var TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth, ico
 var textfield_default = TextField;
 var SelectField = ({ label, value, options, onChange, readOnly }) => {
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { children: [
-    /* @__PURE__ */ jsxRuntime.jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),
+    /* @__PURE__ */ jsxRuntime.jsx(label_default, { text: label, className: "mb-1" }),
     /* @__PURE__ */ jsxRuntime.jsxs(
       "select",
       {
@@ -512,6 +512,12 @@ var ModalFormLayout = ({ footer, className = "", children }) => /* @__PURE__ */ 
   /* @__PURE__ */ jsxRuntime.jsx("div", { className: "shrink-0", children: footer })
 ] });
 var modalformlayout_default = ModalFormLayout;
+function SectionSeparator({ label, first, className = "" }) {
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `basis-full flex items-center gap-3 ${first ? "" : "mt-4"} ${className}`, children: [
+    /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-xs font-medium text-ink-tertiary uppercase tracking-wide", children: label }),
+    /* @__PURE__ */ jsxRuntime.jsx("span", { className: "flex-1 border-b border-edge-subtle/15" })
+  ] });
+}
 
 // src/common/colclass.ts
 var colSpanMap = {
@@ -827,7 +833,7 @@ var ConfirmDialog = ({ state, onDone }) => {
             tabIndex: -1,
             className: `
           relative w-[360px] max-w-[90vw] overflow-hidden rounded-xl
-          bg-white border border-gray-200
+          bg-surface-1 border border-edge-subtle/20
           shadow-2xl outline-none
           transition-all duration-200
           ${visible && !leaving ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-4"}
@@ -836,8 +842,8 @@ var ConfirmDialog = ({ state, onDone }) => {
             children: [
               /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col items-center text-center px-6 pt-7 pb-5", children: [
                 /* @__PURE__ */ jsxRuntime.jsx("div", { className: `w-12 h-12 rounded-xl ${cfg.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 ${visible && !leaving ? "scale-100" : "scale-75"}`, children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: cfg.icon, size: 24, className: cfg.iconColor }) }),
-                /* @__PURE__ */ jsxRuntime.jsx("h3", { id: "confirm-title", className: "text-[15px] font-semibold text-gray-900 mb-1", children: state.title || "\xBFEst\xE1s seguro?" }),
-                /* @__PURE__ */ jsxRuntime.jsx("p", { id: "confirm-message", className: "text-sm text-gray-500 leading-relaxed whitespace-pre-line", children: state.message })
+                /* @__PURE__ */ jsxRuntime.jsx("h3", { id: "confirm-title", className: "text-[15px] font-semibold text-ink-primary mb-1", children: state.title || "\xBFEst\xE1s seguro?" }),
+                /* @__PURE__ */ jsxRuntime.jsx("p", { id: "confirm-message", className: "text-sm text-ink-tertiary leading-relaxed whitespace-pre-line", children: state.message })
               ] }),
               /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex gap-2.5 px-5 pb-5", children: [
                 /* @__PURE__ */ jsxRuntime.jsx(
@@ -852,7 +858,7 @@ var ConfirmDialog = ({ state, onDone }) => {
                   "button",
                   {
                     onClick: () => close(false),
-                    className: "flex-1 h-10 rounded-btn text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all duration-200 active:scale-[0.98] outline-none",
+                    className: "flex-1 h-10 rounded-btn text-sm font-semibold text-ink-secondary bg-surface-2 hover:bg-surface-3 transition-all duration-200 active:scale-[0.98] outline-none",
                     children: "Cancelar"
                   }
                 )
@@ -901,7 +907,7 @@ var PromptDialog = ({ state, onDone }) => {
             ref: dialogRef,
             className: `
           relative w-[400px] max-w-[90vw] overflow-hidden rounded-xl
-          bg-white border border-gray-200
+          bg-surface-1 border border-edge-subtle/20
           shadow-2xl
           transition-all duration-200
           ${visible && !leaving ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-4"}
@@ -910,8 +916,8 @@ var PromptDialog = ({ state, onDone }) => {
             children: /* @__PURE__ */ jsxRuntime.jsxs("form", { onSubmit: handleSubmit, children: [
               /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col items-center text-center px-6 pt-7 pb-4", children: [
                 /* @__PURE__ */ jsxRuntime.jsx("div", { className: `w-12 h-12 rounded-xl ${cfg.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 ${visible && !leaving ? "scale-100" : "scale-75"}`, children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: state.icon || defaultIcon, size: 24, className: cfg.iconColor }) }),
-                /* @__PURE__ */ jsxRuntime.jsx("h3", { id: "prompt-title", className: "text-[15px] font-semibold text-gray-900 mb-1", children: state.title || "Ingresa un valor" }),
-                /* @__PURE__ */ jsxRuntime.jsx("p", { id: "prompt-message", className: "text-sm text-gray-500 leading-relaxed whitespace-pre-line", children: state.message })
+                /* @__PURE__ */ jsxRuntime.jsx("h3", { id: "prompt-title", className: "text-[15px] font-semibold text-ink-primary mb-1", children: state.title || "Ingresa un valor" }),
+                /* @__PURE__ */ jsxRuntime.jsx("p", { id: "prompt-message", className: "text-sm text-ink-tertiary leading-relaxed whitespace-pre-line", children: state.message })
               ] }),
               /* @__PURE__ */ jsxRuntime.jsx("div", { className: "px-5 pb-4", children: /* @__PURE__ */ jsxRuntime.jsx(
                 "input",
@@ -920,7 +926,7 @@ var PromptDialog = ({ state, onDone }) => {
                   type: "text",
                   value,
                   onChange: (e) => setValue(e.target.value),
-                  className: "w-full h-10 px-3 rounded-lg border border-gray-300 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-theme-500 focus:ring-2 focus:ring-theme-500/20 transition-all"
+                  className: "w-full h-10 px-3 rounded-lg border border-edge-subtle/30 text-sm text-ink-primary bg-surface-0 placeholder:text-ink-tertiary/25 outline-none focus:border-brand/60 focus:ring-2 focus:ring-brand/30 transition-all"
                 }
               ) }),
               /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex gap-2.5 px-5 pb-5", children: [
@@ -938,7 +944,7 @@ var PromptDialog = ({ state, onDone }) => {
                   {
                     type: "button",
                     onClick: () => close(null),
-                    className: "flex-1 h-10 rounded-btn text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all duration-200 active:scale-[0.98] outline-none",
+                    className: "flex-1 h-10 rounded-btn text-sm font-semibold text-ink-secondary bg-surface-2 hover:bg-surface-3 transition-all duration-200 active:scale-[0.98] outline-none",
                     children: "Cancelar"
                   }
                 )
@@ -2826,6 +2832,7 @@ exports.ProgressRing = progressring_default;
 exports.Prompt = prompt_default;
 exports.Radio = radio_default;
 exports.Scroll = scroll_default;
+exports.SectionSeparator = SectionSeparator;
 exports.Select = select_default;
 exports.SelectField = selectfield_default;
 exports.SidebarFilter = SidebarFilter;

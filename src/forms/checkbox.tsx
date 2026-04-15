@@ -18,12 +18,12 @@ const Checkbox = ({ label, checked, className = '', onChange }: Props) => {
     >
       <span className={`flex items-center justify-center w-5 h-5 rounded-md border-2 transition-all duration-200 ${
         checked
-          ? 'bg-theme-600 border-theme-600'
-          : 'bg-white border-gray-300 group-hover:border-theme-400'
+          ? 'bg-brand border-brand'
+          : 'bg-surface-0 border-edge-subtle/30 group-hover:border-brand/60'
       }`}>
-        {checked && <Icon name='Check' size={14} className='text-white' strokeWidth={3} />}
+        {checked && <Icon name='Check' size={14} className='text-brand-contrast' strokeWidth={3} />}
       </span>
-      <span className='text-sm text-gray-700 group-hover:text-gray-900 transition-colors'>{label}</span>
+      <span className='text-sm text-ink-secondary group-hover:text-ink-primary transition-colors'>{label}</span>
     </button>
   )
 }

@@ -54,7 +54,7 @@ const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => voi
         ref={dialogRef}
         className={`
           relative w-[400px] max-w-[90vw] overflow-hidden rounded-xl
-          bg-white border border-gray-200
+          bg-surface-1 border border-edge-subtle/20
           shadow-2xl
           transition-all duration-200
           ${visible && !leaving ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-4'}
@@ -66,8 +66,8 @@ const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => voi
             <div className={`w-12 h-12 rounded-xl ${cfg.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 ${visible && !leaving ? 'scale-100' : 'scale-75'}`}>
               <Icon name={state.icon || defaultIcon} size={24} className={cfg.iconColor} />
             </div>
-            <h3 id='prompt-title' className='text-[15px] font-semibold text-gray-900 mb-1'>{state.title || 'Ingresa un valor'}</h3>
-            <p id='prompt-message' className='text-sm text-gray-500 leading-relaxed whitespace-pre-line'>{state.message}</p>
+            <h3 id='prompt-title' className='text-[15px] font-semibold text-ink-primary mb-1'>{state.title || 'Ingresa un valor'}</h3>
+            <p id='prompt-message' className='text-sm text-ink-tertiary leading-relaxed whitespace-pre-line'>{state.message}</p>
           </div>
 
           <div className='px-5 pb-4'>
@@ -76,7 +76,7 @@ const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => voi
               type='text'
               value={value}
               onChange={e => setValue(e.target.value)}
-              className='w-full h-10 px-3 rounded-lg border border-gray-300 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-theme-500 focus:ring-2 focus:ring-theme-500/20 transition-all'
+              className='w-full h-10 px-3 rounded-lg border border-edge-subtle/30 text-sm text-ink-primary bg-surface-0 placeholder:text-ink-tertiary/25 outline-none focus:border-brand/60 focus:ring-2 focus:ring-brand/30 transition-all'
             />
           </div>
 
@@ -91,7 +91,7 @@ const PromptDialog = ({ state, onDone }: { state: PromptState, onDone: () => voi
             <button
               type='button'
               onClick={() => close(null)}
-              className='flex-1 h-10 rounded-btn text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all duration-200 active:scale-[0.98] outline-none'
+              className='flex-1 h-10 rounded-btn text-sm font-semibold text-ink-secondary bg-surface-2 hover:bg-surface-3 transition-all duration-200 active:scale-[0.98] outline-none'
             >
               Cancelar
             </button>
