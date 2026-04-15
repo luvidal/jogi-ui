@@ -102,15 +102,9 @@ var Icon = ({ name, ...props }) => {
   return /* @__PURE__ */ jsxRuntime.jsx(Component, { ...props });
 };
 var icon_default = Icon;
-
-// src/forms/inputstyles.ts
-var inputBase = "border border-edge-subtle/20 rounded-xl w-full text-sm px-3 py-2 text-ink-primary";
-var inputEditable = "bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 transition-all duration-200 outline-none";
-var inputReadOnly = "bg-surface-1 border-edge-subtle/15 cursor-default text-ink-tertiary";
-var disabledEffect = "opacity-40 blur-[0.5px]";
 var Button = ({ icon, text, loading = false, className = "", ...props }) => {
   const isDisabled = props.disabled || loading;
-  const disabledStyle = isDisabled ? disabledEffect : "";
+  const disabledText = isDisabled ? "opacity-40" : "";
   return /* @__PURE__ */ jsxRuntime.jsxs(
     "button",
     {
@@ -121,8 +115,8 @@ var Button = ({ icon, text, loading = false, className = "", ...props }) => {
         loading ? /* @__PURE__ */ jsxRuntime.jsxs("svg", { className: "animate-spin h-4 w-4 text-current", viewBox: "0 0 24 24", fill: "none", children: [
           /* @__PURE__ */ jsxRuntime.jsx("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "3" }),
           /* @__PURE__ */ jsxRuntime.jsx("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" })
-        ] }) : icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 16, className: `text-shadow-sm ${disabledStyle}` }),
-        text && /* @__PURE__ */ jsxRuntime.jsx("span", { className: `text-shadow-sm truncate font-semibold uppercase tracking-wide ${disabledStyle}`, children: text })
+        ] }) : icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: icon, size: 16, className: `text-shadow-sm ${disabledText}` }),
+        text && /* @__PURE__ */ jsxRuntime.jsx("span", { className: `text-shadow-sm truncate font-semibold uppercase tracking-wide ${disabledText}`, children: text })
       ]
     }
   );
@@ -300,6 +294,12 @@ var ComputedField = ({ label, value, suffix, className = "" }) => {
   ] });
 };
 var computedfield_default = ComputedField;
+
+// src/forms/inputstyles.ts
+var inputBase = "border border-edge-subtle/20 rounded-xl w-full text-sm px-3 py-2 text-ink-primary";
+var inputEditable = "bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 transition-all duration-200 outline-none";
+var inputReadOnly = "bg-surface-1 border-edge-subtle/15 cursor-default text-ink-tertiary";
+var disabledEffect = "opacity-40 blur-[0.5px]";
 var NumberField = ({ label, value, onChange, suffix, step = "any", readOnly }) => {
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntime.jsx("label", { className: "block text-xs text-gray-500 mb-1", children: label }),

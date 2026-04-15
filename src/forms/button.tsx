@@ -1,5 +1,4 @@
 import Icon from '../common/icon'
-import { disabledEffect as disabledCls } from './inputstyles'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: string
@@ -10,7 +9,14 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = ({ icon, text, loading = false, className = '', ...props }: ButtonProps) => {
     const isDisabled = props.disabled || loading
-    const disabledStyle = isDisabled ? disabledCls : ''
+
+    // DIRECTIVE: The color of a button NEVER changes when disabled — no bg
+    // swap, no ring swap, no shadow swap, no opacity on the <button> itself.
+    // Only the text + icon get dimmed via `opacity-40`. Never add `blur-*`,
+    // `grayscale`, or any filter here — "dimmed" means opacity only.
+    // See src/forms/button.README.md for rationale. Do not change this
+    // without explicit user approval.
+    const disabledText = isDisabled ? 'opacity-40' : ''
 
     return (
         <button
@@ -24,9 +30,9 @@ const Button = ({ icon, text, loading = false, className = '', ...props }: Butto
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
             ) : (
-                icon && <Icon name={icon} size={16} className={`text-shadow-sm ${disabledStyle}`} />
+                icon && <Icon name={icon} size={16} className={`text-shadow-sm ${disabledText}`} />
             )}
-            {text && <span className={`text-shadow-sm truncate font-semibold uppercase tracking-wide ${disabledStyle}`}>{text}</span>}
+            {text && <span className={`text-shadow-sm truncate font-semibold uppercase tracking-wide ${disabledText}`}>{text}</span>}
         </button>
     )
 }
