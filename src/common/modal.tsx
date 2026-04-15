@@ -57,7 +57,7 @@ const Modal = ({ title, icon, children, onClose, size: sizeProp = 'md', headerAc
             </div>
           </div>
         </div>
-        <div className='flex-1 overflow-hidden bg-white'>
+        <div className='flex-1 overflow-hidden bg-surface-4'>
           {children}
         </div>
       </div>

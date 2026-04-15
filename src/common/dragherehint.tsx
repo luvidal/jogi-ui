@@ -32,8 +32,8 @@ const DragHere = () => {
     >
       <div className='
         px-4 py-2 rounded-full whitespace-nowrap w-fit
-        bg-white/70 backdrop-blur-sm
-        text-theme-600 text-sm font-medium
+        bg-surface-2 border border-edge-subtle/20
+        text-ink-secondary text-sm font-medium
       '>
         {text}
       </div>

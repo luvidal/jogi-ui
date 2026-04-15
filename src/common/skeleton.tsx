@@ -71,8 +71,8 @@ Skeleton.FileGrid = function SkeletonFileGrid({ count = 8 }: { count?: number })
             {Array.from({ length: count }).map((_, i) => (
                 <div key={i} className="animate-fade-in" style={{ animationDelay: `${i * 60}ms` }}>
                     <div className="w-28 space-y-2">
-                        <div className="animate-shimmer rounded-xl w-28 h-28" />
-                        <div className="animate-shimmer rounded h-3 w-20 mx-auto" />
+                        <div className="animate-shimmer-dark rounded-xl w-28 h-28" />
+                        <div className="animate-shimmer-dark rounded h-3 w-20 mx-auto" />
                     </div>
                 </div>
             ))}
@@ -114,14 +114,14 @@ Skeleton.DocGrid = function SkeletonDocGrid({ count = 6 }: { count?: number }) {
 /** Skeleton matching StatCard layout (label + big number + subtitle + icon bg) */
 Skeleton.StatCard = function SkeletonStatCard() {
     return (
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-surface-1 border border-edge-subtle/15 rounded-2xl p-5">
             <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0 space-y-2">
-                    <div className="animate-shimmer rounded h-3.5 w-24" />
-                    <div className="animate-shimmer rounded h-8 w-16" />
-                    <div className="animate-shimmer rounded h-2.5 w-20" />
+                    <div className="animate-shimmer-dark rounded h-3.5 w-24" />
+                    <div className="animate-shimmer-dark rounded h-8 w-16" />
+                    <div className="animate-shimmer-dark rounded h-2.5 w-20" />
                 </div>
-                <div className="animate-shimmer rounded-xl w-12 h-12" />
+                <div className="animate-shimmer-dark rounded-xl w-12 h-12" />
             </div>
         </div>
     )
@@ -143,13 +143,13 @@ Skeleton.StatRow = function SkeletonStatRow({ className = '' }: { className?: st
 /** Skeleton matching Card dashboard tiles (h-96 with title + subtitle + content) */
 Skeleton.DashCard = function SkeletonDashCard({ colSpan = 6 }: { colSpan?: number }) {
     return (
-        <div className={`flex flex-col h-96 bg-white shadow-lg rounded-2xl p-6 ${colClass(colSpan)}`}>
+        <div className={`flex flex-col h-96 bg-surface-1 border border-edge-subtle/15 rounded-2xl p-6 ${colClass(colSpan)}`}>
             <div className="flex-shrink-0 mb-4 space-y-2">
-                <div className="animate-shimmer rounded h-5 w-40" />
-                <div className="animate-shimmer rounded h-4 w-28" />
+                <div className="animate-shimmer-dark rounded h-5 w-40" />
+                <div className="animate-shimmer-dark rounded h-4 w-28" />
             </div>
             <div className="flex-1 min-h-0 flex items-center justify-center">
-                <div className="animate-shimmer rounded-xl w-3/4 h-3/4" />
+                <div className="animate-shimmer-dark rounded-xl w-3/4 h-3/4" />
             </div>
         </div>
     )
@@ -239,10 +239,10 @@ Skeleton.Table = function SkeletonTable({ rows = 5 }: { rows?: number }) {
     )
 }
 
-/** Skeleton matching Welcome banner (gradient bar with greeting) */
+/** Skeleton matching Welcome banner (flat surface with greeting) */
 Skeleton.Welcome = function SkeletonWelcome({ className = '' }: { className?: string }) {
     return (
-        <div className={`bg-theme-grad rounded-2xl p-6 min-h-[80px] flex items-center ${className}`}>
+        <div className={`bg-surface-2 rounded-2xl p-6 min-h-[80px] flex items-center ${className}`}>
             <div className="animate-shimmer-dark rounded h-6 w-48" />
         </div>
     )

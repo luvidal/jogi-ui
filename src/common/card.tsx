@@ -5,15 +5,30 @@ interface PropsCard {
     subtitle?: string
     children?: React.ReactNode
     colSpan?: number
+    /**
+     * Visual variant.
+     * - `'light'` (default, legacy): paper-white surface with theme-colored title/subtitle.
+     * - `'dark'`: token-driven surface for dark-mode dashboards. `bg-surface-1` with
+     *   an `edge-subtle` border; title/subtitle read from `ink-*` tokens.
+     *
+     * `light` preserved for any legacy consumer that has not yet migrated.
+     */
+    variant?: 'light' | 'dark'
 }
 
-const Card = ({ title, subtitle, children, colSpan = 6 }: PropsCard) => {
+const Card = ({ title, subtitle, children, colSpan = 6, variant = 'light' }: PropsCard) => {
+    const isDark = variant === 'dark'
+    const root = isDark
+        ? 'bg-surface-1 border border-edge-subtle/15 transition-colors duration-300'
+        : 'bg-white shadow-lg hover:shadow-xl transition-all duration-300'
+    const titleCls = isDark ? 'text-ink-primary' : 'text-theme-700'
+    const subtitleCls = isDark ? 'text-ink-tertiary' : 'text-theme-500'
     return (
-        <div className={`flex flex-col h-96 bg-white shadow-lg hover:shadow-xl rounded-2xl p-6 ${colClass(colSpan)} transition-all duration-300`}>
-            <div className='flex-shrink-0 text-lg sm:text-xl md:text-xl lg:text-xl xl:text-2xl font-bold text-theme-700 mb-4 whitespace-nowrap overflow-hidden text-ellipsis'>
+        <div className={`flex flex-col h-96 rounded-2xl p-6 ${root} ${colClass(colSpan)}`}>
+            <div className={`flex-shrink-0 text-lg sm:text-xl md:text-xl lg:text-xl xl:text-2xl font-bold mb-4 whitespace-nowrap overflow-hidden text-ellipsis ${titleCls}`}>
                 {title}
                 {subtitle && (
-                    <div className='text-base sm:text-md md:text-md lg:text-base xl:text-lg font-semibold text-theme-500 mt-1 whitespace-nowrap overflow-hidden text-ellipsis'>
+                    <div className={`text-base sm:text-md md:text-md lg:text-base xl:text-lg font-semibold mt-1 whitespace-nowrap overflow-hidden text-ellipsis ${subtitleCls}`}>
                         {subtitle}
                     </div>
                 )}

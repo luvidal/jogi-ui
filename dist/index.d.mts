@@ -483,8 +483,17 @@ interface PropsCard {
     subtitle?: string;
     children?: React.ReactNode;
     colSpan?: number;
+    /**
+     * Visual variant.
+     * - `'light'` (default, legacy): paper-white surface with theme-colored title/subtitle.
+     * - `'dark'`: token-driven surface for dark-mode dashboards. `bg-surface-1` with
+     *   an `edge-subtle` border; title/subtitle read from `ink-*` tokens.
+     *
+     * `light` preserved for any legacy consumer that has not yet migrated.
+     */
+    variant?: 'light' | 'dark';
 }
-declare const Card: ({ title, subtitle, children, colSpan }: PropsCard) => react_jsx_runtime.JSX.Element;
+declare const Card: ({ title, subtitle, children, colSpan, variant }: PropsCard) => react_jsx_runtime.JSX.Element;
 
 interface Props$1 extends AnchorHTMLAttributes<HTMLAnchorElement> {
     children: React.ReactNode;

@@ -13,7 +13,7 @@ type CollapsiblePanelProps = {
 const CollapsiblePanel = ({
   title,
   icon,
-  iconColor = 'text-gray-500',
+  iconColor = 'text-ink-tertiary',
   defaultOpen = true,
   maxHeight,
   children,
@@ -21,17 +21,17 @@ const CollapsiblePanel = ({
   const [open, setOpen] = useState(defaultOpen)
 
   return (
-    <div className="bg-gradient-to-b from-white to-gray-50 rounded-xl border border-gray-200 overflow-hidden mb-3">
+    <div className="bg-surface-2/40 border border-edge-subtle/10 rounded-xl overflow-hidden mb-3">
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-3 py-2.5 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+        className="w-full flex items-center justify-between px-3 py-2.5 bg-surface-2/60 hover:bg-surface-2 transition-colors cursor-pointer"
       >
-        <h4 className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+        <h4 className="text-xs font-semibold text-ink-secondary flex items-center gap-1.5">
           <Icon name={icon} size={12} className={iconColor} />
           {title}
         </h4>
-        <Icon name={open ? 'ChevronUp' : 'ChevronDown'} size={14} className="text-gray-400" />
+        <Icon name={open ? 'ChevronUp' : 'ChevronDown'} size={14} className="text-ink-tertiary" />
       </button>
       {open && (
         <div className="p-3 overflow-y-auto" style={maxHeight ? { maxHeight } : undefined}>
@@ -52,10 +52,10 @@ const DataRow = ({ label, value }: DataRowProps) => {
   const titleValue = typeof value === 'string' ? value : undefined
 
   return (
-    <div className="py-1.5 border-b border-gray-100 last:border-0">
-      <div className="text-[10px] text-gray-500 capitalize">{label.replace(/_/g, ' ')}</div>
-      <div className="text-xs text-gray-900 truncate" title={titleValue}>
-        {displayValue || <span className="text-gray-400">—</span>}
+    <div className="py-1.5 border-b border-edge-subtle/10 last:border-0">
+      <div className="text-[10px] text-ink-tertiary capitalize">{label.replace(/_/g, ' ')}</div>
+      <div className="text-xs text-ink-primary truncate" title={titleValue}>
+        {displayValue || <span className="text-ink-tertiary">—</span>}
       </div>
     </div>
   )
@@ -74,7 +74,7 @@ type TablePanelProps = {
 export const TablePanel = ({
   title,
   icon,
-  iconColor = 'text-gray-500',
+  iconColor = 'text-ink-tertiary',
   defaultOpen = false,
   maxHeight = 200,
   data,
@@ -89,7 +89,7 @@ export const TablePanel = ({
   >
     {data.length > 0
       ? data.map((row, i) => <DataRow key={i} label={row.label} value={row.value} />)
-      : emptyContent || <p className="text-xs text-gray-400">Sin datos</p>}
+      : emptyContent || <p className="text-xs text-ink-tertiary">Sin datos</p>}
   </CollapsiblePanel>
 )
 

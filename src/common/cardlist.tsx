@@ -64,8 +64,8 @@ const CardCompact = ({ item, isSelected, onClick, checkbox }: { item: CardItem; 
     <button
         onClick={checkbox ? () => checkbox.onChange(!checkbox.checked) : onClick}
         className={`w-full relative flex items-center gap-3 px-4 py-3.5 text-left transition-colors ${isSelected
-            ? 'bg-white/15'
-            : 'hover:bg-white/10'
+            ? 'bg-surface-2/60'
+            : 'hover:bg-surface-2/30'
         }`}
     >
         {checkbox ? (
@@ -73,29 +73,29 @@ const CardCompact = ({ item, isSelected, onClick, checkbox }: { item: CardItem; 
                 <Icon
                     name={checkbox.checked ? 'SquareCheckBig' : 'Square'}
                     size={18}
-                    className={`cursor-pointer transition-colors ${checkbox.checked ? 'text-white' : 'text-white/30'}`}
+                    className={`cursor-pointer transition-colors ${checkbox.checked ? 'text-brand' : 'text-ink-tertiary'}`}
                 />
             </div>
         ) : item.icon ? (
             typeof item.icon === 'string'
-                ? <div className='flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl bg-white/10'>
-                    <Icon name={item.icon} size={18} className='text-white/80' />
+                ? <div className='flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl bg-surface-2'>
+                    <Icon name={item.icon} size={18} className={isSelected ? 'text-brand' : 'text-ink-tertiary'} />
                 </div>
                 : <div className='flex-shrink-0'>{item.icon}</div>
         ) : null}
         <div className='flex-1 min-w-0'>
             {typeof item.title === 'string'
-                ? <div className={`text-sm font-medium truncate ${isSelected ? 'text-white' : 'text-white/90'}`}>{item.title}</div>
+                ? <div className={`text-sm font-medium truncate ${isSelected ? 'text-ink-primary' : 'text-ink-secondary'}`}>{item.title}</div>
                 : item.title
             }
             {item.subtitle && (
                 typeof item.subtitle === 'string'
-                    ? <div className='text-xs text-white/60 truncate'>{item.subtitle}</div>
+                    ? <div className='text-xs text-ink-tertiary truncate'>{item.subtitle}</div>
                     : item.subtitle
             )}
         </div>
         {item.right && <div className='flex-shrink-0'>{item.right}</div>}
-        {isSelected && !checkbox && <div className='absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-l-full' />}
+        {isSelected && !checkbox && <div className='absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-brand rounded-l-full' />}
     </button>
 )
 
