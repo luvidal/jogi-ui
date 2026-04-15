@@ -102,9 +102,9 @@ var Icon = ({ name, ...props }) => {
 var icon_default = Icon;
 
 // src/forms/inputstyles.ts
-var inputBase = "border border-edge-subtle/30 rounded-xl w-full text-sm px-3 py-2 text-ink-primary";
-var inputEditable = "bg-surface-1 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 transition-all duration-200 outline-none";
-var inputReadOnly = "bg-surface-2 border-edge-subtle/20 cursor-default text-ink-tertiary";
+var inputBase = "border border-edge-subtle/20 rounded-xl w-full text-sm px-3 py-2 text-ink-primary";
+var inputEditable = "bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 transition-all duration-200 outline-none";
+var inputReadOnly = "bg-surface-1 border-edge-subtle/15 cursor-default text-ink-tertiary";
 var disabledEffect = "opacity-40 blur-[0.5px]";
 var Button = ({ icon, text, loading = false, className = "", ...props }) => {
   const isDisabled = props.disabled || loading;
@@ -241,7 +241,7 @@ var Input = ({ label, className = "", readOnly, onChange, value = "", visible = 
       onChange: (e) => setLocalValue(e.target.value),
       onBlur: commit,
       onKeyDown: (e) => e.key === "Enter" && commit(),
-      className: `border border-edge-subtle/30 rounded-xl w-full ${readOnly ? "text-ink-tertiary cursor-not-allowed bg-surface-2" : "text-ink-primary bg-surface-1 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 outline-none"} text-base px-4 py-3 transition-all duration-300`
+      className: `border border-edge-subtle/20 rounded-xl w-full ${readOnly ? "text-ink-tertiary cursor-not-allowed bg-surface-1" : "text-ink-primary bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 outline-none"} text-base px-4 py-3 transition-all duration-300`
     }
   ) });
 };
@@ -273,7 +273,7 @@ var Select = ({ label, value, placeholder, options, className = "", onChange }) 
     {
       value: value || "",
       onChange: (e) => onChange(e.target.value),
-      className: `border border-edge-subtle/30 rounded-xl w-full text-base px-4 py-3 appearance-none ${value ? "text-ink-primary" : "text-ink-tertiary"} bg-surface-1 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 outline-none transition-all duration-300 cursor-pointer`,
+      className: `border border-edge-subtle/20 rounded-xl w-full text-base px-4 py-3 appearance-none ${value ? "text-ink-primary" : "text-ink-tertiary"} bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 outline-none transition-all duration-300 cursor-pointer`,
       style: {
         backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
         backgroundPosition: "right 1rem center",
@@ -396,24 +396,24 @@ var Modal = ({ title, icon, children, onClose, size: sizeProp = "md", headerActi
   return /* @__PURE__ */ jsx("div", { className: "fixed z-[9999] inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300", children: /* @__PURE__ */ jsxs(
     "div",
     {
-      className: `relative flex flex-col overflow-hidden shadow-2xl bg-theme-900 border border-theme-800 ${mobile ? "w-full h-full rounded-none" : "rounded-xl"}`,
+      className: `relative flex flex-col overflow-hidden shadow-2xl bg-surface-0 border border-edge-subtle/30 ${mobile ? "w-full h-full rounded-none" : "rounded-xl"}`,
       style: mobile ? {} : {
         width: `${effectiveSize.w}px`,
         height: `${effectiveSize.h}px`
       },
       onClick: (ev) => ev.stopPropagation(),
       children: [
-        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between text-white text-sm px-3 py-2 select-none", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between text-ink-primary text-sm px-3 py-2 select-none border-b border-edge-subtle/15", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
-            /* @__PURE__ */ jsx(icon_default, { name: icon ?? "AppWindow", size: 16, className: "me-2 opacity-80" }),
+            /* @__PURE__ */ jsx(icon_default, { name: icon ?? "AppWindow", size: 16, className: "me-2 opacity-70" }),
             /* @__PURE__ */ jsx("span", { className: "opacity-90", children: title ?? " " })
           ] }),
           /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1 select-none", children: [
             headerActions,
-            /* @__PURE__ */ jsx("div", { className: "cursor-pointer hover:bg-white/20 p-1.5 rounded", onClick: onClose, title: "Cerrar Ventana", children: /* @__PURE__ */ jsx(icon_default, { name: "X", size: 16, className: "text-white" }) })
+            /* @__PURE__ */ jsx("div", { className: "cursor-pointer hover:bg-white/10 p-1.5 rounded", onClick: onClose, title: "Cerrar Ventana", children: /* @__PURE__ */ jsx(icon_default, { name: "X", size: 16, className: "text-ink-secondary" }) })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "flex-1 overflow-hidden bg-theme-700", children })
+        /* @__PURE__ */ jsx("div", { className: "flex-1 overflow-hidden bg-theme-950", children })
       ]
     }
   ) });

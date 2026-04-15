@@ -38,26 +38,26 @@ const Modal = ({ title, icon, children, onClose, size: sizeProp = 'md', headerAc
   return (
     <div className='fixed z-[9999] inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300'>
       <div
-        className={`relative flex flex-col overflow-hidden shadow-2xl bg-theme-900 border border-theme-800 ${mobile ? 'w-full h-full rounded-none' : 'rounded-xl'}`}
+        className={`relative flex flex-col overflow-hidden shadow-2xl bg-surface-0 border border-edge-subtle/30 ${mobile ? 'w-full h-full rounded-none' : 'rounded-xl'}`}
         style={mobile ? {} : {
           width: `${effectiveSize!.w}px`,
           height: `${effectiveSize!.h}px`,
         }}
         onClick={(ev) => ev.stopPropagation()}
       >
-        <div className='flex items-center justify-between text-white text-sm px-3 py-2 select-none'>
+        <div className='flex items-center justify-between text-ink-primary text-sm px-3 py-2 select-none border-b border-edge-subtle/15'>
           <div className='flex items-center'>
-            <Icon name={icon ?? 'AppWindow'} size={16} className='me-2 opacity-80' />
+            <Icon name={icon ?? 'AppWindow'} size={16} className='me-2 opacity-70' />
             <span className='opacity-90'>{title ?? ' '}</span>
           </div>
           <div className='flex items-center gap-1 select-none'>
             {headerActions}
-            <div className='cursor-pointer hover:bg-white/20 p-1.5 rounded' onClick={onClose} title='Cerrar Ventana'>
-              <Icon name='X' size={16} className='text-white' />
+            <div className='cursor-pointer hover:bg-white/10 p-1.5 rounded' onClick={onClose} title='Cerrar Ventana'>
+              <Icon name='X' size={16} className='text-ink-secondary' />
             </div>
           </div>
         </div>
-        <div className='flex-1 overflow-hidden bg-theme-700'>
+        <div className='flex-1 overflow-hidden bg-theme-950'>
           {children}
         </div>
       </div>
