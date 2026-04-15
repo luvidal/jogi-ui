@@ -49,13 +49,13 @@ const Toast = ({ toast, onClose }: ToastProps) => {
   const getToastStyles = () => {
     switch (toast.type) {
       case 'success':
-        return { bg: 'bg-status-ok/10', iconBg: 'bg-status-ok/20', text: 'text-status-ok', icon: 'CircleCheck' }
+        return { iconBg: 'bg-status-ok/15', text: 'text-status-ok', icon: 'CircleCheck' }
       case 'error':
-        return { bg: 'bg-status-pending/10', iconBg: 'bg-status-pending/20', text: 'text-status-pending', icon: 'CircleX' }
+        return { iconBg: 'bg-status-pending/15', text: 'text-status-pending', icon: 'CircleX' }
       case 'warning':
-        return { bg: 'bg-status-warn/10', iconBg: 'bg-status-warn/20', text: 'text-status-warn', icon: 'TriangleAlert' }
+        return { iconBg: 'bg-status-warn/15', text: 'text-status-warn', icon: 'TriangleAlert' }
       default:
-        return { bg: 'bg-status-info/10', iconBg: 'bg-status-info/20', text: 'text-status-info', icon: 'Info' }
+        return { iconBg: 'bg-status-info/15', text: 'text-status-info', icon: 'Info' }
     }
   }
 
@@ -66,7 +66,7 @@ const Toast = ({ toast, onClose }: ToastProps) => {
       className={`
         transform transition-all duration-300 ease-in-out
         ${isVisible && !isLeaving ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}
-        ${styles.bg} rounded-xl shade-md
+        bg-surface-1 border border-edge-subtle/20 shadow-2xl rounded-xl
         p-4 min-w-[300px] max-w-[400px] relative overflow-hidden
       `}
     >
@@ -81,7 +81,7 @@ const Toast = ({ toast, onClose }: ToastProps) => {
               {toast.title}
             </div>
           )}
-          <div className='text-sm text-gray-600'>
+          <div className='text-sm text-ink-secondary'>
             {toast.message}
           </div>
 
@@ -97,24 +97,11 @@ const Toast = ({ toast, onClose }: ToastProps) => {
 
         <button
           onClick={handleClose}
-          className='flex-shrink-0 p-1 rounded-xl hover:bg-black/5 transition-colors text-gray-400 hover:text-gray-600'
+          className='flex-shrink-0 p-1 rounded-xl hover:bg-surface-2 transition-colors text-ink-tertiary hover:text-ink-primary'
         >
           <Icon name='X' size={16} />
         </button>
       </div>
-
-      {/* Auto-dismiss progress bar */}
-      {toast.duration && toast.duration > 0 && (
-        <div className='absolute bottom-0 left-0 right-0 h-0.5 bg-gray-100'>
-          <div
-            className={`h-full ${styles.iconBg}`}
-            style={{
-              animation: `toast-shrink ${toast.duration}ms linear forwards`,
-              animationDelay: '10ms'
-            }}
-          />
-        </div>
-      )}
     </div>
   )
 }

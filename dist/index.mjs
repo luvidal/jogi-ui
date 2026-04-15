@@ -1637,60 +1637,48 @@ var Toast = ({ toast, onClose }) => {
   const getToastStyles = () => {
     switch (toast.type) {
       case "success":
-        return { bg: "bg-status-ok/10", iconBg: "bg-status-ok/20", text: "text-status-ok", icon: "CircleCheck" };
+        return { iconBg: "bg-status-ok/15", text: "text-status-ok", icon: "CircleCheck" };
       case "error":
-        return { bg: "bg-status-pending/10", iconBg: "bg-status-pending/20", text: "text-status-pending", icon: "CircleX" };
+        return { iconBg: "bg-status-pending/15", text: "text-status-pending", icon: "CircleX" };
       case "warning":
-        return { bg: "bg-status-warn/10", iconBg: "bg-status-warn/20", text: "text-status-warn", icon: "TriangleAlert" };
+        return { iconBg: "bg-status-warn/15", text: "text-status-warn", icon: "TriangleAlert" };
       default:
-        return { bg: "bg-status-info/10", iconBg: "bg-status-info/20", text: "text-status-info", icon: "Info" };
+        return { iconBg: "bg-status-info/15", text: "text-status-info", icon: "Info" };
     }
   };
   const styles = getToastStyles();
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       className: `
         transform transition-all duration-300 ease-in-out
         ${isVisible && !isLeaving ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}
-        ${styles.bg} rounded-xl shade-md
+        bg-surface-1 border border-edge-subtle/20 shadow-2xl rounded-xl
         p-4 min-w-[300px] max-w-[400px] relative overflow-hidden
       `,
-      children: [
-        /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-3", children: [
-          /* @__PURE__ */ jsx("div", { className: `shrink-0 flex items-center justify-center rounded-xl w-8 h-8 ${styles.iconBg}`, children: /* @__PURE__ */ jsx(icon_default, { name: styles.icon, size: 18, className: styles.text }) }),
-          /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
-            toast.title && /* @__PURE__ */ jsx("div", { className: `font-medium text-sm mb-0.5 uppercase ${styles.text}`, children: toast.title }),
-            /* @__PURE__ */ jsx("div", { className: "text-sm text-gray-600", children: toast.message }),
-            toast.action && /* @__PURE__ */ jsx(
-              "button",
-              {
-                onClick: toast.action.onClick,
-                className: `mt-2 text-xs font-medium underline hover:no-underline ${styles.text}`,
-                children: toast.action.label
-              }
-            )
-          ] }),
-          /* @__PURE__ */ jsx(
+      children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-3", children: [
+        /* @__PURE__ */ jsx("div", { className: `shrink-0 flex items-center justify-center rounded-xl w-8 h-8 ${styles.iconBg}`, children: /* @__PURE__ */ jsx(icon_default, { name: styles.icon, size: 18, className: styles.text }) }),
+        /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
+          toast.title && /* @__PURE__ */ jsx("div", { className: `font-medium text-sm mb-0.5 uppercase ${styles.text}`, children: toast.title }),
+          /* @__PURE__ */ jsx("div", { className: "text-sm text-ink-secondary", children: toast.message }),
+          toast.action && /* @__PURE__ */ jsx(
             "button",
             {
-              onClick: handleClose,
-              className: "flex-shrink-0 p-1 rounded-xl hover:bg-black/5 transition-colors text-gray-400 hover:text-gray-600",
-              children: /* @__PURE__ */ jsx(icon_default, { name: "X", size: 16 })
+              onClick: toast.action.onClick,
+              className: `mt-2 text-xs font-medium underline hover:no-underline ${styles.text}`,
+              children: toast.action.label
             }
           )
         ] }),
-        toast.duration && toast.duration > 0 && /* @__PURE__ */ jsx("div", { className: "absolute bottom-0 left-0 right-0 h-0.5 bg-gray-100", children: /* @__PURE__ */ jsx(
-          "div",
+        /* @__PURE__ */ jsx(
+          "button",
           {
-            className: `h-full ${styles.iconBg}`,
-            style: {
-              animation: `toast-shrink ${toast.duration}ms linear forwards`,
-              animationDelay: "10ms"
-            }
+            onClick: handleClose,
+            className: "flex-shrink-0 p-1 rounded-xl hover:bg-surface-2 transition-colors text-ink-tertiary hover:text-ink-primary",
+            children: /* @__PURE__ */ jsx(icon_default, { name: "X", size: 16 })
           }
-        ) })
-      ]
+        )
+      ] })
     }
   );
 };
