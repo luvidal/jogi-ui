@@ -34,14 +34,14 @@ const TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth, i
             onClick={onIconClick}
             tabIndex={-1}
             type="button"
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-gray-100 transition-colors"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-surface-2 transition-colors"
           >
-            <Icon name={icon!} size={14} className="text-gray-500 hover:text-gray-700" />
+            <Icon name={icon!} size={14} className="text-ink-tertiary hover:text-ink-secondary" />
           </button>
         )}
         {hasIcon && !isInteractive && (
           <span className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
-            <Icon name={icon!} size={14} className="text-gray-300" />
+            <Icon name={icon!} size={14} className="text-ink-tertiary/60" />
           </span>
         )}
       </div>

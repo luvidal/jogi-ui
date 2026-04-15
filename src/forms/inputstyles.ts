@@ -1,4 +1,4 @@
-export const inputBase = 'border rounded-xl w-full text-sm px-3 py-2 text-gray-950'
-export const inputEditable = 'bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400 transition-all duration-200'
-export const inputReadOnly = 'bg-gray-50 border-gray-200 cursor-default'
+export const inputBase = 'border border-edge-subtle/30 rounded-xl w-full text-sm px-3 py-2 text-ink-primary'
+export const inputEditable = 'bg-surface-1 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 transition-all duration-200 outline-none'
+export const inputReadOnly = 'bg-surface-2 border-edge-subtle/20 cursor-default text-ink-tertiary'
 export const disabledEffect = 'opacity-40 blur-[0.5px]'

@@ -43,7 +43,7 @@ const Input = ({ label, className = '', readOnly, onChange, value = '', visible 
         onChange={e => setLocalValue(e.target.value)}
         onBlur={commit}
         onKeyDown={e => e.key === 'Enter' && commit()}
-        className={`border-1 rounded-xl w-full ${readOnly ? 'text-gray-400 cursor-not-allowed bg-gray-50' : 'text-gray-950 bg-white focus:ring-2 focus:ring-theme-200 focus:border-theme-400'} text-base px-4 py-3 transition-all duration-300`}
+        className={`border border-edge-subtle/30 rounded-xl w-full ${readOnly ? 'text-ink-tertiary cursor-not-allowed bg-surface-2' : 'text-ink-primary bg-surface-1 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 outline-none'} text-base px-4 py-3 transition-all duration-300`}
       />
     </FieldWrapper>
   )

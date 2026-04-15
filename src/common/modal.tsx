@@ -38,7 +38,7 @@ const Modal = ({ title, icon, children, onClose, size: sizeProp = 'md', headerAc
   return (
     <div className='fixed z-[9999] inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300'>
       <div
-        className={`relative flex flex-col overflow-hidden shadow-2xl bg-theme-700 border border-theme-600 ${mobile ? 'w-full h-full rounded-none' : 'rounded-xl'}`}
+        className={`relative flex flex-col overflow-hidden shadow-2xl bg-theme-900 border border-theme-800 ${mobile ? 'w-full h-full rounded-none' : 'rounded-xl'}`}
         style={mobile ? {} : {
           width: `${effectiveSize!.w}px`,
           height: `${effectiveSize!.h}px`,
@@ -57,7 +57,7 @@ const Modal = ({ title, icon, children, onClose, size: sizeProp = 'md', headerAc
             </div>
           </div>
         </div>
-        <div className='flex-1 overflow-hidden bg-surface-4'>
+        <div className='flex-1 overflow-hidden bg-theme-700'>
           {children}
         </div>
       </div>
