@@ -1449,15 +1449,15 @@ function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefi
   };
   if (isDark) {
     if (onBack) {
-      return /* @__PURE__ */ jsxs("div", { className: "group/header bg-gradient-to-r from-theme-700 to-theme-600", children: [
+      return /* @__PURE__ */ jsxs("div", { className: "group/header bg-surface-2 border-b border-edge-subtle/20", children: [
         /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-4 px-4 pt-3 pb-1", children: [
           icon && /* @__PURE__ */ jsx(toolback_default, { icon, onClick: onBack, variant: "dark" }),
           /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0 flex flex-col items-start", children: [
-            renderTitle("text-base font-medium text-white text-shadow-sm"),
+            renderTitle("text-base font-medium text-ink-primary"),
             /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1.5 min-w-0 mt-0.5", children: [
-              subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-sm text-white/50 flex-shrink-0", children: subtitlePrefix }),
-              renderSubtitle("text-sm text-white/70"),
-              extra && subtitle && /* @__PURE__ */ jsx("span", { className: "text-white/30", children: "\xB7" }),
+              subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-sm text-ink-tertiary flex-shrink-0", children: subtitlePrefix }),
+              renderSubtitle("text-sm text-ink-secondary"),
+              extra && subtitle && /* @__PURE__ */ jsx("span", { className: "text-ink-tertiary", children: "\xB7" }),
               extra
             ] })
           ] })
@@ -1465,32 +1465,31 @@ function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefi
         toolbar && /* @__PURE__ */ jsx("div", { className: "flex justify-end px-4 pb-2", children: toolbar })
       ] });
     }
-    const content = /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-4 px-4 py-3", children: [
-      icon && /* @__PURE__ */ jsx(icon_default, { name: icon, size: 22, className: "text-white/80" }),
+    return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-4 px-4 py-3", children: [
+      icon && /* @__PURE__ */ jsx(icon_default, { name: icon, size: 22, className: "text-ink-secondary" }),
       /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0 flex flex-col items-start", children: [
-        renderTitle("text-lg font-bold uppercase tracking-wide text-white text-shadow-md"),
+        renderTitle("text-token-h3 font-semibold text-ink-primary"),
         /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1.5 min-w-0 mt-0.5", children: [
-          subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-sm text-white/50", children: subtitlePrefix }),
-          renderSubtitle("text-sm text-white/70"),
-          extra && subtitle && /* @__PURE__ */ jsx("span", { className: "text-white/30", children: "\xB7" }),
+          subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-sm text-ink-tertiary", children: subtitlePrefix }),
+          renderSubtitle("text-sm text-ink-secondary"),
+          extra && subtitle && /* @__PURE__ */ jsx("span", { className: "text-ink-tertiary", children: "\xB7" }),
           extra
         ] })
       ] }),
       toolbar && /* @__PURE__ */ jsx("div", { className: "flex-shrink-0", children: toolbar })
     ] });
-    return content;
   }
-  return /* @__PURE__ */ jsxs("div", { className: "relative border-b border-theme-100 bg-theme-50", children: [
-    icon && /* @__PURE__ */ jsx("div", { className: "absolute -right-3 -bottom-6 opacity-[0.05] pointer-events-none", children: /* @__PURE__ */ jsx(icon_default, { name: icon, size: 120, className: "text-theme-600" }) }),
-    /* @__PURE__ */ jsxs("div", { className: "relative z-10 flex items-center justify-between px-6 py-4", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "relative border-b border-edge-subtle/15 bg-surface-1", children: [
+    icon && /* @__PURE__ */ jsx("div", { className: "absolute -right-3 -bottom-6 opacity-[0.04] pointer-events-none", children: /* @__PURE__ */ jsx(icon_default, { name: icon, size: 120, className: "text-brand" }) }),
+    /* @__PURE__ */ jsxs("div", { className: "relative z-10 flex items-center justify-between px-6 py-4 gap-4", children: [
       /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 min-w-0", children: [
-        icon && /* @__PURE__ */ jsx("div", { className: "w-9 h-9 rounded-xl bg-theme-100 flex items-center justify-center flex-shrink-0", children: /* @__PURE__ */ jsx(icon_default, { name: icon, size: 18, className: "text-theme-600" }) }),
+        icon && /* @__PURE__ */ jsx("div", { className: "w-9 h-9 rounded-xl bg-brand/10 flex items-center justify-center flex-shrink-0", children: /* @__PURE__ */ jsx(icon_default, { name: icon, size: 18, className: "text-brand" }) }),
         /* @__PURE__ */ jsxs("div", { className: "group flex flex-col min-w-0", children: [
-          renderTitle("text-base font-semibold text-theme-700"),
+          renderTitle("text-base font-semibold text-ink-primary"),
           /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
-            subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-xs text-theme-400", children: subtitlePrefix }),
-            renderSubtitle("text-xs text-theme-600"),
-            extra && subtitle && /* @__PURE__ */ jsx("span", { className: "text-theme-300", children: "\xB7" }),
+            subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-xs text-ink-tertiary", children: subtitlePrefix }),
+            renderSubtitle("text-xs text-ink-secondary"),
+            extra && subtitle && /* @__PURE__ */ jsx("span", { className: "text-ink-tertiary", children: "\xB7" }),
             extra
           ] })
         ] })

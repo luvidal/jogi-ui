@@ -465,12 +465,15 @@ interface DetailBarProps {
     toolbar?: ReactNode;
     /** Extra content rendered inline after the subtitle (e.g. credit badge) */
     extra?: ReactNode;
+    /** 'light' = detail header with own bg-surface-1 + icon chip + decorative bg icon.
+     *  'dark'  = chrome header for AppShell list panels (no own bg, parent supplies).
+     *  With onBack (mobile drill-in), dark variant switches to a flat bg-surface-2 with two-row layout. */
     variant?: 'light' | 'dark';
     /** When provided, title becomes editable inline */
     onRename?: (value: string) => void;
     /** When provided, subtitle becomes a clickable email link */
     onEmail?: () => void;
-    /** When provided, renders a ToolBack button and wraps dark variant in gradient background */
+    /** When provided, renders a ToolBack button and switches dark variant to the two-row mobile layout */
     onBack?: () => void;
 }
 declare function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefix, variant, onRename, onEmail, onBack }: DetailBarProps): react_jsx_runtime.JSX.Element;
