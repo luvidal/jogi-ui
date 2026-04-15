@@ -413,7 +413,7 @@ var Modal = ({ title, icon, children, onClose, size: sizeProp = "md", headerActi
             /* @__PURE__ */ jsx("div", { className: "cursor-pointer hover:bg-white/10 p-1.5 rounded", onClick: onClose, title: "Cerrar Ventana", children: /* @__PURE__ */ jsx(icon_default, { name: "X", size: 16, className: "text-ink-secondary" }) })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "flex-1 overflow-hidden bg-theme-950", children })
+        /* @__PURE__ */ jsx("div", { className: "flex-1 overflow-hidden bg-surface-1", children })
       ]
     }
   ) });
