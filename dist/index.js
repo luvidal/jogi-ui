@@ -1952,7 +1952,7 @@ var Tabs = ({
   const colors = COLOR_SETS[colorSet];
   const sizeConfig3 = SIZE_CONFIG2[size];
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className, children: [
-    /* @__PURE__ */ jsxRuntime.jsx("div", { className: `flex ${sizeConfig3.track} rounded-xl flex-shrink-0 ${dark ? "bg-white/10" : "bg-gray-100"}`, children: tabs.map((tab) => {
+    /* @__PURE__ */ jsxRuntime.jsx("div", { className: `flex ${sizeConfig3.track} rounded-xl flex-shrink-0 ${dark ? "bg-surface-0/60" : "bg-gray-100"}`, children: tabs.map((tab) => {
       const isActive = activeId === tab.id;
       const sfx = suffix?.(tab.id);
       return /* @__PURE__ */ jsxRuntime.jsxs(
@@ -1962,9 +1962,9 @@ var Tabs = ({
             e.stopPropagation();
             handleTabClick(tab.id);
           },
-          className: `flex-1 flex items-center justify-center ${sizeConfig3.button} rounded-lg font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${dark ? isActive ? "bg-white/25 text-white shadow-sm" : "text-white/50 hover:text-white/80 hover:bg-white/10" : isActive ? `${colors.activeBg} ${colors.activeText} shadow-sm` : "text-gray-500 hover:text-gray-700 hover:bg-white/50"}`,
+          className: `flex-1 flex items-center justify-center ${sizeConfig3.button} rounded-lg font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${dark ? isActive ? "bg-brand text-brand-contrast shadow-sm" : "text-ink-tertiary hover:text-ink-primary hover:bg-surface-0/40" : isActive ? `${colors.activeBg} ${colors.activeText} shadow-sm` : "text-gray-500 hover:text-gray-700 hover:bg-white/50"}`,
           children: [
-            tab.icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: tab.icon, size: sizeConfig3.icon, className: `flex-shrink-0 ${dark ? isActive ? "text-white" : "text-white/50" : isActive ? colors.activeIcon : "text-gray-400"}` }),
+            tab.icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: tab.icon, size: sizeConfig3.icon, className: `flex-shrink-0 ${dark ? isActive ? "text-brand-contrast" : "text-ink-tertiary" : isActive ? colors.activeIcon : "text-gray-400"}` }),
             /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "truncate", title: tab.label, children: [
               tab.shortLabel ? /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
                 /* @__PURE__ */ jsxRuntime.jsx("span", { className: "sm:hidden", children: tab.shortLabel }),

@@ -134,7 +134,7 @@ const Tabs = ({
 
     return (
         <div className={className}>
-            <div className={`flex ${sizeConfig.track} rounded-xl flex-shrink-0 ${dark ? 'bg-white/10' : 'bg-gray-100'}`}>
+            <div className={`flex ${sizeConfig.track} rounded-xl flex-shrink-0 ${dark ? 'bg-surface-0/60' : 'bg-gray-100'}`}>
                 {tabs.map(tab => {
                     const isActive = activeId === tab.id
                     const sfx = suffix?.(tab.id)
@@ -144,13 +144,13 @@ const Tabs = ({
                             onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
                             className={`flex-1 flex items-center justify-center ${sizeConfig.button} rounded-lg font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${
                                 dark
-                                    ? (isActive ? 'bg-white/25 text-white shadow-sm' : 'text-white/50 hover:text-white/80 hover:bg-white/10')
+                                    ? (isActive ? 'bg-brand text-brand-contrast shadow-sm' : 'text-ink-tertiary hover:text-ink-primary hover:bg-surface-0/40')
                                     : (isActive ? `${colors.activeBg} ${colors.activeText} shadow-sm` : 'text-gray-500 hover:text-gray-700 hover:bg-white/50')
                             }`}
                         >
                             {tab.icon && <Icon name={tab.icon} size={sizeConfig.icon} className={`flex-shrink-0 ${
                                 dark
-                                    ? (isActive ? 'text-white' : 'text-white/50')
+                                    ? (isActive ? 'text-brand-contrast' : 'text-ink-tertiary')
                                     : (isActive ? colors.activeIcon : 'text-gray-400')
                             }`} />}
                             <span className='truncate' title={tab.label}>{tab.shortLabel ? (<><span className="sm:hidden">{tab.shortLabel}</span><span className="hidden sm:inline">{tab.label}</span></>) : tab.label}{sfx || ''}</span>
