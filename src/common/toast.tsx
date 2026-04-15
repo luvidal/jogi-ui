@@ -66,7 +66,7 @@ const Toast = ({ toast, onClose }: ToastProps) => {
       className={`
         transform transition-all duration-300 ease-in-out
         ${isVisible && !isLeaving ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}
-        bg-surface-1 border border-edge-subtle/20 shadow-2xl rounded-xl
+        bg-surface-2 border border-edge-subtle/40 shadow-2xl rounded-xl
         p-4 min-w-[300px] max-w-[400px] relative overflow-hidden
       `}
     >
