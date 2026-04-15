@@ -123,14 +123,18 @@ declare const ColorPicker: ({ label, value, onChange, className, visible }: Prop
 
 interface FieldWrapperProps {
     label?: string;
+    /** Optional tooltip — renders a "?" icon next to the label */
+    tooltip?: string;
     className?: string;
     visible?: boolean;
     children: ReactNode;
 }
-declare function FieldWrapper({ label, className, visible, children }: FieldWrapperProps): react_jsx_runtime.JSX.Element | null;
+declare function FieldWrapper({ label, tooltip, className, visible, children }: FieldWrapperProps): react_jsx_runtime.JSX.Element | null;
 
 interface Props$c {
     label?: string;
+    /** Optional tooltip — renders "?" icon next to the label */
+    tooltip?: string;
     readOnly?: boolean;
     onChange?: (value: string) => void;
     value?: string;
@@ -138,7 +142,7 @@ interface Props$c {
     visible?: boolean;
 }
 type InputProps = Props$c & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'readOnly'>;
-declare const Input: ({ label, className, readOnly, onChange, value, visible, ...rest }: InputProps) => react_jsx_runtime.JSX.Element;
+declare const Input: ({ label, tooltip, className, readOnly, onChange, value, visible, ...rest }: InputProps) => react_jsx_runtime.JSX.Element;
 
 interface Props$b<T extends string = string> {
     label: string;
@@ -251,6 +255,16 @@ type TooltipProps = {
     text: string;
 };
 declare const Tooltip: ({ text }: TooltipProps) => react_jsx_runtime.JSX.Element;
+
+interface LabelProps {
+    /** The text of the label */
+    text: string;
+    /** Optional tooltip — renders a "?" icon that opens a tooltip on click */
+    tooltip?: string;
+    /** Extra classes appended after the defaults */
+    className?: string;
+}
+declare const Label: ({ text, tooltip, className }: LabelProps) => react_jsx_runtime.JSX.Element;
 
 interface Props$6 {
     className?: string;
@@ -853,4 +867,4 @@ interface UploadCardsProps {
 }
 declare function UploadCards({ items, summary, requestLabel, role, labels: userLabels }: UploadCardsProps): react_jsx_runtime.JSX.Element;
 
-export { Accordion, Anchor, Button, ButtonGroup, type CapturedTransfer, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, type FileStatus, type FileUploadItem, Icon, Input, MasterDetail, Modal, ModalFormLayout, ModalOverlayPanel, ModalToolbar, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, type RefreshActions, Scroll, type Section, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, type SortOption, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, UploadCards, type UploadCardsLabels, type UploadFlowLabels, type UploadFlowOptions, type UploadSummary, type UploadToast, type UseRecordsOptions, type UseRecordsReturn, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop, useIsMobile, useRecords, useToast, useUploadFlow };
+export { Accordion, Anchor, Button, ButtonGroup, type CapturedTransfer, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, type FileStatus, type FileUploadItem, Icon, Input, Label, MasterDetail, Modal, ModalFormLayout, ModalOverlayPanel, ModalToolbar, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, type RefreshActions, Scroll, type Section, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, type SortOption, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, UploadCards, type UploadCardsLabels, type UploadFlowLabels, type UploadFlowOptions, type UploadSummary, type UploadToast, type UseRecordsOptions, type UseRecordsReturn, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop, useIsMobile, useRecords, useToast, useUploadFlow };

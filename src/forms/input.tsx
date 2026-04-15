@@ -3,6 +3,8 @@ import FieldWrapper from './fieldwrapper'
 
 interface Props {
   label?: string
+  /** Optional tooltip — renders "?" icon next to the label */
+  tooltip?: string
   readOnly?: boolean
   onChange?: (value: string) => void
   value?: string
@@ -18,7 +20,7 @@ const sanitizeValue = (s: any) => String(s || '')
   .replace(/\s+/g, ' ')
   .trim()
 
-const Input = ({ label, className = '', readOnly, onChange, value = '', visible = true, ...rest }: InputProps) => {
+const Input = ({ label, tooltip, className = '', readOnly, onChange, value = '', visible = true, ...rest }: InputProps) => {
   const [localValue, setLocalValue] = useState(value)
   const [cleanValue, setCleanValue] = useState(() => sanitizeValue(value))
 
@@ -35,7 +37,7 @@ const Input = ({ label, className = '', readOnly, onChange, value = '', visible 
   }
 
   return (
-    <FieldWrapper label={label} className={className} visible={visible}>
+    <FieldWrapper label={label} tooltip={tooltip} className={className} visible={visible}>
       <input
         {...rest}
         readOnly={readOnly}
@@ -43,7 +45,7 @@ const Input = ({ label, className = '', readOnly, onChange, value = '', visible 
         onChange={e => setLocalValue(e.target.value)}
         onBlur={commit}
         onKeyDown={e => e.key === 'Enter' && commit()}
-        className={`border border-edge-subtle/20 rounded-xl w-full ${readOnly ? 'text-ink-tertiary cursor-not-allowed bg-surface-1' : 'text-ink-primary bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 outline-none'} text-base px-4 py-3 transition-all duration-300`}
+        className={`border border-edge-subtle/20 rounded-xl w-full placeholder:text-ink-tertiary/25 ${readOnly ? 'text-ink-tertiary cursor-not-allowed bg-surface-1' : 'text-ink-primary bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 outline-none'} text-base px-4 py-3 transition-all duration-300`}
       />
     </FieldWrapper>
   )

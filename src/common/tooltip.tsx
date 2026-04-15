@@ -53,16 +53,19 @@ const Tooltip = ({ text }: TooltipProps) => {
                     setOpen(v => !v)
                 }}
             >
-                <Icon name='CircleQuestionMark' className='size-4 opacity-60 hover:opacity-100 transition-opacity text-gray-700' />
+                <Icon name='CircleQuestionMark' className='size-4 opacity-60 hover:opacity-100 transition-opacity' />
             </button>
             {open && typeof document !== 'undefined' && createPortal(
                 <div
                     ref={tooltipRef}
+                    // DIRECTIVE: Tooltip fades in slowly IN PLACE. No transform,
+                    // no slide, no translate. Only opacity animates. Duration
+                    // is deliberately slow (500ms) for a gentle reveal.
                     className={`
-                        fixed z-[9999] p-3 rounded-xl shade-md text-sm max-w-xs break-words
-                        bg-theme-800 text-white/90 border border-white/10 backdrop-blur-md
-                        transition-all duration-200
-                        ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'}
+                        fixed z-[9999] p-3 rounded-xl shadow-md text-sm max-w-xs break-words
+                        bg-surface-0 text-ink-secondary border border-edge-subtle/20 backdrop-blur-md
+                        transition-opacity duration-500 ease-out
+                        ${visible ? 'opacity-100' : 'opacity-0'}
                     `}
                     style={{ top: pos.top, left: pos.left }}
                 >

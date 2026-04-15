@@ -139,13 +139,6 @@ var Checkbox = ({ label, checked, className = "", onChange }) => {
   );
 };
 var checkbox_default = Checkbox;
-function FieldWrapper({ label, className = "", visible = true, children }) {
-  if (!visible) return null;
-  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `mb-2 ${className}`, children: [
-    label && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex items-center", children: /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-gray-500 text-sm", children: label }) }),
-    children
-  ] });
-}
 var useClickOutside = (refs, onClose) => {
   react.useEffect(() => {
     const refList = Array.isArray(refs) ? refs : [refs];
@@ -158,6 +151,82 @@ var useClickOutside = (refs, onClose) => {
     return () => document.removeEventListener("mousedown", onDown);
   }, [refs, onClose]);
 };
+var Tooltip = ({ text }) => {
+  const [open, setOpen] = react.useState(false);
+  const [pos, setPos] = react.useState({ top: 0, left: 0 });
+  const [visible, setVisible] = react.useState(false);
+  const ref = react.useRef(null);
+  const btnRef = react.useRef(null);
+  const tooltipRef = react.useRef(null);
+  const updatePosition = react.useCallback(() => {
+    if (!btnRef.current) return;
+    const r = btnRef.current.getBoundingClientRect();
+    let top = r.top;
+    let left = r.right + 8;
+    const tooltipWidth = 256;
+    if (left + tooltipWidth > window.innerWidth - 16) {
+      left = r.left - tooltipWidth - 8;
+    }
+    if (top + 100 > window.innerHeight - 16) {
+      top = window.innerHeight - 116;
+    }
+    top = Math.max(8, top);
+    left = Math.max(8, left);
+    setPos({ top, left });
+  }, []);
+  react.useEffect(() => {
+    if (open) {
+      updatePosition();
+      requestAnimationFrame(() => setVisible(true));
+    } else {
+      setVisible(false);
+    }
+  }, [open, updatePosition]);
+  useClickOutside([ref, tooltipRef], () => setOpen(false));
+  return /* @__PURE__ */ jsxRuntime.jsxs("span", { ref, className: "relative inline-block left-1", children: [
+    /* @__PURE__ */ jsxRuntime.jsx(
+      "button",
+      {
+        ref: btnRef,
+        onClick: (e) => {
+          e.stopPropagation();
+          setOpen((v) => !v);
+        },
+        children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "CircleQuestionMark", className: "size-4 opacity-60 hover:opacity-100 transition-opacity" })
+      }
+    ),
+    open && typeof document !== "undefined" && reactDom.createPortal(
+      /* @__PURE__ */ jsxRuntime.jsx(
+        "div",
+        {
+          ref: tooltipRef,
+          className: `
+                        fixed z-[9999] p-3 rounded-xl shadow-md text-sm max-w-xs break-words
+                        bg-surface-0 text-ink-secondary border border-edge-subtle/20 backdrop-blur-md
+                        transition-opacity duration-500 ease-out
+                        ${visible ? "opacity-100" : "opacity-0"}
+                    `,
+          style: { top: pos.top, left: pos.left },
+          children: text
+        }
+      ),
+      document.body
+    )
+  ] });
+};
+var tooltip_default = Tooltip;
+var Label = ({ text, tooltip, className = "" }) => /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `flex items-center text-ink-tertiary text-sm ${className}`, children: [
+  /* @__PURE__ */ jsxRuntime.jsx("span", { children: text }),
+  tooltip && /* @__PURE__ */ jsxRuntime.jsx(tooltip_default, { text: tooltip })
+] });
+var label_default = Label;
+function FieldWrapper({ label, tooltip, className = "", visible = true, children }) {
+  if (!visible) return null;
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `mb-2 ${className}`, children: [
+    label && /* @__PURE__ */ jsxRuntime.jsx(label_default, { text: label, tooltip }),
+    children
+  ] });
+}
 var ColorPicker = ({ label, value = "#000000", onChange, className = "", visible = true }) => {
   const [localValue, setLocalValue] = react.useState(value);
   const [showPicker, setShowPicker] = react.useState(false);
@@ -215,7 +284,7 @@ var ColorPicker = ({ label, value = "#000000", onChange, className = "", visible
 };
 var colorpicker_default = ColorPicker;
 var sanitizeValue = (s) => String(s || "").replace(/[\u0000-\u001F\u007F-\u009F]/g, "").replace(/[\u00A0\u1680\u180E\u2000-\u200D\u2028-\u202F\u205F\u2060\u3000\uFEFF]+/g, " ").replace(/\s+/g, " ").trim();
-var Input = ({ label, className = "", readOnly, onChange, value = "", visible = true, ...rest }) => {
+var Input = ({ label, tooltip, className = "", readOnly, onChange, value = "", visible = true, ...rest }) => {
   const [localValue, setLocalValue] = react.useState(value);
   const [cleanValue, setCleanValue] = react.useState(() => sanitizeValue(value));
   react.useEffect(() => {
@@ -228,7 +297,7 @@ var Input = ({ label, className = "", readOnly, onChange, value = "", visible = 
     setLocalValue(sanitized);
     if (sanitized !== cleanValue) onChange?.(sanitized);
   };
-  return /* @__PURE__ */ jsxRuntime.jsx(FieldWrapper, { label, className, visible, children: /* @__PURE__ */ jsxRuntime.jsx(
+  return /* @__PURE__ */ jsxRuntime.jsx(FieldWrapper, { label, tooltip, className, visible, children: /* @__PURE__ */ jsxRuntime.jsx(
     "input",
     {
       ...rest,
@@ -237,7 +306,7 @@ var Input = ({ label, className = "", readOnly, onChange, value = "", visible = 
       onChange: (e) => setLocalValue(e.target.value),
       onBlur: commit,
       onKeyDown: (e) => e.key === "Enter" && commit(),
-      className: `border border-edge-subtle/20 rounded-xl w-full ${readOnly ? "text-ink-tertiary cursor-not-allowed bg-surface-1" : "text-ink-primary bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 outline-none"} text-base px-4 py-3 transition-all duration-300`
+      className: `border border-edge-subtle/20 rounded-xl w-full placeholder:text-ink-tertiary/25 ${readOnly ? "text-ink-tertiary cursor-not-allowed bg-surface-1" : "text-ink-primary bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 outline-none"} text-base px-4 py-3 transition-all duration-300`
     }
   ) });
 };
@@ -296,7 +365,7 @@ var ComputedField = ({ label, value, suffix, className = "" }) => {
 var computedfield_default = ComputedField;
 
 // src/forms/inputstyles.ts
-var inputBase = "border border-edge-subtle/20 rounded-xl w-full text-sm px-3 py-2 text-ink-primary";
+var inputBase = "border border-edge-subtle/20 rounded-xl w-full text-sm px-3 py-2 text-ink-primary placeholder:text-ink-tertiary/25";
 var inputEditable = "bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 transition-all duration-200 outline-none";
 var inputReadOnly = "bg-surface-1 border-edge-subtle/15 cursor-default text-ink-tertiary";
 var disabledEffect = "opacity-40 blur-[0.5px]";
@@ -443,70 +512,6 @@ var ModalFormLayout = ({ footer, className = "", children }) => /* @__PURE__ */ 
   /* @__PURE__ */ jsxRuntime.jsx("div", { className: "shrink-0", children: footer })
 ] });
 var modalformlayout_default = ModalFormLayout;
-var Tooltip = ({ text }) => {
-  const [open, setOpen] = react.useState(false);
-  const [pos, setPos] = react.useState({ top: 0, left: 0 });
-  const [visible, setVisible] = react.useState(false);
-  const ref = react.useRef(null);
-  const btnRef = react.useRef(null);
-  const tooltipRef = react.useRef(null);
-  const updatePosition = react.useCallback(() => {
-    if (!btnRef.current) return;
-    const r = btnRef.current.getBoundingClientRect();
-    let top = r.top;
-    let left = r.right + 8;
-    const tooltipWidth = 256;
-    if (left + tooltipWidth > window.innerWidth - 16) {
-      left = r.left - tooltipWidth - 8;
-    }
-    if (top + 100 > window.innerHeight - 16) {
-      top = window.innerHeight - 116;
-    }
-    top = Math.max(8, top);
-    left = Math.max(8, left);
-    setPos({ top, left });
-  }, []);
-  react.useEffect(() => {
-    if (open) {
-      updatePosition();
-      requestAnimationFrame(() => setVisible(true));
-    } else {
-      setVisible(false);
-    }
-  }, [open, updatePosition]);
-  useClickOutside([ref, tooltipRef], () => setOpen(false));
-  return /* @__PURE__ */ jsxRuntime.jsxs("span", { ref, className: "relative inline-block left-1", children: [
-    /* @__PURE__ */ jsxRuntime.jsx(
-      "button",
-      {
-        ref: btnRef,
-        onClick: (e) => {
-          e.stopPropagation();
-          setOpen((v) => !v);
-        },
-        children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "CircleQuestionMark", className: "size-4 opacity-60 hover:opacity-100 transition-opacity text-gray-700" })
-      }
-    ),
-    open && typeof document !== "undefined" && reactDom.createPortal(
-      /* @__PURE__ */ jsxRuntime.jsx(
-        "div",
-        {
-          ref: tooltipRef,
-          className: `
-                        fixed z-[9999] p-3 rounded-xl shade-md text-sm max-w-xs break-words
-                        bg-theme-800 text-white/90 border border-white/10 backdrop-blur-md
-                        transition-all duration-200
-                        ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}
-                    `,
-          style: { top: pos.top, left: pos.left },
-          children: text
-        }
-      ),
-      document.body
-    )
-  ] });
-};
-var tooltip_default = Tooltip;
 
 // src/common/colclass.ts
 var colSpanMap = {
@@ -2808,6 +2813,7 @@ exports.EmptyState = emptystate_default;
 exports.FieldWrapper = FieldWrapper;
 exports.Icon = icon_default;
 exports.Input = input_default;
+exports.Label = label_default;
 exports.MasterDetail = MasterDetail;
 exports.Modal = modal_default;
 exports.ModalFormLayout = modalformlayout_default;
