@@ -31,7 +31,7 @@ export default function DragHere({ size = 'lg' }: DragHereProps) {
         }
       `}</style>
 
-      <div className='absolute inset-0 bg-surface-0/60 backdrop-blur-sm pointer-events-none grid place-items-center z-50'>
+      <div className='fixed inset-0 bg-surface-0/60 backdrop-blur-sm pointer-events-none grid place-items-center z-50'>
         <div className='flex flex-col items-center justify-center gap-3'>
           <svg
             width={cfg.svg}

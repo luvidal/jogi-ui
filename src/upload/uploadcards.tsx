@@ -33,12 +33,12 @@ const DEFAULT_STATUS_LABELS = {
 }
 
 const statusConfig: Record<string, { icon: string; color: string; spin?: boolean }> = {
-  queued:      { icon: 'Clock',      color: 'text-gray-400' },
-  compressing: { icon: 'FileDown',   color: 'text-theme-500',   spin: true },
-  uploading:   { icon: 'Upload',     color: 'text-theme-500',   spin: true },
-  analyzing:   { icon: 'Sparkles',   color: 'text-theme-500',   spin: true },
-  detected:    { icon: 'Sparkles',   color: 'text-theme-600' },
-  linking:     { icon: 'Link',       color: 'text-theme-500' },
+  queued:      { icon: 'Clock',      color: 'text-ink-tertiary' },
+  compressing: { icon: 'FileDown',   color: 'text-theme-400',   spin: true },
+  uploading:   { icon: 'Upload',     color: 'text-theme-400',   spin: true },
+  analyzing:   { icon: 'Sparkles',   color: 'text-theme-400',   spin: true },
+  detected:    { icon: 'Sparkles',   color: 'text-theme-300' },
+  linking:     { icon: 'Link',       color: 'text-theme-400' },
   done:        { icon: 'Check',      color: 'text-status-ok' },
   error:       { icon: 'X',          color: 'text-status-pending' },
 }
@@ -92,12 +92,12 @@ function StatusLabel({ item, requestLabel, role, labels }: { item: FileUploadIte
   const getDetectedLabel = labels.detectedLabel ?? defaultDetectedLabel
 
   if (item.status === 'error') return <span className='text-xs text-status-pending'>{item.error || 'Error'}</span>
-  if (item.status === 'detected') return <span className='text-xs text-theme-600 font-medium'>{getDetectedLabel(item.detectedTypes, item.detectedCount)}</span>
-  if (item.status === 'linking') return <span className='text-xs text-theme-500'>{getLinkingLabel(requestLabel, role)}</span>
+  if (item.status === 'detected') return <span className='text-xs text-theme-300 font-medium'>{getDetectedLabel(item.detectedTypes, item.detectedCount)}</span>
+  if (item.status === 'linking') return <span className='text-xs text-theme-400'>{getLinkingLabel(requestLabel, role)}</span>
   // For non-expanded done items with detected types, show what was found instead of generic "Done"
   if (item.status === 'done' && item.detectedTypes.length > 0) return <span className='text-xs text-status-ok'>{getDetectedLabel(item.detectedTypes, item.detectedCount)}</span>
   const statusLabel = labels[item.status as keyof typeof DEFAULT_STATUS_LABELS] ?? ''
-  return <span className='text-xs text-gray-500'>{statusLabel}</span>
+  return <span className='text-xs text-ink-tertiary'>{statusLabel}</span>
 }
 
 function ProgressBar({ item }: { item: FileUploadItem }) {
@@ -111,7 +111,7 @@ function ProgressBar({ item }: { item: FileUploadItem }) {
     ? 'bg-status-ok'
     : 'bg-theme-400'
 
-  const trackColor = isError ? 'bg-status-pending/20' : isDone ? 'bg-status-ok/20' : 'bg-theme-100'
+  const trackColor = isError ? 'bg-status-pending/20' : isDone ? 'bg-status-ok/20' : 'bg-theme-950/40'
 
   return (
     <div className={`h-1 rounded-full overflow-hidden ${trackColor}`}>
@@ -163,14 +163,14 @@ function DetectedPills({ types }: { types: string[] }) {
       {types.slice(0, 4).map((label, i) => (
         <span
           key={`${i}-${label}`}
-          className='px-1.5 py-0.5 text-[10px] rounded-full bg-theme-100 text-theme-600 font-medium animate-fade-in-up'
+          className='px-1.5 py-0.5 text-[10px] rounded-full bg-theme-900/40 text-theme-300 font-medium animate-fade-in-up'
           style={{ animationDelay: `${i * 100}ms` }}
         >
           {label}
         </span>
       ))}
       {types.length > 4 && (
-        <span className='px-1.5 py-0.5 text-[10px] rounded-full bg-gray-100 text-gray-500 font-medium animate-fade-in-up'
+        <span className='px-1.5 py-0.5 text-[10px] rounded-full bg-surface-2 text-ink-tertiary font-medium animate-fade-in-up'
           style={{ animationDelay: `${4 * 100}ms` }}
         >
           +{types.length - 4}
@@ -189,14 +189,14 @@ function UploadCard({ item, index, requestLabel, role, labels }: { item: FileUpl
       style={{ animationDelay: `${index * 80}ms` }}
     >
       {/* File type icon */}
-      <div className={`flex-shrink-0 mt-0.5 ${isDone ? 'text-status-ok' : 'text-theme-400'}`}>
+      <div className={`flex-shrink-0 mt-0.5 ${isDone ? 'text-status-ok' : 'text-theme-300'}`}>
         <Icon name={isDone ? 'Check' : (item.isExpanded ? 'FileText' : fileIcon(item.filename))} size={18} />
       </div>
 
       {/* Content */}
       <div className='flex-1 min-w-0'>
         <div className='flex items-center justify-between gap-2'>
-          <span className={`text-sm font-medium truncate ${isDone ? 'text-gray-400' : 'text-gray-700'}`}>
+          <span className={`text-sm font-medium truncate ${isDone ? 'text-ink-tertiary' : 'text-ink-primary'}`}>
             {item.isExpanded ? item.filename : truncate(item.filename)}
           </span>
           <StatusIcon item={item} />
@@ -224,20 +224,20 @@ export default function UploadCards({ items, summary, requestLabel, role, labels
   const isSingle = items.length === 1
 
   return (
-    <div className='absolute inset-0 bg-white/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in'>
+    <div className='fixed inset-0 bg-surface-0/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in'>
       <div className='w-full max-w-md'>
         {/* Header */}
         <div className='flex items-center justify-between mb-3 px-1'>
           <div className='flex items-center gap-2'>
-            <div className={`text-theme-500 ${!allDone ? 'animate-pulse' : ''}`}>
+            <div className={`text-theme-400 ${!allDone ? 'animate-pulse' : ''}`}>
               <Icon name={allDone ? 'CircleCheck' : 'Upload'} size={18} />
             </div>
-            <span className='text-sm font-medium text-gray-600 truncate'>
+            <span className='text-sm font-medium text-ink-secondary truncate'>
               {getHeaderLabel(items, summary)}
             </span>
           </div>
           {!isSingle && (
-            <span className='text-xs text-gray-400 tabular-nums'>
+            <span className='text-xs text-ink-tertiary tabular-nums'>
               {overallProgress}%
             </span>
           )}
@@ -245,7 +245,7 @@ export default function UploadCards({ items, summary, requestLabel, role, labels
 
         {/* Overall progress — only when multiple files */}
         {!isSingle && (
-          <div className='h-1 rounded-full bg-theme-100 mb-3 overflow-hidden'>
+          <div className='h-1 rounded-full bg-theme-950/40 mb-3 overflow-hidden'>
             <div
               className={`h-full rounded-full transition-all duration-500 ease-out ${allDone ? 'bg-status-ok' : 'bg-theme-400'}`}
               style={{ width: `${overallProgress}%` }}
@@ -254,7 +254,7 @@ export default function UploadCards({ items, summary, requestLabel, role, labels
         )}
 
         {/* File cards */}
-        <div className='bg-white/80 rounded-2xl shade-md border border-gray-100 divide-y divide-gray-100 max-h-[60vh] overflow-y-auto'>
+        <div className='bg-surface-1/80 rounded-2xl shadow-token-md border border-edge-subtle/20 divide-y divide-edge-subtle/20 max-h-[60vh] overflow-y-auto'>
           {items.map((item, i) => (
             <UploadCard
               key={item.id}

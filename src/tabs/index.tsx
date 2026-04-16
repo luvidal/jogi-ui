@@ -129,8 +129,9 @@ const Tabs = ({
 
     return (
         <div className={className}>
-            {/* Track — left-aligned, transparent, no stretch */}
-            <div className="flex w-fit gap-1.5 flex-shrink-0 mx-6 my-2.5">
+            {/* Track — left-aligned, transparent, no stretch. Scrolls horizontally if narrower than tabs. */}
+            <div className="overflow-x-auto overflow-y-hidden mx-3 sm:mx-6 my-2.5 scrollbar-none">
+                <div className="flex w-fit gap-1.5">
                 {tabs.map(tab => {
                     const isActive = activeId === tab.id
                     const sfx = suffix?.(tab.id)
@@ -165,6 +166,7 @@ const Tabs = ({
                         </button>
                     )
                 })}
+                </div>
             </div>
             {hasContent && (
                 <div className="flex-1 min-h-0 flex flex-col">

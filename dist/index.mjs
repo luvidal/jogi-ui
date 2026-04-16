@@ -1083,7 +1083,7 @@ var Card = ({ item, isSelected, onClick, checkbox }) => /* @__PURE__ */ jsxs(
           className: `cursor-pointer transition-colors ${checkbox.checked ? "text-theme-500" : "text-gray-300"}`
         }
       ) }) : item.icon ? /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center w-12 h-12 rounded-xl bg-theme-100 flex-shrink-0", children: typeof item.icon === "string" ? /* @__PURE__ */ jsx(icon_default, { name: item.icon, size: 24, className: "text-theme-600" }) : item.icon }) : null,
-      /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0 flex flex-col items-start", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0 flex flex-col", children: [
         typeof item.title === "string" ? /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold text-gray-800 truncate max-w-full", children: item.title }) : item.title,
         item.subtitle && (typeof item.subtitle === "string" ? /* @__PURE__ */ jsx("span", { className: "mt-0.5 text-xs text-theme-500 truncate max-w-full", children: item.subtitle }) : item.subtitle)
       ] }),
@@ -1139,7 +1139,7 @@ function CardList({ items, selectedId, onSelect, compact, checkedIds, onCheck })
       item.id
     )) });
   }
-  return /* @__PURE__ */ jsx("div", { className: "grid p-1.5 sm:p-2.5", children: items.map((item, i) => /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 p-1.5 sm:p-2.5", children: items.map((item, i) => /* @__PURE__ */ jsx(
     "div",
     {
       className: "p-1.5 animate-fade-in-up",
@@ -1990,7 +1990,7 @@ var Tabs = ({
   const hasContent = children !== void 0;
   const sizeConfig3 = SIZE_CONFIG2[size];
   return /* @__PURE__ */ jsxs("div", { className, children: [
-    /* @__PURE__ */ jsx("div", { className: "flex w-fit gap-1.5 flex-shrink-0 mx-6 my-2.5", children: tabs.map((tab) => {
+    /* @__PURE__ */ jsx("div", { className: "overflow-x-auto overflow-y-hidden mx-3 sm:mx-6 my-2.5 scrollbar-none", children: /* @__PURE__ */ jsx("div", { className: "flex w-fit gap-1.5", children: tabs.map((tab) => {
       const isActive = activeId === tab.id;
       const sfx = suffix?.(tab.id);
       return /* @__PURE__ */ jsxs(
@@ -2017,7 +2017,7 @@ var Tabs = ({
         },
         tab.id
       );
-    }) }),
+    }) }) }),
     hasContent && /* @__PURE__ */ jsx("div", { className: "flex-1 min-h-0 flex flex-col", children })
   ] });
 };
@@ -2235,7 +2235,7 @@ function DragHere2({ size = "lg" }) {
           animation: drag-arrow-bounce 1.2s ease-in-out infinite;
         }
       ` }),
-    /* @__PURE__ */ jsx("div", { className: "absolute inset-0 bg-surface-0/60 backdrop-blur-sm pointer-events-none grid place-items-center z-50", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center justify-center gap-3", children: [
+    /* @__PURE__ */ jsx("div", { className: "fixed inset-0 bg-surface-0/60 backdrop-blur-sm pointer-events-none grid place-items-center z-50", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center justify-center gap-3", children: [
       /* @__PURE__ */ jsxs(
         "svg",
         {
@@ -2654,12 +2654,12 @@ var DEFAULT_STATUS_LABELS = {
   done: "Done"
 };
 var statusConfig = {
-  queued: { icon: "Clock", color: "text-gray-400" },
-  compressing: { icon: "FileDown", color: "text-theme-500", spin: true },
-  uploading: { icon: "Upload", color: "text-theme-500", spin: true },
-  analyzing: { icon: "Sparkles", color: "text-theme-500", spin: true },
-  detected: { icon: "Sparkles", color: "text-theme-600" },
-  linking: { icon: "Link", color: "text-theme-500" },
+  queued: { icon: "Clock", color: "text-ink-tertiary" },
+  compressing: { icon: "FileDown", color: "text-theme-400", spin: true },
+  uploading: { icon: "Upload", color: "text-theme-400", spin: true },
+  analyzing: { icon: "Sparkles", color: "text-theme-400", spin: true },
+  detected: { icon: "Sparkles", color: "text-theme-300" },
+  linking: { icon: "Link", color: "text-theme-400" },
   done: { icon: "Check", color: "text-status-ok" },
   error: { icon: "X", color: "text-status-pending" }
 };
@@ -2705,18 +2705,18 @@ function StatusLabel({ item, requestLabel, role, labels }) {
   const getLinkingLabel = labels.linkingLabel ?? defaultLinkingLabel;
   const getDetectedLabel = labels.detectedLabel ?? defaultDetectedLabel;
   if (item.status === "error") return /* @__PURE__ */ jsx("span", { className: "text-xs text-status-pending", children: item.error || "Error" });
-  if (item.status === "detected") return /* @__PURE__ */ jsx("span", { className: "text-xs text-theme-600 font-medium", children: getDetectedLabel(item.detectedTypes, item.detectedCount) });
-  if (item.status === "linking") return /* @__PURE__ */ jsx("span", { className: "text-xs text-theme-500", children: getLinkingLabel(requestLabel, role) });
+  if (item.status === "detected") return /* @__PURE__ */ jsx("span", { className: "text-xs text-theme-300 font-medium", children: getDetectedLabel(item.detectedTypes, item.detectedCount) });
+  if (item.status === "linking") return /* @__PURE__ */ jsx("span", { className: "text-xs text-theme-400", children: getLinkingLabel(requestLabel, role) });
   if (item.status === "done" && item.detectedTypes.length > 0) return /* @__PURE__ */ jsx("span", { className: "text-xs text-status-ok", children: getDetectedLabel(item.detectedTypes, item.detectedCount) });
   const statusLabel = labels[item.status] ?? "";
-  return /* @__PURE__ */ jsx("span", { className: "text-xs text-gray-500", children: statusLabel });
+  return /* @__PURE__ */ jsx("span", { className: "text-xs text-ink-tertiary", children: statusLabel });
 }
 function ProgressBar({ item }) {
   const isActive = ["compressing", "uploading", "analyzing"].includes(item.status);
   const isDone = item.status === "done";
   const isError = item.status === "error";
   const barColor = isError ? "bg-status-pending" : isDone ? "bg-status-ok" : "bg-theme-400";
-  const trackColor = isError ? "bg-status-pending/20" : isDone ? "bg-status-ok/20" : "bg-theme-100";
+  const trackColor = isError ? "bg-status-pending/20" : isDone ? "bg-status-ok/20" : "bg-theme-950/40";
   return /* @__PURE__ */ jsx("div", { className: `h-1 rounded-full overflow-hidden ${trackColor}`, children: /* @__PURE__ */ jsx(
     "div",
     {
@@ -2748,7 +2748,7 @@ function DetectedPills({ types }) {
     types.slice(0, 4).map((label, i) => /* @__PURE__ */ jsx(
       "span",
       {
-        className: "px-1.5 py-0.5 text-[10px] rounded-full bg-theme-100 text-theme-600 font-medium animate-fade-in-up",
+        className: "px-1.5 py-0.5 text-[10px] rounded-full bg-theme-900/40 text-theme-300 font-medium animate-fade-in-up",
         style: { animationDelay: `${i * 100}ms` },
         children: label
       },
@@ -2757,7 +2757,7 @@ function DetectedPills({ types }) {
     types.length > 4 && /* @__PURE__ */ jsxs(
       "span",
       {
-        className: "px-1.5 py-0.5 text-[10px] rounded-full bg-gray-100 text-gray-500 font-medium animate-fade-in-up",
+        className: "px-1.5 py-0.5 text-[10px] rounded-full bg-surface-2 text-ink-tertiary font-medium animate-fade-in-up",
         style: { animationDelay: `${4 * 100}ms` },
         children: [
           "+",
@@ -2775,10 +2775,10 @@ function UploadCard({ item, index, requestLabel, role, labels }) {
       className: `flex items-start gap-3 px-3 py-2.5 rounded-xl transition-opacity duration-700 animate-upload-slide-in ${isDone ? "opacity-50" : "opacity-100"}`,
       style: { animationDelay: `${index * 80}ms` },
       children: [
-        /* @__PURE__ */ jsx("div", { className: `flex-shrink-0 mt-0.5 ${isDone ? "text-status-ok" : "text-theme-400"}`, children: /* @__PURE__ */ jsx(icon_default, { name: isDone ? "Check" : item.isExpanded ? "FileText" : fileIcon(item.filename), size: 18 }) }),
+        /* @__PURE__ */ jsx("div", { className: `flex-shrink-0 mt-0.5 ${isDone ? "text-status-ok" : "text-theme-300"}`, children: /* @__PURE__ */ jsx(icon_default, { name: isDone ? "Check" : item.isExpanded ? "FileText" : fileIcon(item.filename), size: 18 }) }),
         /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2", children: [
-            /* @__PURE__ */ jsx("span", { className: `text-sm font-medium truncate ${isDone ? "text-gray-400" : "text-gray-700"}`, children: item.isExpanded ? item.filename : truncate(item.filename) }),
+            /* @__PURE__ */ jsx("span", { className: `text-sm font-medium truncate ${isDone ? "text-ink-tertiary" : "text-ink-primary"}`, children: item.isExpanded ? item.filename : truncate(item.filename) }),
             /* @__PURE__ */ jsx(StatusIcon, { item })
           ] }),
           !item.isExpanded && /* @__PURE__ */ jsx(StatusLabel, { item, requestLabel, role, labels }),
@@ -2795,25 +2795,25 @@ function UploadCards({ items, summary, requestLabel, role, labels: userLabels })
   const allDone = items.length > 0 && items.every((it) => it.status === "done" || it.status === "error");
   const overallProgress = items.length > 0 ? Math.round(items.reduce((sum, it) => sum + it.progress, 0) / items.length) : 0;
   const isSingle = items.length === 1;
-  return /* @__PURE__ */ jsx("div", { className: "absolute inset-0 bg-white/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in", children: /* @__PURE__ */ jsxs("div", { className: "w-full max-w-md", children: [
+  return /* @__PURE__ */ jsx("div", { className: "fixed inset-0 bg-surface-0/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in", children: /* @__PURE__ */ jsxs("div", { className: "w-full max-w-md", children: [
     /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between mb-3 px-1", children: [
       /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsx("div", { className: `text-theme-500 ${!allDone ? "animate-pulse" : ""}`, children: /* @__PURE__ */ jsx(icon_default, { name: allDone ? "CircleCheck" : "Upload", size: 18 }) }),
-        /* @__PURE__ */ jsx("span", { className: "text-sm font-medium text-gray-600 truncate", children: getHeaderLabel(items, summary) })
+        /* @__PURE__ */ jsx("div", { className: `text-theme-400 ${!allDone ? "animate-pulse" : ""}`, children: /* @__PURE__ */ jsx(icon_default, { name: allDone ? "CircleCheck" : "Upload", size: 18 }) }),
+        /* @__PURE__ */ jsx("span", { className: "text-sm font-medium text-ink-secondary truncate", children: getHeaderLabel(items, summary) })
       ] }),
-      !isSingle && /* @__PURE__ */ jsxs("span", { className: "text-xs text-gray-400 tabular-nums", children: [
+      !isSingle && /* @__PURE__ */ jsxs("span", { className: "text-xs text-ink-tertiary tabular-nums", children: [
         overallProgress,
         "%"
       ] })
     ] }),
-    !isSingle && /* @__PURE__ */ jsx("div", { className: "h-1 rounded-full bg-theme-100 mb-3 overflow-hidden", children: /* @__PURE__ */ jsx(
+    !isSingle && /* @__PURE__ */ jsx("div", { className: "h-1 rounded-full bg-theme-950/40 mb-3 overflow-hidden", children: /* @__PURE__ */ jsx(
       "div",
       {
         className: `h-full rounded-full transition-all duration-500 ease-out ${allDone ? "bg-status-ok" : "bg-theme-400"}`,
         style: { width: `${overallProgress}%` }
       }
     ) }),
-    /* @__PURE__ */ jsx("div", { className: "bg-white/80 rounded-2xl shade-md border border-gray-100 divide-y divide-gray-100 max-h-[60vh] overflow-y-auto", children: items.map((item, i) => /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsx("div", { className: "bg-surface-1/80 rounded-2xl shadow-token-md border border-edge-subtle/20 divide-y divide-edge-subtle/20 max-h-[60vh] overflow-y-auto", children: items.map((item, i) => /* @__PURE__ */ jsx(
       UploadCard,
       {
         item,

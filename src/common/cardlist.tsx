@@ -44,7 +44,7 @@ const Card = ({ item, isSelected, onClick, checkbox }: { item: CardItem; isSelec
                 }
             </div>
         ) : null}
-        <div className='flex-1 min-w-0 flex flex-col items-start'>
+        <div className='flex-1 min-w-0 flex flex-col'>
             {typeof item.title === 'string'
                 ? <span className='text-sm font-semibold text-gray-800 truncate max-w-full'>{item.title}</span>
                 : item.title
@@ -129,7 +129,7 @@ export default function CardList({ items, selectedId, onSelect, compact, checked
     }
 
     return (
-        <div className='grid p-1.5 sm:p-2.5'>
+        <div className='grid grid-cols-1 p-1.5 sm:p-2.5'>
             {items.map((item, i) => (
                 <div
                     key={item.id}
