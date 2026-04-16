@@ -1496,7 +1496,7 @@ function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefi
           /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0 flex flex-col items-start", children: [
             renderTitle("text-base font-medium text-ink-primary"),
             /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1.5 min-w-0 mt-0.5", children: [
-              subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-sm text-ink-tertiary flex-shrink-0", children: subtitlePrefix }),
+              subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-sm text-ink-tertiary flex-shrink-0 hidden xl:inline", children: subtitlePrefix }),
               renderSubtitle("text-sm text-ink-secondary"),
               extra && subtitle && /* @__PURE__ */ jsx("span", { className: "text-ink-tertiary", children: "\xB7" }),
               extra
@@ -1511,7 +1511,7 @@ function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefi
       /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0 flex flex-col items-start", children: [
         renderTitle("text-token-h3 font-semibold text-ink-primary"),
         /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1.5 min-w-0 mt-0.5", children: [
-          subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-sm text-ink-tertiary", children: subtitlePrefix }),
+          subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-sm text-ink-tertiary hidden xl:inline", children: subtitlePrefix }),
           renderSubtitle("text-sm text-ink-secondary"),
           extra && subtitle && /* @__PURE__ */ jsx("span", { className: "text-ink-tertiary", children: "\xB7" }),
           extra
@@ -1528,7 +1528,7 @@ function DetailBar({ title, subtitle, email, icon, toolbar, extra, subtitlePrefi
         /* @__PURE__ */ jsxs("div", { className: "group flex flex-col min-w-0", children: [
           renderTitle("text-base font-semibold text-ink-primary"),
           /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
-            subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-xs text-ink-tertiary", children: subtitlePrefix }),
+            subtitlePrefix && /* @__PURE__ */ jsx("span", { className: "text-xs text-ink-tertiary hidden xl:inline", children: subtitlePrefix }),
             renderSubtitle("text-xs text-ink-secondary"),
             extra && subtitle && /* @__PURE__ */ jsx("span", { className: "text-ink-tertiary", children: "\xB7" }),
             extra

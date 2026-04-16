@@ -62,7 +62,7 @@ export default function DetailBar({ title, subtitle, email, icon, toolbar, extra
             <div className='flex-1 min-w-0 flex flex-col items-start'>
               {renderTitle('text-base font-medium text-ink-primary')}
               <div className='flex items-center gap-1.5 min-w-0 mt-0.5'>
-                {subtitlePrefix && <span className='text-sm text-ink-tertiary flex-shrink-0'>{subtitlePrefix}</span>}
+                {subtitlePrefix && <span className='text-sm text-ink-tertiary flex-shrink-0 hidden xl:inline'>{subtitlePrefix}</span>}
                 {renderSubtitle('text-sm text-ink-secondary')}
                 {extra && subtitle && <span className='text-ink-tertiary'>·</span>}
                 {extra}
@@ -80,7 +80,7 @@ export default function DetailBar({ title, subtitle, email, icon, toolbar, extra
         <div className='flex-1 min-w-0 flex flex-col items-start'>
           {renderTitle('text-token-h3 font-semibold text-ink-primary')}
           <div className='flex items-center gap-1.5 min-w-0 mt-0.5'>
-            {subtitlePrefix && <span className='text-sm text-ink-tertiary'>{subtitlePrefix}</span>}
+            {subtitlePrefix && <span className='text-sm text-ink-tertiary hidden xl:inline'>{subtitlePrefix}</span>}
             {renderSubtitle('text-sm text-ink-secondary')}
             {extra && subtitle && <span className='text-ink-tertiary'>·</span>}
             {extra}
@@ -110,7 +110,7 @@ export default function DetailBar({ title, subtitle, email, icon, toolbar, extra
           <div className='group flex flex-col min-w-0'>
             {renderTitle('text-base font-semibold text-ink-primary')}
             <div className='flex items-center gap-1.5 min-w-0'>
-              {subtitlePrefix && <span className='text-xs text-ink-tertiary'>{subtitlePrefix}</span>}
+              {subtitlePrefix && <span className='text-xs text-ink-tertiary hidden xl:inline'>{subtitlePrefix}</span>}
               {renderSubtitle('text-xs text-ink-secondary')}
               {extra && subtitle && <span className='text-ink-tertiary'>·</span>}
               {extra}
