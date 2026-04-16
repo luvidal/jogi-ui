@@ -527,7 +527,10 @@ var colSpanMap = {
 };
 var defaultCol = "sm:col-span-12 md:col-span-6 lg:col-span-6";
 var colClass = (span) => colSpanMap[span] || defaultCol;
-var Skeleton = ({ className = "" }) => /* @__PURE__ */ jsx("div", { className: `animate-shimmer rounded ${className}` });
+var Skeleton = ({ className = "", variant = "light" }) => {
+  const shimmer = variant === "light" ? "animate-shimmer" : "animate-shimmer-dark";
+  return /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded ${className}` });
+};
 Skeleton.Card = function SkeletonCard({ variant = "light", compact = false }) {
   const isLight = variant === "light";
   const shimmer = isLight ? "animate-shimmer" : "animate-shimmer-dark";
@@ -564,22 +567,25 @@ Skeleton.FileGrid = function SkeletonFileGrid({ count = 8 }) {
     /* @__PURE__ */ jsx("div", { className: "animate-shimmer-dark rounded h-3 w-20 mx-auto" })
   ] }) }, i)) });
 };
-Skeleton.DocGrid = function SkeletonDocGrid({ count = 6 }) {
+Skeleton.DocGrid = function SkeletonDocGrid({ count = 6, variant = "light" }) {
+  const isLight = variant === "light";
+  const shimmer = isLight ? "animate-shimmer" : "animate-shimmer-dark";
+  const card = isLight ? "border-gray-200 bg-white shadow-md" : "border-edge-subtle/15 bg-surface-1";
   return /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-8", children: Array.from({ length: count }).map((_, i) => /* @__PURE__ */ jsx("div", { className: "animate-fade-in", style: { animationDelay: `${i * 60}ms` }, children: /* @__PURE__ */ jsxs(
     "div",
     {
       style: { width: 200, height: 180 },
-      className: "flex flex-col rounded-xl border border-gray-200 bg-white shadow-md p-3",
+      className: `flex flex-col rounded-xl border ${card} p-3`,
       children: [
         /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between mb-2", children: [
-          /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded-xl w-10 h-10" }),
-          /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded-full w-14 h-4" })
+          /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded-xl w-10 h-10` }),
+          /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded-full w-14 h-4` })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-3.5 w-4/5 mb-1.5" }),
-        /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-2.5 w-3/5" }),
+        /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-3.5 w-4/5 mb-1.5` }),
+        /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-2.5 w-3/5` }),
         /* @__PURE__ */ jsxs("div", { className: "mt-auto pt-2 flex gap-1 justify-center", children: [
-          /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded w-10 h-4" }),
-          /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded w-10 h-4" })
+          /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded w-10 h-4` }),
+          /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded w-10 h-4` })
         ] })
       ]
     }
@@ -607,51 +613,75 @@ Skeleton.DashCard = function SkeletonDashCard({ colSpan = 6 }) {
     /* @__PURE__ */ jsx("div", { className: "flex-1 min-h-0 flex items-center justify-center", children: /* @__PURE__ */ jsx("div", { className: "animate-shimmer-dark rounded-xl w-3/4 h-3/4" }) })
   ] });
 };
-Skeleton.Form = function SkeletonForm({ rows = 4 }) {
+Skeleton.Form = function SkeletonForm({ rows = 4, variant = "light" }) {
+  const shimmer = variant === "light" ? "animate-shimmer" : "animate-shimmer-dark";
   return /* @__PURE__ */ jsx("div", { className: "flex flex-col gap-4 flex-1", children: Array.from({ length: rows }).map((_, i) => /* @__PURE__ */ jsxs("div", { className: "animate-fade-in space-y-1.5", style: { animationDelay: `${i * 80}ms` }, children: [
-    /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-3.5 w-20" }),
-    /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded-xl h-12 w-full" })
+    /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-3.5 w-20` }),
+    /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded-xl h-12 w-full` })
   ] }, i)) });
 };
-Skeleton.Activity = function SkeletonActivity() {
+Skeleton.Activity = function SkeletonActivity({ variant = "light" }) {
+  const isLight = variant === "light";
+  const shimmer = isLight ? "animate-shimmer" : "animate-shimmer-dark";
+  const card = isLight ? "bg-white border-gray-200" : "bg-surface-1 border-edge-subtle/15";
+  const stat = isLight ? "bg-gray-50" : "bg-surface-2";
+  const uploads = isLight ? "bg-white border-gray-200" : "bg-surface-1 border-edge-subtle/15";
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-6 flex-1 animate-fade-in", children: [
-    /* @__PURE__ */ jsxs("div", { className: "bg-white rounded-xl border border-gray-200 p-4", children: [
+    /* @__PURE__ */ jsxs("div", { className: `rounded-xl border ${card} p-4`, children: [
       /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 mb-3", children: [
-        /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded-full w-10 h-10 flex-shrink-0" }),
+        /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded-full w-10 h-10 flex-shrink-0` }),
         /* @__PURE__ */ jsxs("div", { className: "space-y-1.5 flex-1", children: [
-          /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-3.5 w-24" }),
-          /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-2.5 w-16" })
+          /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-3.5 w-24` }),
+          /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-2.5 w-16` })
         ] })
       ] }),
-      /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-3.5 w-48" })
+      /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-3.5 w-48` })
     ] }),
-    /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-4", children: [0, 1].map((i) => /* @__PURE__ */ jsxs("div", { className: "animate-fade-in rounded-xl p-4 bg-gray-50 text-center space-y-2", style: { animationDelay: `${(i + 1) * 80}ms` }, children: [
-      /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-8 w-12 mx-auto" }),
-      /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-2.5 w-20 mx-auto" })
+    /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-4", children: [0, 1].map((i) => /* @__PURE__ */ jsxs("div", { className: `animate-fade-in rounded-xl p-4 ${stat} text-center space-y-2`, style: { animationDelay: `${(i + 1) * 80}ms` }, children: [
+      /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-8 w-12 mx-auto` }),
+      /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-2.5 w-20 mx-auto` })
     ] }, i)) }),
-    /* @__PURE__ */ jsxs("div", { className: "bg-white rounded-xl border border-gray-200 p-4", children: [
-      /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-3.5 w-32 mb-3" }),
+    /* @__PURE__ */ jsxs("div", { className: `rounded-xl border ${uploads} p-4`, children: [
+      /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-3.5 w-32 mb-3` }),
       /* @__PURE__ */ jsx("div", { className: "space-y-3", children: [0, 1, 2].map((i) => /* @__PURE__ */ jsxs("div", { className: "animate-fade-in flex items-start gap-3", style: { animationDelay: `${(i + 3) * 80}ms` }, children: [
-        /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded w-4 h-4 mt-0.5 flex-shrink-0" }),
+        /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded w-4 h-4 mt-0.5 flex-shrink-0` }),
         /* @__PURE__ */ jsxs("div", { className: "flex-1 space-y-1.5", children: [
-          /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-3.5 w-3/4" }),
-          /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-2.5 w-1/2" })
+          /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-3.5 w-3/4` }),
+          /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-2.5 w-1/2` })
         ] })
       ] }, i)) })
     ] })
   ] });
 };
-Skeleton.Preview = function SkeletonPreview() {
-  return /* @__PURE__ */ jsx("div", { className: "absolute inset-0 flex items-center justify-center animate-fade-in", children: /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded-xl w-3/4 h-3/4" }) });
+Skeleton.Preview = function SkeletonPreview({ variant = "light" }) {
+  const shimmer = variant === "light" ? "animate-shimmer" : "animate-shimmer-dark";
+  return /* @__PURE__ */ jsx("div", { className: "absolute inset-0 flex items-center justify-center animate-fade-in", children: /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded-xl w-3/4 h-3/4` }) });
 };
-Skeleton.Table = function SkeletonTable({ rows = 5 }) {
-  return /* @__PURE__ */ jsx("div", { className: "w-full rounded-xl border border-gray-200 overflow-hidden", children: Array.from({ length: rows }).map((_, i) => /* @__PURE__ */ jsxs("div", { className: "animate-fade-in flex border-b border-gray-100 last:border-0", style: { animationDelay: `${i * 60}ms` }, children: [
-    /* @__PURE__ */ jsx("div", { className: "w-1/3 px-3 py-3", children: /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-3 w-16" }) }),
-    /* @__PURE__ */ jsx("div", { className: "w-2/3 px-3 py-3", children: /* @__PURE__ */ jsx("div", { className: "animate-shimmer rounded h-3 w-32" }) })
+Skeleton.Table = function SkeletonTable({ rows = 5, variant = "light" }) {
+  const isLight = variant === "light";
+  const outer = isLight ? "border-gray-200" : "border-edge-subtle/20";
+  const inner = isLight ? "border-gray-100" : "border-edge-subtle/10";
+  const shimmer = isLight ? "animate-shimmer" : "animate-shimmer-dark";
+  return /* @__PURE__ */ jsx("div", { className: `w-full rounded-xl border ${outer} overflow-hidden`, children: Array.from({ length: rows }).map((_, i) => /* @__PURE__ */ jsxs("div", { className: `animate-fade-in flex border-b ${inner} last:border-0`, style: { animationDelay: `${i * 60}ms` }, children: [
+    /* @__PURE__ */ jsx("div", { className: "w-1/3 px-3 py-3", children: /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-3 w-16` }) }),
+    /* @__PURE__ */ jsx("div", { className: "w-2/3 px-3 py-3", children: /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-3 w-32` }) })
   ] }, i)) });
 };
 Skeleton.Welcome = function SkeletonWelcome({ className = "" }) {
   return /* @__PURE__ */ jsx("div", { className: `bg-surface-2 rounded-2xl p-6 min-h-[80px] flex items-center ${className}`, children: /* @__PURE__ */ jsx("div", { className: "animate-shimmer-dark rounded h-6 w-48" }) });
+};
+Skeleton.DetailBar = function SkeletonDetailBar({
+  variant = "dark",
+  icon = true
+}) {
+  const shimmer = variant === "light" ? "animate-shimmer" : "animate-shimmer-dark";
+  return /* @__PURE__ */ jsx("div", { className: "relative border-b border-edge-subtle/15 bg-surface-1", children: /* @__PURE__ */ jsx("div", { className: "relative z-10 flex items-center justify-between px-6 py-4", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 min-w-0", children: [
+    icon && /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded-xl w-9 h-9 flex-shrink-0` }),
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-1.5", children: [
+      /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-4 w-40` }),
+      /* @__PURE__ */ jsx("div", { className: `${shimmer} rounded h-3 w-24` })
+    ] })
+  ] }) }) });
 };
 var skeleton_default = Skeleton;
 var EmptyState = ({ title = "Sin elementos", description, className = "", variant = "light", icon, action }) => {

@@ -275,10 +275,11 @@ declare function SectionSeparator({ label, first, className }: Props$7): react_j
 
 interface Props$6 {
     className?: string;
+    variant?: 'light' | 'dark';
 }
 /** Shimmer placeholder block for loading states. Uses theme-colored sweep animation. */
 declare const Skeleton: {
-    ({ className }: Props$6): react_jsx_runtime.JSX.Element;
+    ({ className, variant }: Props$6): react_jsx_runtime.JSX.Element;
     Card({ variant, compact }: {
         variant?: "light" | "dark";
         compact?: boolean;
@@ -292,8 +293,9 @@ declare const Skeleton: {
     FileGrid({ count }: {
         count?: number;
     }): react_jsx_runtime.JSX.Element;
-    DocGrid({ count }: {
+    DocGrid({ count, variant }: {
         count?: number;
+        variant?: "light" | "dark";
     }): react_jsx_runtime.JSX.Element;
     StatCard(): react_jsx_runtime.JSX.Element;
     StatRow({ className }: {
@@ -302,16 +304,26 @@ declare const Skeleton: {
     DashCard({ colSpan }: {
         colSpan?: number;
     }): react_jsx_runtime.JSX.Element;
-    Form({ rows }: {
+    Form({ rows, variant }: {
         rows?: number;
+        variant?: "light" | "dark";
     }): react_jsx_runtime.JSX.Element;
-    Activity(): react_jsx_runtime.JSX.Element;
-    Preview(): react_jsx_runtime.JSX.Element;
-    Table({ rows }: {
+    Activity({ variant }: {
+        variant?: "light" | "dark";
+    }): react_jsx_runtime.JSX.Element;
+    Preview({ variant }: {
+        variant?: "light" | "dark";
+    }): react_jsx_runtime.JSX.Element;
+    Table({ rows, variant }: {
         rows?: number;
+        variant?: "light" | "dark";
     }): react_jsx_runtime.JSX.Element;
     Welcome({ className }: {
         className?: string;
+    }): react_jsx_runtime.JSX.Element;
+    DetailBar({ variant, icon, }: {
+        variant?: "light" | "dark";
+        icon?: boolean;
     }): react_jsx_runtime.JSX.Element;
 };
 
