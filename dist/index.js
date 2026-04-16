@@ -1753,11 +1753,11 @@ var Accordion = ({ sections, forceExpanded = false, rememberOpen = true, storage
     if (forceExpanded) return;
     setOpenId((prev) => prev === sectionId ? null : sectionId);
   };
-  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "rounded-xl overflow-hidden border border-gray-200 flex-1 flex flex-col min-h-0", children: sections.map((section) => {
+  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "rounded-xl overflow-hidden border border-slate-700 flex-1 flex flex-col min-h-0", children: sections.map((section) => {
     const colors = section.colors ?? DEFAULT_COLORS2;
     const isExpanded = forceExpanded || openId === section.id;
     const contentId = `section-content-${section.id}`;
-    return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `border-b border-gray-200 last:border-b-0 flex flex-col ${isExpanded ? "flex-1 min-h-0" : ""}`, children: [
+    return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `border-b border-slate-700 last:border-b-0 flex flex-col ${isExpanded ? "flex-1 min-h-0" : ""}`, children: [
       /* @__PURE__ */ jsxRuntime.jsxs(
         "button",
         {

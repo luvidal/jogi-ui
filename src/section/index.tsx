@@ -55,14 +55,14 @@ const Accordion = ({ sections, forceExpanded = false, rememberOpen = true, stora
     }
 
     return (
-        <div className='rounded-xl overflow-hidden border border-gray-200 flex-1 flex flex-col min-h-0'>
+        <div className='rounded-xl overflow-hidden border border-slate-700 flex-1 flex flex-col min-h-0'>
             {sections.map(section => {
                 const colors = section.colors ?? DEFAULT_COLORS
                 const isExpanded = forceExpanded || openId === section.id
                 const contentId = `section-content-${section.id}`
 
                 return (
-                    <div key={section.id} className={`border-b border-gray-200 last:border-b-0 flex flex-col ${isExpanded ? 'flex-1 min-h-0' : ''}`}>
+                    <div key={section.id} className={`border-b border-slate-700 last:border-b-0 flex flex-col ${isExpanded ? 'flex-1 min-h-0' : ''}`}>
                         <button
                             onClick={() => handleToggle(section.id)}
                             aria-expanded={isExpanded}
