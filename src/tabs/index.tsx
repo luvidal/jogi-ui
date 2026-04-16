@@ -34,6 +34,14 @@ interface TabsProps {
     size?: TabSize
 }
 
+/**
+ * DIRECTIVE: Internal state memory — Tabs MUST remember the selected tab
+ * across unmounts via localStorage. Both controlled (activeTab prop) and
+ * uncontrolled modes persist. On mount, the stored value is restored:
+ * - Uncontrolled: restored internally (useState initializer)
+ * - Controlled: parent notified via onChange before first paint
+ * This behavior is a contract — do NOT remove or weaken it.
+ */
 const Tabs = ({
     tabs,
     activeTab: controlledActive,
@@ -48,34 +56,47 @@ const Tabs = ({
 }: TabsProps) => {
     const storageKey = buildTabsKey(tabs, explicitStorageKey)
 
+    // DIRECTIVE: Read stored tab ONCE during initialization for both modes.
+    // storedOnMountRef carries the value from init → useLayoutEffect without
+    // a second localStorage read and without a ref guard that breaks in strict mode.
+    const storedOnMountRef = useRef<string | null>(null)
+
     const [internalActive, setInternalActive] = useState<string>(() => {
-        if (storageKey && controlledActive === undefined) {
+        if (storageKey) {
             try {
                 const stored = localStorage.getItem(storageKey)
-                if (stored && tabs.some(t => t.id === stored)) return stored
+                if (stored && tabs.some(t => t.id === stored)) {
+                    storedOnMountRef.current = stored
+                    if (controlledActive === undefined) return stored
+                }
             } catch {}
         }
         return tabs[0]?.id || ''
     })
     const activeId = controlledActive ?? internalActive
-    const restoredRef = useRef(false)
 
+    // Controlled mode: notify parent of remembered tab before first paint
     useLayoutEffect(() => {
-        if (!storageKey || controlledActive === undefined || restoredRef.current) return
-        restoredRef.current = true
-        try {
-            const stored = localStorage.getItem(storageKey)
-            if (stored && tabs.some(t => t.id === stored) && stored !== controlledActive) {
-                onChange?.(stored)
-            }
-        } catch {}
+        const stored = storedOnMountRef.current
+        if (!stored || controlledActive === undefined) return
+        if (stored !== controlledActive) onChange?.(stored)
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-    useEffect(() => {
-        if (!storageKey || controlledActive === undefined) return
-        try { localStorage.setItem(storageKey, controlledActive) } catch {}
-    }, [controlledActive, storageKey])
+    // Uncontrolled mode: notify parent of remembered tab on mount
+    useLayoutEffect(() => {
+        const stored = storedOnMountRef.current
+        if (!stored || controlledActive !== undefined) return
+        if (stored !== tabs[0]?.id) onChange?.(stored)
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Persist active tab to localStorage on change
+    useEffect(() => {
+        if (!storageKey) return
+        const value = controlledActive ?? internalActive
+        try { localStorage.setItem(storageKey, value) } catch {}
+    }, [controlledActive, internalActive, storageKey])
+
+    // Safety: if tabs change and activeId is no longer valid, reset to first tab
     useEffect(() => {
         if (tabs.length > 0 && !tabs.some(t => t.id === activeId)) {
             const newActive = tabs[0].id

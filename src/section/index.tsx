@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import Icon from '../common/icon'
 import SectionIcon from '../common/sectionicon'
 import type { Section } from '../types'
@@ -22,27 +22,43 @@ interface AccordionProps {
     rememberOpen?: boolean
     /** Explicit localStorage key. Auto-generated from section IDs if omitted. */
     storageKey?: string
+    /** Called when the open section changes (including on mount restore) */
+    onChange?: (sectionId: string | null) => void
 }
 
 /**
- * Accordion — collapsible sections with colored headers.
+ * DIRECTIVE: Internal state memory — Accordion MUST remember the open section
+ * across unmounts via localStorage (when rememberOpen is true, default).
+ * On mount, the stored section is restored internally. If onChange is provided,
+ * it is notified of the restored value before first paint.
+ * This behavior is a contract — do NOT remove or weaken it.
  *
  * Colors are provided per section via `section.colors`. Falls back to neutral gray.
  * Only one section can be open at a time (mutual exclusivity).
  */
-const Accordion = ({ sections, forceExpanded = false, rememberOpen = true, storageKey }: AccordionProps) => {
+const Accordion = ({ sections, forceExpanded = false, rememberOpen = true, storageKey, onChange }: AccordionProps) => {
     const key = rememberOpen ? buildAccordionKey(sections, storageKey) : null
+    const storedOnMountRef = useRef<string | null | undefined>(undefined)
 
     const [openId, setOpenId] = useState<string | null>(() => {
         if (key) {
             try {
                 const stored = localStorage.getItem(key)
-                if (stored === '__closed__') return null
-                if (stored && sections.some(s => s.id === stored)) return stored
+                if (stored === '__closed__') { storedOnMountRef.current = null; return null }
+                if (stored && sections.some(s => s.id === stored)) { storedOnMountRef.current = stored; return stored }
             } catch {}
         }
-        return sections[0]?.id ?? null
+        const first = sections[0]?.id ?? null
+        storedOnMountRef.current = first
+        return first
     })
+
+    // Notify parent of initial open section before first paint
+    useLayoutEffect(() => {
+        if (storedOnMountRef.current !== undefined && onChange) {
+            onChange(storedOnMountRef.current)
+        }
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         if (!key) return
@@ -51,7 +67,11 @@ const Accordion = ({ sections, forceExpanded = false, rememberOpen = true, stora
 
     const handleToggle = (sectionId: string) => {
         if (forceExpanded) return
-        setOpenId(prev => prev === sectionId ? null : sectionId)
+        setOpenId(prev => {
+            const next = prev === sectionId ? null : sectionId
+            onChange?.(next)
+            return next
+        })
     }
 
     return (

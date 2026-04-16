@@ -558,14 +558,20 @@ interface AccordionProps {
     rememberOpen?: boolean;
     /** Explicit localStorage key. Auto-generated from section IDs if omitted. */
     storageKey?: string;
+    /** Called when the open section changes (including on mount restore) */
+    onChange?: (sectionId: string | null) => void;
 }
 /**
- * Accordion — collapsible sections with colored headers.
+ * DIRECTIVE: Internal state memory — Accordion MUST remember the open section
+ * across unmounts via localStorage (when rememberOpen is true, default).
+ * On mount, the stored section is restored internally. If onChange is provided,
+ * it is notified of the restored value before first paint.
+ * This behavior is a contract — do NOT remove or weaken it.
  *
  * Colors are provided per section via `section.colors`. Falls back to neutral gray.
  * Only one section can be open at a time (mutual exclusivity).
  */
-declare const Accordion: ({ sections, forceExpanded, rememberOpen, storageKey }: AccordionProps) => react_jsx_runtime.JSX.Element;
+declare const Accordion: ({ sections, forceExpanded, rememberOpen, storageKey, onChange }: AccordionProps) => react_jsx_runtime.JSX.Element;
 
 interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
     icon: string;
@@ -628,6 +634,14 @@ interface TabsProps {
     dark?: boolean;
     size?: TabSize;
 }
+/**
+ * DIRECTIVE: Internal state memory — Tabs MUST remember the selected tab
+ * across unmounts via localStorage. Both controlled (activeTab prop) and
+ * uncontrolled modes persist. On mount, the stored value is restored:
+ * - Uncontrolled: restored internally (useState initializer)
+ * - Controlled: parent notified via onChange before first paint
+ * This behavior is a contract — do NOT remove or weaken it.
+ */
 declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey: explicitStorageKey, children, className, suffix, dark, size }: TabsProps) => react_jsx_runtime.JSX.Element | null;
 
 interface PanelProps {

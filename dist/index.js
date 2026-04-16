@@ -1759,19 +1759,33 @@ function buildAccordionKey(sections, storageKey) {
   const ids = sections.map((s) => s.id).join(",");
   return `jogi_accordion_${ids}`;
 }
-var Accordion = ({ sections, forceExpanded = false, rememberOpen = true, storageKey }) => {
+var Accordion = ({ sections, forceExpanded = false, rememberOpen = true, storageKey, onChange }) => {
   const key = rememberOpen ? buildAccordionKey(sections, storageKey) : null;
+  const storedOnMountRef = react.useRef(void 0);
   const [openId, setOpenId] = react.useState(() => {
     if (key) {
       try {
         const stored = localStorage.getItem(key);
-        if (stored === "__closed__") return null;
-        if (stored && sections.some((s) => s.id === stored)) return stored;
+        if (stored === "__closed__") {
+          storedOnMountRef.current = null;
+          return null;
+        }
+        if (stored && sections.some((s) => s.id === stored)) {
+          storedOnMountRef.current = stored;
+          return stored;
+        }
       } catch {
       }
     }
-    return sections[0]?.id ?? null;
+    const first = sections[0]?.id ?? null;
+    storedOnMountRef.current = first;
+    return first;
   });
+  react.useLayoutEffect(() => {
+    if (storedOnMountRef.current !== void 0 && onChange) {
+      onChange(storedOnMountRef.current);
+    }
+  }, []);
   react.useEffect(() => {
     if (!key) return;
     try {
@@ -1781,7 +1795,11 @@ var Accordion = ({ sections, forceExpanded = false, rememberOpen = true, storage
   }, [openId, key]);
   const handleToggle = (sectionId) => {
     if (forceExpanded) return;
-    setOpenId((prev) => prev === sectionId ? null : sectionId);
+    setOpenId((prev) => {
+      const next = prev === sectionId ? null : sectionId;
+      onChange?.(next);
+      return next;
+    });
   };
   return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "rounded-xl overflow-hidden border border-slate-700 flex-1 flex flex-col min-h-0", children: sections.map((section) => {
     const colors = section.colors ?? DEFAULT_COLORS2;
@@ -1908,36 +1926,39 @@ var Tabs = ({
   size = "sm"
 }) => {
   const storageKey = buildTabsKey(tabs, explicitStorageKey);
+  const storedOnMountRef = react.useRef(null);
   const [internalActive, setInternalActive] = react.useState(() => {
-    if (storageKey && controlledActive === void 0) {
+    if (storageKey) {
       try {
         const stored = localStorage.getItem(storageKey);
-        if (stored && tabs.some((t) => t.id === stored)) return stored;
+        if (stored && tabs.some((t) => t.id === stored)) {
+          storedOnMountRef.current = stored;
+          if (controlledActive === void 0) return stored;
+        }
       } catch {
       }
     }
     return tabs[0]?.id || "";
   });
   const activeId = controlledActive ?? internalActive;
-  const restoredRef = react.useRef(false);
   react.useLayoutEffect(() => {
-    if (!storageKey || controlledActive === void 0 || restoredRef.current) return;
-    restoredRef.current = true;
-    try {
-      const stored = localStorage.getItem(storageKey);
-      if (stored && tabs.some((t) => t.id === stored) && stored !== controlledActive) {
-        onChange?.(stored);
-      }
-    } catch {
-    }
+    const stored = storedOnMountRef.current;
+    if (!stored || controlledActive === void 0) return;
+    if (stored !== controlledActive) onChange?.(stored);
+  }, []);
+  react.useLayoutEffect(() => {
+    const stored = storedOnMountRef.current;
+    if (!stored || controlledActive !== void 0) return;
+    if (stored !== tabs[0]?.id) onChange?.(stored);
   }, []);
   react.useEffect(() => {
-    if (!storageKey || controlledActive === void 0) return;
+    if (!storageKey) return;
+    const value = controlledActive ?? internalActive;
     try {
-      localStorage.setItem(storageKey, controlledActive);
+      localStorage.setItem(storageKey, value);
     } catch {
     }
-  }, [controlledActive, storageKey]);
+  }, [controlledActive, internalActive, storageKey]);
   react.useEffect(() => {
     if (tabs.length > 0 && !tabs.some((t) => t.id === activeId)) {
       const newActive = tabs[0].id;
