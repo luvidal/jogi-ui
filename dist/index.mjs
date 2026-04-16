@@ -1751,7 +1751,7 @@ var SectionIcon = ({
   );
 };
 var sectionicon_default = SectionIcon;
-var DEFAULT_COLORS2 = { bg: "bg-gray-50", text: "text-gray-700", iconBg: "bg-gray-100" };
+var DEFAULT_COLORS2 = { bg: "bg-surface-2", text: "text-ink-secondary", iconBg: "bg-surface-3" };
 function buildAccordionKey(sections, storageKey) {
   if (storageKey) return storageKey;
   const ids = sections.map((s) => s.id).join(",");
@@ -1833,7 +1833,7 @@ var Accordion = ({ sections, forceExpanded = false, rememberOpen = true, storage
         {
           id: contentId,
           role: "region",
-          className: `${section.contentClassName ?? "p-2.5 sm:p-4 bg-gray-50/30"} ${isExpanded ? "flex-1 min-h-0 overflow-y-auto" : "hidden print:block"}`,
+          className: `${section.contentClassName ?? "p-2.5 sm:p-4 bg-transparent"} ${isExpanded ? "flex-1 min-h-0 overflow-y-auto" : "hidden print:block"}`,
           children: section.content
         }
       )
