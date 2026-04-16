@@ -600,34 +600,23 @@ declare const ButtonGroup: ({ children, className, variant }: ButtonGroupProps) 
 interface Tab {
     id: string;
     label: string;
-    /** Shorter label shown on mobile (sm breakpoint and below) */
-    shortLabel?: string;
     icon?: string;
-    content?: ReactNode;
 }
 
-type ColorSet = 'default' | 'violet';
-type TabSize = 'xs' | 'sm' | 'md' | 'lg';
+type TabSize = 'xs' | 'sm' | 'md';
 interface TabsProps {
     tabs: Tab[];
     activeTab?: string;
     onChange?: (tabId: string) => void;
     onRefresh?: (tabId: string) => void;
     storageKey?: string;
-    /** Persist active tab in localStorage. Default true. */
-    rememberTab?: boolean;
     children?: ReactNode;
     className?: string;
-    /** Optional suffix per tab (e.g. "(3/5)"), shown after the label */
-    suffix?: (tabId: string) => string;
-    /** Dark mode for use on dark backgrounds (e.g. modal headers) */
+    suffix?: (tabId: string) => string | undefined;
     dark?: boolean;
-    /** Color palette for active tab styling */
-    colorSet?: ColorSet;
-    /** Tab density: font size, icon size, padding */
     size?: TabSize;
 }
-declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey: explicitStorageKey, rememberTab, children, className, suffix, dark, colorSet, size }: TabsProps) => react_jsx_runtime.JSX.Element | null;
+declare const Tabs: ({ tabs, activeTab: controlledActive, onChange, onRefresh, storageKey: explicitStorageKey, children, className, suffix, dark, size }: TabsProps) => react_jsx_runtime.JSX.Element | null;
 
 interface PanelProps {
     open: boolean;

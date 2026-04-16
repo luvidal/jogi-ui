@@ -4,33 +4,21 @@ import Icon from '../common/icon'
 export interface Tab {
     id: string
     label: string
-    /** Shorter label shown on mobile (sm breakpoint and below) */
-    shortLabel?: string
     icon?: string
-    content?: ReactNode
 }
 
 export type { Tab as TabType }
+export type TabSize = 'xs' | 'sm' | 'md'
 
-export type ColorSet = 'default' | 'violet'
-export type TabSize = 'xs' | 'sm' | 'md' | 'lg'
-
-const COLOR_SETS: Record<ColorSet, { activeBg: string; activeText: string; activeIcon: string }> = {
-    default: { activeBg: 'bg-white', activeText: 'text-theme-700', activeIcon: 'text-theme-500' },
-    violet:  { activeBg: 'bg-status-info/20', activeText: 'text-status-info', activeIcon: 'text-status-info' },
-}
-
-const SIZE_CONFIG: Record<TabSize, { button: string; icon: number; track: string }> = {
-    xs: { button: 'px-2 py-1.5 text-xs gap-1',       icon: 14, track: 'p-0.5' },
-    sm: { button: 'px-3 py-2 sm:py-2.5 text-xs sm:text-sm gap-1.5', icon: 16, track: 'p-1' },
-    md: { button: 'px-4 py-2.5 text-sm gap-1.5',     icon: 18, track: 'p-1' },
-    lg: { button: 'px-5 py-3 text-base gap-2',        icon: 20, track: 'p-1.5' },
+const SIZE_CONFIG: Record<TabSize, { button: string; icon: number }> = {
+    xs: { button: 'px-2 py-1.5 text-xs gap-1',   icon: 14 },
+    sm: { button: 'px-3 py-2 text-xs gap-1.5',    icon: 16 },
+    md: { button: 'px-4 py-2.5 text-sm gap-1.5',  icon: 18 },
 }
 
 function buildTabsKey(tabs: Tab[], storageKey?: string): string | undefined {
     if (storageKey) return storageKey
-    const ids = tabs.map(t => t.id).join(',')
-    return `jogi_tabs_${ids}`
+    return `jogi_tabs_${tabs.map(t => t.id).join(',')}`
 }
 
 interface TabsProps {
@@ -39,17 +27,10 @@ interface TabsProps {
     onChange?: (tabId: string) => void
     onRefresh?: (tabId: string) => void
     storageKey?: string
-    /** Persist active tab in localStorage. Default true. */
-    rememberTab?: boolean
     children?: ReactNode
     className?: string
-    /** Optional suffix per tab (e.g. "(3/5)"), shown after the label */
-    suffix?: (tabId: string) => string
-    /** Dark mode for use on dark backgrounds (e.g. modal headers) */
+    suffix?: (tabId: string) => string | undefined
     dark?: boolean
-    /** Color palette for active tab styling */
-    colorSet?: ColorSet
-    /** Tab density: font size, icon size, padding */
     size?: TabSize
 }
 
@@ -59,15 +40,13 @@ const Tabs = ({
     onChange,
     onRefresh,
     storageKey: explicitStorageKey,
-    rememberTab = true,
     children,
     className = '',
     suffix,
-    dark = false,
-    colorSet = 'default',
+    dark = true,
     size = 'sm'
 }: TabsProps) => {
-    const storageKey = rememberTab ? buildTabsKey(tabs, explicitStorageKey) : undefined
+    const storageKey = buildTabsKey(tabs, explicitStorageKey)
 
     const [internalActive, setInternalActive] = useState<string>(() => {
         if (storageKey && controlledActive === undefined) {
@@ -81,7 +60,6 @@ const Tabs = ({
     const activeId = controlledActive ?? internalActive
     const restoredRef = useRef(false)
 
-    // Controlled mode: on mount (once), restore stored tab via onChange (before paint)
     useLayoutEffect(() => {
         if (!storageKey || controlledActive === undefined || restoredRef.current) return
         restoredRef.current = true
@@ -93,7 +71,6 @@ const Tabs = ({
         } catch {}
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-    // Controlled mode: sync active tab to localStorage on change
     useEffect(() => {
         if (!storageKey || controlledActive === undefined) return
         try { localStorage.setItem(storageKey, controlledActive) } catch {}
@@ -124,17 +101,15 @@ const Tabs = ({
         }
     }
 
-    const activeContent = tabs.find(t => t.id === activeId)?.content
-
     if (tabs.length === 0) return null
 
-    const hasContent = children !== undefined || activeContent !== undefined
-    const colors = COLOR_SETS[colorSet]
+    const hasContent = children !== undefined
     const sizeConfig = SIZE_CONFIG[size]
 
     return (
         <div className={className}>
-            <div className={`flex ${sizeConfig.track} rounded-xl flex-shrink-0 ${dark ? 'bg-surface-0/60' : 'bg-gray-100'}`}>
+            {/* Track — left-aligned, transparent, no stretch */}
+            <div className="flex w-fit gap-1.5 flex-shrink-0 mx-6 my-2.5">
                 {tabs.map(tab => {
                     const isActive = activeId === tab.id
                     const sfx = suffix?.(tab.id)
@@ -142,25 +117,37 @@ const Tabs = ({
                         <button
                             key={tab.id}
                             onClick={(e) => { e.stopPropagation(); handleTabClick(tab.id) }}
-                            className={`flex-1 flex items-center justify-center ${sizeConfig.button} rounded-lg font-semibold transition-all duration-200 cursor-pointer select-none truncate whitespace-nowrap overflow-hidden ${
+                            className={[
+                                'flex items-center justify-center min-w-[7.5rem] rounded-lg',
+                                'font-semibold transition-all duration-200 cursor-pointer select-none',
+                                'truncate whitespace-nowrap overflow-hidden',
+                                sizeConfig.button,
                                 dark
-                                    ? (isActive ? 'bg-brand text-brand-contrast shadow-sm' : 'text-ink-tertiary hover:text-ink-primary hover:bg-surface-0/40')
-                                    : (isActive ? `${colors.activeBg} ${colors.activeText} shadow-sm` : 'text-gray-500 hover:text-gray-700 hover:bg-white/50')
-                            }`}
+                                    ? (isActive
+                                        ? 'bg-brand text-brand-contrast shadow-sm border border-transparent'
+                                        : 'text-ink-tertiary hover:text-ink-primary border border-edge-subtle/15')
+                                    : (isActive
+                                        ? 'bg-white text-theme-700 shadow-sm border border-transparent'
+                                        : 'text-gray-500 hover:text-gray-700 border border-gray-200'),
+                            ].join(' ')}
                         >
-                            {tab.icon && <Icon name={tab.icon} size={sizeConfig.icon} className={`flex-shrink-0 ${
-                                dark
-                                    ? (isActive ? 'text-brand-contrast' : 'text-ink-tertiary')
-                                    : (isActive ? colors.activeIcon : 'text-gray-400')
-                            }`} />}
-                            <span className='truncate' title={tab.label}>{tab.shortLabel ? (<><span className="sm:hidden">{tab.shortLabel}</span><span className="hidden sm:inline">{tab.label}</span></>) : tab.label}{sfx || ''}</span>
+                            {tab.icon && (
+                                <Icon name={tab.icon} size={sizeConfig.icon} className={`flex-shrink-0 ${
+                                    dark
+                                        ? (isActive ? 'text-brand-contrast' : 'text-ink-tertiary')
+                                        : (isActive ? 'text-theme-500' : 'text-gray-400')
+                                }`} />
+                            )}
+                            <span className='truncate' title={tab.label}>
+                                {tab.label}{sfx || ''}
+                            </span>
                         </button>
                     )
                 })}
             </div>
             {hasContent && (
                 <div className="flex-1 min-h-0 flex flex-col">
-                    {children ?? activeContent}
+                    {children}
                 </div>
             )}
         </div>
