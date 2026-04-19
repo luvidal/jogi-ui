@@ -75,7 +75,7 @@ const ContextMenu = ({ open, position, items, onClose }: Props) => {
   return createPortal(
     <div
       ref={menuRef}
-      className='fixed z-50 w-52 rounded-xl overflow-hidden shadow-2xl bg-gray-50 border border-gray-200'
+      className='fixed z-50 w-52 rounded-xl overflow-hidden shadow-2xl bg-surface-3 border border-white/10'
       style={{
         left: displayPos.x,
         top: displayPos.y,
@@ -87,20 +87,14 @@ const ContextMenu = ({ open, position, items, onClose }: Props) => {
       <div className='flex flex-col gap-px p-1'>
         {items.map((item, i) => (
           item.type === 'separator' ? (
-            <div key={i} className='h-px bg-gray-200 my-1 mx-2' />
+            <div key={i} className='h-px bg-white/10 my-1 mx-2' />
           ) : (
             <button
               key={i}
               type='button'
               disabled={item.disabled}
-              className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left ${
-                item.disabled
-                  ? 'opacity-40 cursor-not-allowed'
-                  : item.variant === 'red'
-                    ? 'text-status-pending hover:bg-status-pending/10'
-                    : item.variant === 'amber'
-                      ? 'text-status-warn hover:bg-status-warn/10'
-                      : 'text-gray-700 hover:bg-gray-100'
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-white/80 hover:text-white ${
+                item.disabled ? 'opacity-40 cursor-not-allowed' : 'hover:bg-black/20'
               }`}
               onClick={e => {
                 e.stopPropagation()
@@ -109,9 +103,7 @@ const ContextMenu = ({ open, position, items, onClose }: Props) => {
                 item.action?.()
               }}
             >
-              {item.icon && <Icon name={item.icon} size={16} className={
-                item.disabled ? '' : item.variant === 'red' ? 'text-status-pending' : item.variant === 'amber' ? 'text-status-warn' : 'text-gray-700'
-              } />}
+              {item.icon && <Icon name={item.icon} size={16} />}
               <span className='text-sm'>{item.label}</span>
             </button>
           )

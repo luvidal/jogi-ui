@@ -7,7 +7,7 @@ interface ButtonGroupProps {
 
 const ButtonGroup = ({ children, className = '', variant = 'dark' }: ButtonGroupProps) => {
     const bg = variant === 'dark'
-        ? 'bg-white/10'
+        ? 'bg-surface-2'
         : 'bg-gray-200 shadow-sm'
 
     return (

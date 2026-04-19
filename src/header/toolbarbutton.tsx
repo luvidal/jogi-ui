@@ -44,12 +44,12 @@ const ToolbarButton = ({
         : variant === 'light'
             ? 'bg-white hover:bg-gray-50 text-theme-700 hover:text-theme-800'
             : isIconOnly
-                ? 'text-white/80 hover:text-white hover:bg-white/20'
-                : 'bg-white/10 hover:bg-white/15 text-white/80 hover:text-white'
+                ? 'text-white/80 hover:text-white hover:bg-surface-3'
+                : 'bg-surface-3 hover:bg-surface-4 text-white/80 hover:text-white'
 
     const activeStyles = variant === 'light'
         ? 'bg-gray-100 text-theme-600'
-        : 'bg-white/30 text-white'
+        : 'bg-surface-4 text-white'
 
     return (
         <button

@@ -1030,7 +1030,7 @@ var ContextMenu = ({ open, position, items, onClose }) => {
       "div",
       {
         ref: menuRef,
-        className: "fixed z-50 w-52 rounded-xl overflow-hidden shadow-2xl bg-gray-50 border border-gray-200",
+        className: "fixed z-50 w-52 rounded-xl overflow-hidden shadow-2xl bg-surface-3 border border-white/10",
         style: {
           left: displayPos.x,
           top: displayPos.y,
@@ -1038,12 +1038,12 @@ var ContextMenu = ({ open, position, items, onClose }) => {
           pointerEvents: isVisible ? "auto" : "none"
         },
         onMouseDown: (e) => e.stopPropagation(),
-        children: /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-col gap-px p-1", children: items.map((item, i) => item.type === "separator" ? /* @__PURE__ */ jsxRuntime.jsx("div", { className: "h-px bg-gray-200 my-1 mx-2" }, i) : /* @__PURE__ */ jsxRuntime.jsxs(
+        children: /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-col gap-px p-1", children: items.map((item, i) => item.type === "separator" ? /* @__PURE__ */ jsxRuntime.jsx("div", { className: "h-px bg-white/10 my-1 mx-2" }, i) : /* @__PURE__ */ jsxRuntime.jsxs(
           "button",
           {
             type: "button",
             disabled: item.disabled,
-            className: `w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left ${item.disabled ? "opacity-40 cursor-not-allowed" : item.variant === "red" ? "text-status-pending hover:bg-status-pending/10" : item.variant === "amber" ? "text-status-warn hover:bg-status-warn/10" : "text-gray-700 hover:bg-gray-100"}`,
+            className: `w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-white/80 hover:text-white ${item.disabled ? "opacity-40 cursor-not-allowed" : "hover:bg-black/20"}`,
             onClick: (e) => {
               e.stopPropagation();
               if (item.disabled) return;
@@ -1051,7 +1051,7 @@ var ContextMenu = ({ open, position, items, onClose }) => {
               item.action?.();
             },
             children: [
-              item.icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: item.icon, size: 16, className: item.disabled ? "" : item.variant === "red" ? "text-status-pending" : item.variant === "amber" ? "text-status-warn" : "text-gray-700" }),
+              item.icon && /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: item.icon, size: 16 }),
               /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-sm", children: item.label })
             ]
           },
@@ -1862,8 +1862,8 @@ var ToolbarButton = ({
   const btnRef = react.useRef(null);
   const disabledStyle = disabled ? disabledEffect : "";
   const isIconOnly = color !== void 0;
-  const variantStyles = color && color !== "default" ? colorStyles[color] : variant === "light" ? "bg-white hover:bg-gray-50 text-theme-700 hover:text-theme-800" : isIconOnly ? "text-white/80 hover:text-white hover:bg-white/20" : "bg-white/10 hover:bg-white/15 text-white/80 hover:text-white";
-  const activeStyles = variant === "light" ? "bg-gray-100 text-theme-600" : "bg-white/30 text-white";
+  const variantStyles = color && color !== "default" ? colorStyles[color] : variant === "light" ? "bg-white hover:bg-gray-50 text-theme-700 hover:text-theme-800" : isIconOnly ? "text-white/80 hover:text-white hover:bg-surface-3" : "bg-surface-3 hover:bg-surface-4 text-white/80 hover:text-white";
+  const activeStyles = variant === "light" ? "bg-gray-100 text-theme-600" : "bg-surface-4 text-white";
   return /* @__PURE__ */ jsxRuntime.jsxs(
     "button",
     {
@@ -1893,7 +1893,7 @@ var ToolbarButton = ({
 };
 var toolbarbutton_default = ToolbarButton;
 var ButtonGroup = ({ children, className = "", variant = "dark" }) => {
-  const bg = variant === "dark" ? "bg-white/10" : "bg-gray-200 shadow-sm";
+  const bg = variant === "dark" ? "bg-surface-2" : "bg-gray-200 shadow-sm";
   return /* @__PURE__ */ jsxRuntime.jsx(
     "div",
     {
@@ -2632,7 +2632,7 @@ function useUploadFlow(options) {
         message: totalErrors > 0 ? `${docWord}. ${l.filesWithError(totalErrors)}` : `${docWord} ${l.successSuffix}`
       });
     }
-    await wait(2e3);
+    await wait(300);
     setActive(false);
     setItems([]);
     optionsRef.current.onComplete?.();

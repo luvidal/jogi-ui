@@ -306,8 +306,8 @@ export function useUploadFlow(options: UploadFlowOptions) {
       })
     }
 
-    // Wait for user to see the final states
-    await wait(2000)
+    // Brief pause so the done state is visible before clearing cards
+    await wait(300)
 
     setActive(false)
     setItems([])
