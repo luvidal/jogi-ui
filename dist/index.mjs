@@ -138,16 +138,18 @@ var Checkbox = ({ label, checked, className = "", onChange }) => {
 };
 var checkbox_default = Checkbox;
 var useClickOutside = (refs, onClose) => {
+  const callbackRef = useRef(onClose);
+  callbackRef.current = onClose;
   useEffect(() => {
     const refList = Array.isArray(refs) ? refs : [refs];
     const onDown = (e) => {
       const target = e.target;
       if (refList.some((r) => r.current?.contains(target))) return;
-      onClose();
+      callbackRef.current();
     };
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
-  }, [refs, onClose]);
+    document.addEventListener("mousedown", onDown, true);
+    return () => document.removeEventListener("mousedown", onDown, true);
+  }, []);
 };
 var Tooltip = ({ text }) => {
   const [open, setOpen] = useState(false);
