@@ -110,6 +110,18 @@ Tailwind config maps `theme-*` classes to these variables. Semantic colors (dang
 - No component imports domain data — all customization via props
 - `lucide-react` is a peer dependency — consumers provide it
 
+## ContextMenu Contract
+
+`ContextMenu` is the single source for all context menus. Contract:
+
+- **Closes on outside click** — enforced by `useClickOutside` using `document.addEventListener('mousedown', handler, true)` (capture phase). Do NOT change to bubble phase; capture ensures the listener fires even if an ancestor calls `stopPropagation()` on mousedown.
+- **Closes on `Escape`** — keydown listener on `document`.
+- **Closes on window scroll** — scroll listener with capture.
+- **Closes on item click** — each menu item calls `onClose()` before its action.
+- `useClickOutside` uses a `callbackRef` so the latest `onClose` is always invoked without re-registering the document listener on every render.
+
+Any change to close behavior must preserve all of the above.
+
 ## TextField Icon Support
 
 `TextField` supports optional right-side icon via two props:
