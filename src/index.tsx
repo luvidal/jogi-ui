@@ -83,6 +83,13 @@ export { default as PillTag } from './pilltag'
 export { useRecords } from './hooks/userecords'
 export type { SortOption, UseRecordsOptions, RefreshActions, UseRecordsReturn } from './hooks/userecords'
 
+// ── Multi-select ──
+export { useMultiSelect } from './hooks/usemultiselect'
+export type { MultiSelectState } from './hooks/usemultiselect'
+export { useFenceSelect } from './hooks/usefenceselect'
+export type { FenceRect, UseFenceSelectOptions, UseFenceSelectResult } from './hooks/usefenceselect'
+export { MultiselectToolbar } from './common/multiselecttoolbar'
+
 // ── File Utilities ──
 export { captureDataTransfer, resolveFiles } from './common/folderutils'
 export type { CapturedTransfer } from './common/folderutils'

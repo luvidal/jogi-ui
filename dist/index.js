@@ -2377,6 +2377,226 @@ function useRecords({
     sortList
   };
 }
+function useMultiSelect({ itemIds, onBulkDelete, onBulkRead }) {
+  const [selectMode, setSelectMode] = react.useState(false);
+  const [checkedIds, setCheckedIds] = react.useState(/* @__PURE__ */ new Set());
+  const showButton = itemIds.length > 0;
+  const toggleSelectMode = react.useCallback(() => {
+    setSelectMode((prev) => {
+      if (prev) setCheckedIds(/* @__PURE__ */ new Set());
+      return !prev;
+    });
+  }, []);
+  const handleCheck = react.useCallback((id, checked) => {
+    setCheckedIds((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }, []);
+  const handleSelectAll = react.useCallback(() => {
+    const allChecked2 = itemIds.every((id) => checkedIds.has(id));
+    setCheckedIds(allChecked2 ? /* @__PURE__ */ new Set() : new Set(itemIds));
+  }, [itemIds, checkedIds]);
+  const handleBulkDelete = react.useCallback(() => {
+    const ids = Array.from(checkedIds);
+    if (!ids.length) return;
+    onBulkDelete(ids);
+  }, [checkedIds, onBulkDelete]);
+  const handleBulkRead = react.useCallback(() => {
+    if (!onBulkRead) return;
+    const ids = Array.from(checkedIds);
+    if (!ids.length) return;
+    onBulkRead(ids);
+  }, [checkedIds, onBulkRead]);
+  react.useEffect(() => {
+    if (!selectMode || checkedIds.size === 0) return;
+    const remaining = Array.from(checkedIds).some((id) => itemIds.includes(id));
+    if (!remaining) {
+      setCheckedIds(/* @__PURE__ */ new Set());
+      setSelectMode(false);
+    }
+  }, [selectMode, checkedIds, itemIds]);
+  const allChecked = itemIds.length > 0 && itemIds.every((id) => checkedIds.has(id));
+  return {
+    selectMode,
+    checkedIds,
+    allChecked,
+    showButton,
+    hasBulkRead: !!onBulkRead,
+    handleCheck,
+    toggleSelectMode,
+    handleSelectAll,
+    handleBulkDelete,
+    handleBulkRead
+  };
+}
+function buildFenceRect(start, clientX, clientY) {
+  return {
+    left: Math.min(start.x, clientX),
+    top: Math.min(start.y, clientY),
+    width: Math.abs(clientX - start.x),
+    height: Math.abs(clientY - start.y)
+  };
+}
+function hitTest(fence, item) {
+  const overlapsX = fence.left < item.right && fence.left + fence.width > item.left;
+  const overlapsY = fence.top < item.bottom && fence.top + fence.height > item.top;
+  if (!overlapsX || !overlapsY) return false;
+  const overlapLeft = Math.max(fence.left, item.left);
+  const overlapRight = Math.min(fence.left + fence.width, item.right);
+  const overlapTop = Math.max(fence.top, item.top);
+  const overlapBottom = Math.min(fence.top + fence.height, item.bottom);
+  const overlapArea = (overlapRight - overlapLeft) * (overlapBottom - overlapTop);
+  const itemArea = item.width * item.height;
+  const itemCenterX = item.left + item.width / 2;
+  const itemCenterY = item.top + item.height / 2;
+  const centerInFence = itemCenterX >= fence.left && itemCenterX <= fence.left + fence.width && itemCenterY >= fence.top && itemCenterY <= fence.top + fence.height;
+  return overlapArea / itemArea >= 0.3 || centerInFence;
+}
+function useFenceSelect({ elements, items, getId, selectedIds, setSelected }) {
+  const [fencing, setFencing] = react.useState(false);
+  const [fenceRect, setFenceRect] = react.useState(null);
+  const startRef = react.useRef(null);
+  const baseRef = react.useRef(/* @__PURE__ */ new Set());
+  const justFencedRef = react.useRef(false);
+  const itemsRef = react.useRef(items);
+  itemsRef.current = items;
+  const beginFence = react.useCallback(
+    (e) => {
+      if (e.button !== 0) return;
+      startRef.current = { x: e.clientX, y: e.clientY };
+      baseRef.current = e.metaKey || e.ctrlKey ? new Set(selectedIds) : /* @__PURE__ */ new Set();
+      setFencing(true);
+      setFenceRect({ left: e.clientX, top: e.clientY, width: 0, height: 0 });
+      if (!(e.metaKey || e.ctrlKey)) setSelected(/* @__PURE__ */ new Set());
+    },
+    [selectedIds, setSelected]
+  );
+  react.useEffect(() => {
+    if (!fencing) return;
+    const onMove = (e) => {
+      const start = startRef.current;
+      if (!start) return;
+      const nextRect = buildFenceRect(start, e.clientX, e.clientY);
+      setFenceRect(nextRect);
+      const next = new Set(baseRef.current);
+      for (const item of itemsRef.current) {
+        const id = getId(item);
+        const el = elements.current[id];
+        if (!el) continue;
+        if (hitTest(nextRect, el.getBoundingClientRect())) next.add(id);
+      }
+      setSelected(next);
+    };
+    const onUp = (e) => {
+      const start = startRef.current;
+      if (start) {
+        const dx = Math.abs(e.clientX - start.x);
+        const dy = Math.abs(e.clientY - start.y);
+        if (dx > 5 || dy > 5) {
+          justFencedRef.current = true;
+          setTimeout(() => {
+            justFencedRef.current = false;
+          }, 100);
+        }
+      }
+      setFencing(false);
+      setFenceRect(null);
+      startRef.current = null;
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, [fencing, elements, getId, setSelected]);
+  return { fencing, fenceRect, justFencedRef, beginFence };
+}
+function MultiselectToolbar({ state, variant }) {
+  const {
+    selectMode,
+    checkedIds,
+    allChecked,
+    showButton,
+    hasBulkRead,
+    toggleSelectMode,
+    handleSelectAll,
+    handleBulkDelete,
+    handleBulkRead
+  } = state;
+  if (variant === "mobile") {
+    if (selectMode) {
+      return /* @__PURE__ */ jsxRuntime.jsxs(buttongroup_default, { children: [
+        hasBulkRead && /* @__PURE__ */ jsxRuntime.jsx(toolbarbutton_default, { icon: "MailCheck", label: "Le\xEDdo", onClick: handleBulkRead, disabled: checkedIds.size === 0 }),
+        /* @__PURE__ */ jsxRuntime.jsx(toolbarbutton_default, { icon: "Trash2", label: `Eliminar (${checkedIds.size})`, onClick: handleBulkDelete, disabled: checkedIds.size === 0 }),
+        /* @__PURE__ */ jsxRuntime.jsx(toolbarbutton_default, { icon: "X", label: "Cancelar", onClick: toggleSelectMode })
+      ] });
+    }
+    if (showButton) {
+      return /* @__PURE__ */ jsxRuntime.jsx(buttongroup_default, { children: /* @__PURE__ */ jsxRuntime.jsx(toolbarbutton_default, { icon: "SquareCheck", label: "Seleccionar", onClick: toggleSelectMode }) });
+    }
+    return null;
+  }
+  if (selectMode) {
+    return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-3", children: [
+      /* @__PURE__ */ jsxRuntime.jsxs(
+        "span",
+        {
+          onClick: toggleSelectMode,
+          className: "flex items-center gap-1.5 text-[11px] text-white/80 uppercase tracking-wider cursor-pointer hover:text-white transition-colors",
+          children: [
+            /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "X", size: 12 }),
+            checkedIds.size > 0 ? `${checkedIds.size} sel.` : "Cancelar"
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime.jsx(
+        "span",
+        {
+          onClick: handleSelectAll,
+          className: "flex items-center text-white/50 cursor-pointer hover:text-white/80 transition-colors",
+          title: allChecked ? "Deseleccionar todo" : "Seleccionar todo",
+          children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: allChecked ? "SquareCheckBig" : "Square", size: 14 })
+        }
+      ),
+      hasBulkRead && /* @__PURE__ */ jsxRuntime.jsx(
+        "span",
+        {
+          onClick: checkedIds.size > 0 ? handleBulkRead : void 0,
+          className: `flex items-center transition-colors ${checkedIds.size > 0 ? "text-blue-400 cursor-pointer hover:text-blue-300" : "text-white/20 cursor-not-allowed"}`,
+          title: "Marcar como le\xEDdo",
+          children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "MailCheck", size: 14 })
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime.jsx(
+        "span",
+        {
+          onClick: checkedIds.size > 0 ? handleBulkDelete : void 0,
+          className: `flex items-center transition-colors ${checkedIds.size > 0 ? "text-red-400 cursor-pointer hover:text-red-300" : "text-white/20 cursor-not-allowed"}`,
+          title: "Eliminar seleccionados",
+          children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "Trash2", size: 14 })
+        }
+      )
+    ] });
+  }
+  if (showButton) {
+    return /* @__PURE__ */ jsxRuntime.jsxs(
+      "span",
+      {
+        onClick: toggleSelectMode,
+        className: "flex items-center gap-1.5 text-[11px] text-white/50 uppercase tracking-wider cursor-pointer hover:text-white/70 transition-colors",
+        children: [
+          /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "SquareCheck", size: 12 }),
+          "Seleccionar"
+        ]
+      }
+    );
+  }
+  return null;
+}
 
 // src/common/folderutils.ts
 var IGNORED = /* @__PURE__ */ new Set([".DS_Store", "Thumbs.db", "desktop.ini"]);
@@ -2859,6 +3079,7 @@ exports.Modal = modal_default;
 exports.ModalFormLayout = modalformlayout_default;
 exports.ModalOverlayPanel = modaloverlaypanel_default;
 exports.ModalToolbar = modaltoolbar_default;
+exports.MultiselectToolbar = MultiselectToolbar;
 exports.NumberField = numberfield_default;
 exports.Panel = panel_default;
 exports.PillTag = pilltag_default;
@@ -2888,8 +3109,10 @@ exports.captureDataTransfer = captureDataTransfer;
 exports.createDialogContext = createDialogContext;
 exports.openFilePicker = openFilePicker;
 exports.resolveFiles = resolveFiles;
+exports.useFenceSelect = useFenceSelect;
 exports.useIsDesktop = useIsDesktop;
 exports.useIsMobile = useIsMobile;
+exports.useMultiSelect = useMultiSelect;
 exports.useRecords = useRecords;
 exports.useToast = useToast;
 exports.useUploadFlow = useUploadFlow;

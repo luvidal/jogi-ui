@@ -2375,6 +2375,226 @@ function useRecords({
     sortList
   };
 }
+function useMultiSelect({ itemIds, onBulkDelete, onBulkRead }) {
+  const [selectMode, setSelectMode] = useState(false);
+  const [checkedIds, setCheckedIds] = useState(/* @__PURE__ */ new Set());
+  const showButton = itemIds.length > 0;
+  const toggleSelectMode = useCallback(() => {
+    setSelectMode((prev) => {
+      if (prev) setCheckedIds(/* @__PURE__ */ new Set());
+      return !prev;
+    });
+  }, []);
+  const handleCheck = useCallback((id, checked) => {
+    setCheckedIds((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }, []);
+  const handleSelectAll = useCallback(() => {
+    const allChecked2 = itemIds.every((id) => checkedIds.has(id));
+    setCheckedIds(allChecked2 ? /* @__PURE__ */ new Set() : new Set(itemIds));
+  }, [itemIds, checkedIds]);
+  const handleBulkDelete = useCallback(() => {
+    const ids = Array.from(checkedIds);
+    if (!ids.length) return;
+    onBulkDelete(ids);
+  }, [checkedIds, onBulkDelete]);
+  const handleBulkRead = useCallback(() => {
+    if (!onBulkRead) return;
+    const ids = Array.from(checkedIds);
+    if (!ids.length) return;
+    onBulkRead(ids);
+  }, [checkedIds, onBulkRead]);
+  useEffect(() => {
+    if (!selectMode || checkedIds.size === 0) return;
+    const remaining = Array.from(checkedIds).some((id) => itemIds.includes(id));
+    if (!remaining) {
+      setCheckedIds(/* @__PURE__ */ new Set());
+      setSelectMode(false);
+    }
+  }, [selectMode, checkedIds, itemIds]);
+  const allChecked = itemIds.length > 0 && itemIds.every((id) => checkedIds.has(id));
+  return {
+    selectMode,
+    checkedIds,
+    allChecked,
+    showButton,
+    hasBulkRead: !!onBulkRead,
+    handleCheck,
+    toggleSelectMode,
+    handleSelectAll,
+    handleBulkDelete,
+    handleBulkRead
+  };
+}
+function buildFenceRect(start, clientX, clientY) {
+  return {
+    left: Math.min(start.x, clientX),
+    top: Math.min(start.y, clientY),
+    width: Math.abs(clientX - start.x),
+    height: Math.abs(clientY - start.y)
+  };
+}
+function hitTest(fence, item) {
+  const overlapsX = fence.left < item.right && fence.left + fence.width > item.left;
+  const overlapsY = fence.top < item.bottom && fence.top + fence.height > item.top;
+  if (!overlapsX || !overlapsY) return false;
+  const overlapLeft = Math.max(fence.left, item.left);
+  const overlapRight = Math.min(fence.left + fence.width, item.right);
+  const overlapTop = Math.max(fence.top, item.top);
+  const overlapBottom = Math.min(fence.top + fence.height, item.bottom);
+  const overlapArea = (overlapRight - overlapLeft) * (overlapBottom - overlapTop);
+  const itemArea = item.width * item.height;
+  const itemCenterX = item.left + item.width / 2;
+  const itemCenterY = item.top + item.height / 2;
+  const centerInFence = itemCenterX >= fence.left && itemCenterX <= fence.left + fence.width && itemCenterY >= fence.top && itemCenterY <= fence.top + fence.height;
+  return overlapArea / itemArea >= 0.3 || centerInFence;
+}
+function useFenceSelect({ elements, items, getId, selectedIds, setSelected }) {
+  const [fencing, setFencing] = useState(false);
+  const [fenceRect, setFenceRect] = useState(null);
+  const startRef = useRef(null);
+  const baseRef = useRef(/* @__PURE__ */ new Set());
+  const justFencedRef = useRef(false);
+  const itemsRef = useRef(items);
+  itemsRef.current = items;
+  const beginFence = useCallback(
+    (e) => {
+      if (e.button !== 0) return;
+      startRef.current = { x: e.clientX, y: e.clientY };
+      baseRef.current = e.metaKey || e.ctrlKey ? new Set(selectedIds) : /* @__PURE__ */ new Set();
+      setFencing(true);
+      setFenceRect({ left: e.clientX, top: e.clientY, width: 0, height: 0 });
+      if (!(e.metaKey || e.ctrlKey)) setSelected(/* @__PURE__ */ new Set());
+    },
+    [selectedIds, setSelected]
+  );
+  useEffect(() => {
+    if (!fencing) return;
+    const onMove = (e) => {
+      const start = startRef.current;
+      if (!start) return;
+      const nextRect = buildFenceRect(start, e.clientX, e.clientY);
+      setFenceRect(nextRect);
+      const next = new Set(baseRef.current);
+      for (const item of itemsRef.current) {
+        const id = getId(item);
+        const el = elements.current[id];
+        if (!el) continue;
+        if (hitTest(nextRect, el.getBoundingClientRect())) next.add(id);
+      }
+      setSelected(next);
+    };
+    const onUp = (e) => {
+      const start = startRef.current;
+      if (start) {
+        const dx = Math.abs(e.clientX - start.x);
+        const dy = Math.abs(e.clientY - start.y);
+        if (dx > 5 || dy > 5) {
+          justFencedRef.current = true;
+          setTimeout(() => {
+            justFencedRef.current = false;
+          }, 100);
+        }
+      }
+      setFencing(false);
+      setFenceRect(null);
+      startRef.current = null;
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, [fencing, elements, getId, setSelected]);
+  return { fencing, fenceRect, justFencedRef, beginFence };
+}
+function MultiselectToolbar({ state, variant }) {
+  const {
+    selectMode,
+    checkedIds,
+    allChecked,
+    showButton,
+    hasBulkRead,
+    toggleSelectMode,
+    handleSelectAll,
+    handleBulkDelete,
+    handleBulkRead
+  } = state;
+  if (variant === "mobile") {
+    if (selectMode) {
+      return /* @__PURE__ */ jsxs(buttongroup_default, { children: [
+        hasBulkRead && /* @__PURE__ */ jsx(toolbarbutton_default, { icon: "MailCheck", label: "Le\xEDdo", onClick: handleBulkRead, disabled: checkedIds.size === 0 }),
+        /* @__PURE__ */ jsx(toolbarbutton_default, { icon: "Trash2", label: `Eliminar (${checkedIds.size})`, onClick: handleBulkDelete, disabled: checkedIds.size === 0 }),
+        /* @__PURE__ */ jsx(toolbarbutton_default, { icon: "X", label: "Cancelar", onClick: toggleSelectMode })
+      ] });
+    }
+    if (showButton) {
+      return /* @__PURE__ */ jsx(buttongroup_default, { children: /* @__PURE__ */ jsx(toolbarbutton_default, { icon: "SquareCheck", label: "Seleccionar", onClick: toggleSelectMode }) });
+    }
+    return null;
+  }
+  if (selectMode) {
+    return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+      /* @__PURE__ */ jsxs(
+        "span",
+        {
+          onClick: toggleSelectMode,
+          className: "flex items-center gap-1.5 text-[11px] text-white/80 uppercase tracking-wider cursor-pointer hover:text-white transition-colors",
+          children: [
+            /* @__PURE__ */ jsx(icon_default, { name: "X", size: 12 }),
+            checkedIds.size > 0 ? `${checkedIds.size} sel.` : "Cancelar"
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        "span",
+        {
+          onClick: handleSelectAll,
+          className: "flex items-center text-white/50 cursor-pointer hover:text-white/80 transition-colors",
+          title: allChecked ? "Deseleccionar todo" : "Seleccionar todo",
+          children: /* @__PURE__ */ jsx(icon_default, { name: allChecked ? "SquareCheckBig" : "Square", size: 14 })
+        }
+      ),
+      hasBulkRead && /* @__PURE__ */ jsx(
+        "span",
+        {
+          onClick: checkedIds.size > 0 ? handleBulkRead : void 0,
+          className: `flex items-center transition-colors ${checkedIds.size > 0 ? "text-blue-400 cursor-pointer hover:text-blue-300" : "text-white/20 cursor-not-allowed"}`,
+          title: "Marcar como le\xEDdo",
+          children: /* @__PURE__ */ jsx(icon_default, { name: "MailCheck", size: 14 })
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        "span",
+        {
+          onClick: checkedIds.size > 0 ? handleBulkDelete : void 0,
+          className: `flex items-center transition-colors ${checkedIds.size > 0 ? "text-red-400 cursor-pointer hover:text-red-300" : "text-white/20 cursor-not-allowed"}`,
+          title: "Eliminar seleccionados",
+          children: /* @__PURE__ */ jsx(icon_default, { name: "Trash2", size: 14 })
+        }
+      )
+    ] });
+  }
+  if (showButton) {
+    return /* @__PURE__ */ jsxs(
+      "span",
+      {
+        onClick: toggleSelectMode,
+        className: "flex items-center gap-1.5 text-[11px] text-white/50 uppercase tracking-wider cursor-pointer hover:text-white/70 transition-colors",
+        children: [
+          /* @__PURE__ */ jsx(icon_default, { name: "SquareCheck", size: 12 }),
+          "Seleccionar"
+        ]
+      }
+    );
+  }
+  return null;
+}
 
 // src/common/folderutils.ts
 var IGNORED = /* @__PURE__ */ new Set([".DS_Store", "Thumbs.db", "desktop.ini"]);
@@ -2829,6 +3049,6 @@ function UploadCards({ items, summary, requestLabel, role, labels: userLabels })
   ] }) });
 }
 
-export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, label_default as Label, MasterDetail, modal_default as Modal, modalformlayout_default as ModalFormLayout, modaloverlaypanel_default as ModalOverlayPanel, modaltoolbar_default as ModalToolbar, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, SectionSeparator, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, UploadCards, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop, useIsMobile, useRecords, useToast, useUploadFlow };
+export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, label_default as Label, MasterDetail, modal_default as Modal, modalformlayout_default as ModalFormLayout, modaloverlaypanel_default as ModalOverlayPanel, modaltoolbar_default as ModalToolbar, MultiselectToolbar, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, SectionSeparator, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, UploadCards, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useFenceSelect, useIsDesktop, useIsMobile, useMultiSelect, useRecords, useToast, useUploadFlow };
 //# sourceMappingURL=index.mjs.map
 //# sourceMappingURL=index.mjs.map

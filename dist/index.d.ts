@@ -761,6 +761,78 @@ interface UseRecordsReturn<T> {
 }
 declare function useRecords<T = any>({ endpoint, sortList, fetchFn, onError, getId, staticParams, filterId, limit, initialState, }: UseRecordsOptions): UseRecordsReturn<T>;
 
+interface UseMultiSelectOptions {
+    /** Array of all visible item IDs */
+    itemIds: string[];
+    /** Called with array of checked IDs when user confirms bulk delete */
+    onBulkDelete: (ids: string[]) => void | Promise<void>;
+    /** Called with array of checked IDs when user clicks bulk mark-as-read (optional, notifications only) */
+    onBulkRead?: (ids: string[]) => void | Promise<void>;
+}
+interface MultiSelectState {
+    /** Whether multi-select mode is active */
+    selectMode: boolean;
+    /** Set of currently checked IDs — pass to CardList as checkedIds when selectMode is true */
+    checkedIds: Set<string>;
+    /** Whether all visible items are currently checked */
+    allChecked: boolean;
+    /** Whether the Seleccionar button should be visible (items exist) */
+    showButton: boolean;
+    /** Whether bulk read action is available (onBulkRead was provided) */
+    hasBulkRead: boolean;
+    /** Callback for CardList onCheck */
+    handleCheck: (id: string, checked: boolean) => void;
+    /** Toggle select mode on/off */
+    toggleSelectMode: () => void;
+    /** Toggle "select all" / "deselect all" over visible items */
+    handleSelectAll: () => void;
+    /** Fire bulk delete with currently checked IDs */
+    handleBulkDelete: () => void;
+    /** Fire bulk read with currently checked IDs (no-op when onBulkRead not provided) */
+    handleBulkRead: () => void;
+}
+declare function useMultiSelect({ itemIds, onBulkDelete, onBulkRead }: UseMultiSelectOptions): MultiSelectState;
+
+interface FenceRect {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+}
+interface UseFenceSelectOptions<T> {
+    /** Ref map of item id → element. Caller populates via `onEl` on each tile. */
+    elements: React.MutableRefObject<Record<string, HTMLElement | null>>;
+    /** Current list of items (used to iterate ids on mousemove). */
+    items: T[];
+    /** Extract an id from an item. */
+    getId: (item: T) => string;
+    /** Currently selected ids — read-only snapshot for ctrl/meta additive drags. */
+    selectedIds: Set<string>;
+    /** Push a new selection set (called on every mousemove during fence). */
+    setSelected: (next: Set<string>) => void;
+}
+interface UseFenceSelectResult {
+    fencing: boolean;
+    fenceRect: FenceRect | null;
+    /** True for ~100ms after the fence ended if it actually moved (>5px). Lets
+     *  callers suppress the background click that would otherwise clear selection. */
+    justFencedRef: React.MutableRefObject<boolean>;
+    /** Call from onMouseDown on the background. Handles modifier keys + initial rect. */
+    beginFence: (e: React.MouseEvent) => void;
+}
+declare function useFenceSelect<T>({ elements, items, getId, selectedIds, setSelected }: UseFenceSelectOptions<T>): UseFenceSelectResult;
+
+interface MultiselectToolbarProps {
+    state: MultiSelectState;
+    /** 'secondary' = desktop sidebar controls bar · 'mobile' = mobile header toolbar */
+    variant: 'secondary' | 'mobile';
+}
+/**
+ * Renders the multi-select toolbar UI.
+ * Pair with `useMultiSelect` to get state + handlers.
+ */
+declare function MultiselectToolbar({ state, variant }: MultiselectToolbarProps): react_jsx_runtime.JSX.Element | null;
+
 /** Captured state from a DataTransfer — safe to use after the event handler returns */
 type CapturedTransfer = {
     entries: FileSystemEntry[];
@@ -889,4 +961,4 @@ interface UploadCardsProps {
 }
 declare function UploadCards({ items, summary, requestLabel, role, labels: userLabels }: UploadCardsProps): react_jsx_runtime.JSX.Element;
 
-export { Accordion, Anchor, Button, ButtonGroup, type CapturedTransfer, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, FieldWrapper, type FileStatus, type FileUploadItem, Icon, Input, Label, MasterDetail, Modal, ModalFormLayout, ModalOverlayPanel, ModalToolbar, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, type RefreshActions, Scroll, type Section, SectionSeparator, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, type SortOption, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, UploadCards, type UploadCardsLabels, type UploadFlowLabels, type UploadFlowOptions, type UploadSummary, type UploadToast, type UseRecordsOptions, type UseRecordsReturn, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useIsDesktop, useIsMobile, useRecords, useToast, useUploadFlow };
+export { Accordion, Anchor, Button, ButtonGroup, type CapturedTransfer, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, type FenceRect, FieldWrapper, type FileStatus, type FileUploadItem, Icon, Input, Label, MasterDetail, Modal, ModalFormLayout, ModalOverlayPanel, ModalToolbar, type MultiSelectState, MultiselectToolbar, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, type RefreshActions, Scroll, type Section, SectionSeparator, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, type SortOption, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, UploadCards, type UploadCardsLabels, type UploadFlowLabels, type UploadFlowOptions, type UploadSummary, type UploadToast, type UseFenceSelectOptions, type UseFenceSelectResult, type UseRecordsOptions, type UseRecordsReturn, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useFenceSelect, useIsDesktop, useIsMobile, useMultiSelect, useRecords, useToast, useUploadFlow };
