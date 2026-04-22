@@ -447,6 +447,155 @@ var SelectField = ({ label, value, options, onChange, readOnly }) => {
   ] });
 };
 var selectfield_default = SelectField;
+var DEFAULT_COMPRESS_OPTS = { maxSizeMB: 0.5, maxWidthOrHeight: 400 };
+var LogoUpload = ({
+  label,
+  value,
+  onChange,
+  onUpload,
+  className = "",
+  visible = true,
+  maxFileSizeMB = 5,
+  compressedSizeMB = DEFAULT_COMPRESS_OPTS.maxSizeMB,
+  compressedMaxDim = DEFAULT_COMPRESS_OPTS.maxWidthOrHeight
+}) => {
+  const [loading, setLoading] = react.useState(false);
+  const [error, setError] = react.useState(null);
+  const [imgError, setImgError] = react.useState(false);
+  const inputRef = react.useRef(null);
+  react.useEffect(() => {
+    setImgError(false);
+  }, [value]);
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+  const handleRemove = (e) => {
+    e.stopPropagation();
+    onChange?.(null);
+  };
+  const compress = async (file) => {
+    if (!file.type.startsWith("image/")) return file;
+    try {
+      const mod = await import('browser-image-compression');
+      const compress2 = mod.default || mod;
+      const compressed = await compress2(file, {
+        maxSizeMB: compressedSizeMB,
+        maxWidthOrHeight: compressedMaxDim,
+        useWebWorker: true
+      });
+      return new File([compressed], file.name, { type: compressed.type });
+    } catch {
+      return file;
+    }
+  };
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Solo se permiten im\xE1genes");
+      return;
+    }
+    if (file.size > maxFileSizeMB * 1024 * 1024) {
+      setError(`El archivo es muy grande (m\xE1x. ${maxFileSizeMB}MB)`);
+      return;
+    }
+    setError(null);
+    setLoading(true);
+    try {
+      const compressed = await compress(file);
+      if (onUpload) {
+        const url = await onUpload(compressed);
+        onChange?.(url);
+      } else {
+        const reader = new FileReader();
+        reader.onload = () => {
+          onChange?.(reader.result);
+        };
+        reader.readAsDataURL(compressed);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Error al procesar imagen";
+      setError(message);
+    } finally {
+      setLoading(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  };
+  return /* @__PURE__ */ jsxRuntime.jsxs(FieldWrapper, { label, className, visible, children: [
+    /* @__PURE__ */ jsxRuntime.jsxs(
+      "div",
+      {
+        onClick: handleClick,
+        className: "relative w-48 h-32 rounded-xl border-2 border-dashed border-edge-subtle/30 bg-surface-1 cursor-pointer transition-all hover:border-edge-subtle/40 hover:bg-surface-2 flex items-center justify-center overflow-hidden",
+        children: [
+          loading ? /* @__PURE__ */ jsxRuntime.jsxs(
+            "svg",
+            {
+              className: "w-8 h-8 text-ink-tertiary animate-spin",
+              fill: "none",
+              viewBox: "0 0 24 24",
+              xmlns: "http://www.w3.org/2000/svg",
+              children: [
+                /* @__PURE__ */ jsxRuntime.jsx("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "4" }),
+                /* @__PURE__ */ jsxRuntime.jsx(
+                  "path",
+                  {
+                    className: "opacity-75",
+                    fill: "currentColor",
+                    d: "M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  }
+                )
+              ]
+            }
+          ) : value && !imgError ? /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntime.jsx(
+              "img",
+              {
+                src: value,
+                alt: "Logo",
+                className: "max-w-full max-h-full object-contain p-2",
+                onError: () => setImgError(true)
+              }
+            ),
+            /* @__PURE__ */ jsxRuntime.jsx(
+              "button",
+              {
+                type: "button",
+                onClick: handleRemove,
+                className: "absolute top-2 right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors",
+                "aria-label": "Eliminar logo",
+                children: /* @__PURE__ */ jsxRuntime.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", className: "w-4 h-4", children: [
+                  /* @__PURE__ */ jsxRuntime.jsx("path", { d: "M18 6 6 18" }),
+                  /* @__PURE__ */ jsxRuntime.jsx("path", { d: "m6 6 12 12" })
+                ] })
+              }
+            )
+          ] }) : /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col items-center gap-2 text-ink-tertiary", children: [
+            /* @__PURE__ */ jsxRuntime.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", className: "w-8 h-8", children: [
+              /* @__PURE__ */ jsxRuntime.jsx("rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2" }),
+              /* @__PURE__ */ jsxRuntime.jsx("line", { x1: "12", x2: "12", y1: "8", y2: "16" }),
+              /* @__PURE__ */ jsxRuntime.jsx("line", { x1: "8", x2: "16", y1: "12", y2: "12" }),
+              /* @__PURE__ */ jsxRuntime.jsx("circle", { cx: "9", cy: "9", r: "2" })
+            ] }),
+            /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-sm", children: "Subir logo" })
+          ] }),
+          /* @__PURE__ */ jsxRuntime.jsx(
+            "input",
+            {
+              ref: inputRef,
+              type: "file",
+              accept: "image/*",
+              onChange: handleFileChange,
+              className: "hidden"
+            }
+          )
+        ]
+      }
+    ),
+    error && /* @__PURE__ */ jsxRuntime.jsx("p", { className: "text-red-500 text-sm mt-2", children: error })
+  ] });
+};
+var logoupload_default = LogoUpload;
 var SIZE_CONFIG = {
   xl: { w: 1200, h: 900, maxW: 95, maxH: 90 },
   lg: { w: 960, h: 800, maxW: 92, maxH: 88 },
@@ -3074,6 +3223,7 @@ exports.FieldWrapper = FieldWrapper;
 exports.Icon = icon_default;
 exports.Input = input_default;
 exports.Label = label_default;
+exports.LogoUpload = logoupload_default;
 exports.MasterDetail = MasterDetail;
 exports.Modal = modal_default;
 exports.ModalFormLayout = modalformlayout_default;

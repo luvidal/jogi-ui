@@ -24,6 +24,7 @@ export { default as ComputedField } from './forms/computedfield'
 export { default as NumberField } from './forms/numberfield'
 export { default as TextField } from './forms/textfield'
 export { default as SelectField } from './forms/selectfield'
+export { default as LogoUpload } from './forms/logoupload'
 
 // ── Common ──
 export { default as Modal } from './common/modal'
