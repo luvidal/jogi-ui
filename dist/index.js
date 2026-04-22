@@ -2872,19 +2872,13 @@ function useUploadFlow(options) {
       else if (optionsRef.current.requestId) params.requestId = optionsRef.current.requestId;
       if (uploadOpts?.docTypeId) params.docTypeId = uploadOpts.docTypeId;
       let res;
-      const maxRetries = 4;
-      for (let attempt = 0; attempt <= maxRetries; attempt++) {
-        try {
-          res = await uploadFn(compressed, params);
-          break;
-        } catch (retryErr) {
-          const is429 = retryErr?.status === 429 || /429|rate.?limit|too many/i.test(retryErr?.message || "");
-          if (is429 && attempt < maxRetries) {
-            await wait(2e3 * (attempt + 1));
-            continue;
-          }
-          throw retryErr;
-        }
+      try {
+        res = await uploadFn(compressed, params);
+      } catch (retryErr) {
+        const is429 = retryErr?.status === 429 || /429|rate.?limit|too many/i.test(retryErr?.message || "");
+        if (!is429) throw retryErr;
+        await wait(3e3);
+        res = await uploadFn(compressed, params);
       }
       if (progressTimer) clearInterval(progressTimer);
       progressTimer = null;

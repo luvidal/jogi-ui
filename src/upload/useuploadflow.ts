@@ -140,21 +140,18 @@ export function useUploadFlow(options: UploadFlowOptions) {
       else if (optionsRef.current.requestId) params.requestId = optionsRef.current.requestId
       if (uploadOpts?.docTypeId) params.docTypeId = uploadOpts.docTypeId
 
-      // Retry with backoff on 429 (rate limit)
+      // Single quick retry on 429. The server fails fast on genuine quota
+      // exhaustion (no server-side pause), so stacking multiple long backoffs
+      // here just delays the error toast. One 3 s retry covers a transient
+      // blip; anything worse should surface to the user immediately.
       let res: any
-      const maxRetries = 4
-      for (let attempt = 0; attempt <= maxRetries; attempt++) {
-        try {
-          res = await uploadFn(compressed, params)
-          break
-        } catch (retryErr: any) {
-          const is429 = retryErr?.status === 429 || /429|rate.?limit|too many/i.test(retryErr?.message || '')
-          if (is429 && attempt < maxRetries) {
-            await wait(2000 * (attempt + 1))
-            continue
-          }
-          throw retryErr
-        }
+      try {
+        res = await uploadFn(compressed, params)
+      } catch (retryErr: any) {
+        const is429 = retryErr?.status === 429 || /429|rate.?limit|too many/i.test(retryErr?.message || '')
+        if (!is429) throw retryErr
+        await wait(3000)
+        res = await uploadFn(compressed, params) // surfaces any error on its own
       }
 
       if (progressTimer) clearInterval(progressTimer)
