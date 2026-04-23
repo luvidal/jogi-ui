@@ -283,34 +283,6 @@ var ColorPicker = ({ label, value = "#000000", onChange, className = "", visible
   ] }) });
 };
 var colorpicker_default = ColorPicker;
-var sanitizeValue = (s) => String(s || "").replace(/[\u0000-\u001F\u007F-\u009F]/g, "").replace(/[\u00A0\u1680\u180E\u2000-\u200D\u2028-\u202F\u205F\u2060\u3000\uFEFF]+/g, " ").replace(/\s+/g, " ").trim();
-var Input = ({ label, tooltip, className = "", readOnly, onChange, value = "", visible = true, ...rest }) => {
-  const [localValue, setLocalValue] = useState(value);
-  const [cleanValue, setCleanValue] = useState(() => sanitizeValue(value));
-  useEffect(() => {
-    const cleaned = sanitizeValue(value);
-    setLocalValue(value);
-    setCleanValue(cleaned);
-  }, [value]);
-  const commit = () => {
-    const sanitized = sanitizeValue(localValue);
-    setLocalValue(sanitized);
-    if (sanitized !== cleanValue) onChange?.(sanitized);
-  };
-  return /* @__PURE__ */ jsx(FieldWrapper, { label, tooltip, className, visible, children: /* @__PURE__ */ jsx(
-    "input",
-    {
-      ...rest,
-      readOnly,
-      value: localValue,
-      onChange: (e) => setLocalValue(e.target.value),
-      onBlur: commit,
-      onKeyDown: (e) => e.key === "Enter" && commit(),
-      className: `border border-edge-subtle/20 rounded-xl w-full placeholder:text-ink-tertiary/25 ${readOnly ? "text-ink-tertiary cursor-not-allowed bg-surface-1" : "text-ink-primary bg-surface-0 focus:ring-2 focus:ring-brand/30 focus:border-brand/60 outline-none"} text-base px-4 py-3 transition-all duration-300`
-    }
-  ) });
-};
-var input_default = Input;
 var Radio = ({ label, value, selected, onChange, className = "" }) => {
   return /* @__PURE__ */ jsxs("label", { className: `flex items-center cursor-pointer ${className}`, children: [
     /* @__PURE__ */ jsx(
@@ -393,37 +365,63 @@ var NumberField = ({ label, value, onChange, suffix, step = "any", readOnly }) =
   ] });
 };
 var numberfield_default = NumberField;
-var TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth, icon, onIconClick }) => {
+var sanitizeValue = (s) => String(s || "").replace(/[\u0000-\u001F\u007F-\u009F]/g, "").replace(/[\u00A0\u1680\u180E\u2000-\u200D\u2028-\u202F\u205F\u2060\u3000\uFEFF]+/g, " ").replace(/\s+/g, " ").trim();
+var TextField = ({
+  label,
+  tooltip,
+  value = "",
+  onChange,
+  readOnly,
+  placeholder,
+  className = "",
+  visible,
+  fullWidth,
+  icon,
+  onIconClick,
+  ...rest
+}) => {
+  const [localValue, setLocalValue] = useState(value);
+  const [cleanValue, setCleanValue] = useState(() => sanitizeValue(value));
+  useEffect(() => {
+    setLocalValue(value);
+    setCleanValue(sanitizeValue(value));
+  }, [value]);
+  const commit = () => {
+    const sanitized = sanitizeValue(localValue);
+    setLocalValue(sanitized);
+    if (sanitized !== cleanValue) onChange?.(sanitized);
+  };
   const hasIcon = !!icon;
   const isInteractive = hasIcon && !!onIconClick;
-  return /* @__PURE__ */ jsxs("div", { className: fullWidth ? "col-span-2" : "", children: [
-    /* @__PURE__ */ jsx(label_default, { text: label, className: "mb-1" }),
-    /* @__PURE__ */ jsxs("div", { className: "relative", children: [
-      /* @__PURE__ */ jsx(
-        "input",
-        {
-          type: "text",
-          value: value ?? "",
-          readOnly,
-          tabIndex: readOnly ? -1 : void 0,
-          placeholder: readOnly ? void 0 : placeholder,
-          onChange: readOnly ? void 0 : (e) => onChange?.(e.target.value || void 0),
-          className: `${inputBase} ${hasIcon ? "pr-8" : ""} ${readOnly ? inputReadOnly : inputEditable}`
-        }
-      ),
-      hasIcon && isInteractive && /* @__PURE__ */ jsx(
-        "button",
-        {
-          onClick: onIconClick,
-          tabIndex: -1,
-          type: "button",
-          className: "absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-surface-2 transition-colors",
-          children: /* @__PURE__ */ jsx(icon_default, { name: icon, size: 14, className: "text-ink-tertiary hover:text-ink-secondary" })
-        }
-      ),
-      hasIcon && !isInteractive && /* @__PURE__ */ jsx("span", { className: "absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none", children: /* @__PURE__ */ jsx(icon_default, { name: icon, size: 14, className: "text-ink-tertiary/60" }) })
-    ] })
-  ] });
+  const wrapperClass = `${fullWidth ? "col-span-2" : ""} ${className}`.trim();
+  return /* @__PURE__ */ jsx(FieldWrapper, { label, tooltip, className: wrapperClass, visible, children: /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+    /* @__PURE__ */ jsx(
+      "input",
+      {
+        ...rest,
+        type: "text",
+        readOnly,
+        tabIndex: readOnly ? -1 : void 0,
+        placeholder: readOnly ? void 0 : placeholder,
+        value: localValue,
+        onChange: (e) => setLocalValue(e.target.value),
+        onBlur: commit,
+        onKeyDown: (e) => e.key === "Enter" && commit(),
+        className: `${inputBase} ${hasIcon ? "pr-8" : ""} ${readOnly ? inputReadOnly : inputEditable}`
+      }
+    ),
+    hasIcon && isInteractive && /* @__PURE__ */ jsx(
+      "button",
+      {
+        onClick: onIconClick,
+        tabIndex: -1,
+        type: "button",
+        className: "absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-surface-2 transition-colors",
+        children: /* @__PURE__ */ jsx(icon_default, { name: icon, size: 14, className: "text-ink-tertiary hover:text-ink-secondary" })
+      }
+    ),
+    hasIcon && !isInteractive && /* @__PURE__ */ jsx("span", { className: "absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none", children: /* @__PURE__ */ jsx(icon_default, { name: icon, size: 14, className: "text-ink-tertiary/60" }) })
+  ] }) });
 };
 var textfield_default = TextField;
 var SelectField = ({ label, value, options, onChange, readOnly }) => {
@@ -3181,6 +3179,6 @@ function UploadCards({ items, summary, requestLabel, role, labels: userLabels })
   ] }) });
 }
 
-export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, input_default as Input, label_default as Label, logoupload_default as LogoUpload, MasterDetail, modal_default as Modal, modalformlayout_default as ModalFormLayout, modaloverlaypanel_default as ModalOverlayPanel, modaltoolbar_default as ModalToolbar, MultiselectToolbar, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, SectionSeparator, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, UploadCards, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useFenceSelect, useIsDesktop, useIsMobile, useMultiSelect, useRecords, useToast, useUploadFlow };
+export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, label_default as Label, logoupload_default as LogoUpload, MasterDetail, modal_default as Modal, modalformlayout_default as ModalFormLayout, modaloverlaypanel_default as ModalOverlayPanel, modaltoolbar_default as ModalToolbar, MultiselectToolbar, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, SectionSeparator, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, UploadCards, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useFenceSelect, useIsDesktop, useIsMobile, useMultiSelect, useRecords, useToast, useUploadFlow };
 //# sourceMappingURL=index.mjs.map
 //# sourceMappingURL=index.mjs.map

@@ -1,33 +1,75 @@
+import { useState, useEffect } from 'react'
 import Icon from '../common/icon'
-import Label from '../common/label'
+import FieldWrapper from './fieldwrapper'
 import { inputBase, inputEditable, inputReadOnly } from './inputstyles'
 
-interface TextFieldProps {
-  label: string
-  value: string | undefined
-  onChange?: (v: string | undefined) => void
+interface Props {
+  label?: string
+  tooltip?: string
+  value?: string
+  onChange?: (v: string) => void
   readOnly?: boolean
   placeholder?: string
+  className?: string
+  visible?: boolean
   fullWidth?: boolean
   icon?: string
   onIconClick?: () => void
 }
 
-const TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth, icon, onIconClick }: TextFieldProps) => {
+type TextFieldProps = Props & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'readOnly'>
+
+const sanitizeValue = (s: any) => String(s || '')
+  .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
+  .replace(/[\u00A0\u1680\u180E\u2000-\u200D\u2028-\u202F\u205F\u2060\u3000\uFEFF]+/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim()
+
+const TextField = ({
+  label,
+  tooltip,
+  value = '',
+  onChange,
+  readOnly,
+  placeholder,
+  className = '',
+  visible,
+  fullWidth,
+  icon,
+  onIconClick,
+  ...rest
+}: TextFieldProps) => {
+  const [localValue, setLocalValue] = useState(value)
+  const [cleanValue, setCleanValue] = useState(() => sanitizeValue(value))
+
+  useEffect(() => {
+    setLocalValue(value)
+    setCleanValue(sanitizeValue(value))
+  }, [value])
+
+  const commit = () => {
+    const sanitized = sanitizeValue(localValue)
+    setLocalValue(sanitized)
+    if (sanitized !== cleanValue) onChange?.(sanitized)
+  }
+
   const hasIcon = !!icon
   const isInteractive = hasIcon && !!onIconClick
+  const wrapperClass = `${fullWidth ? 'col-span-2' : ''} ${className}`.trim()
 
   return (
-    <div className={fullWidth ? 'col-span-2' : ''}>
-      <Label text={label} className='mb-1' />
+    <FieldWrapper label={label} tooltip={tooltip} className={wrapperClass} visible={visible}>
       <div className="relative">
         <input
+          {...rest}
           type="text"
-          value={value ?? ''}
           readOnly={readOnly}
           tabIndex={readOnly ? -1 : undefined}
           placeholder={readOnly ? undefined : placeholder}
-          onChange={readOnly ? undefined : e => onChange?.(e.target.value || undefined)}
+          value={localValue}
+          onChange={e => setLocalValue(e.target.value)}
+          onBlur={commit}
+          onKeyDown={e => e.key === 'Enter' && commit()}
           className={`${inputBase} ${hasIcon ? 'pr-8' : ''} ${readOnly ? inputReadOnly : inputEditable}`}
         />
         {hasIcon && isInteractive && (
@@ -46,7 +88,7 @@ const TextField = ({ label, value, onChange, readOnly, placeholder, fullWidth, i
           </span>
         )}
       </div>
-    </div>
+    </FieldWrapper>
   )
 }
 

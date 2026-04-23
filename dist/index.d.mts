@@ -131,29 +131,16 @@ interface FieldWrapperProps {
 }
 declare function FieldWrapper({ label, tooltip, className, visible, children }: FieldWrapperProps): react_jsx_runtime.JSX.Element | null;
 
-interface Props$e {
-    label?: string;
-    /** Optional tooltip — renders "?" icon next to the label */
-    tooltip?: string;
-    readOnly?: boolean;
-    onChange?: (value: string) => void;
-    value?: string;
-    className?: string;
-    visible?: boolean;
-}
-type InputProps = Props$e & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'readOnly'>;
-declare const Input: ({ label, tooltip, className, readOnly, onChange, value, visible, ...rest }: InputProps) => react_jsx_runtime.JSX.Element;
-
-interface Props$d<T extends string = string> {
+interface Props$e<T extends string = string> {
     label: string;
     value: T;
     selected: T;
     onChange?: (value: T) => void;
     className?: string;
 }
-declare const Radio: <T extends string = string>({ label, value, selected, onChange, className }: Props$d<T>) => react_jsx_runtime.JSX.Element;
+declare const Radio: <T extends string = string>({ label, value, selected, onChange, className }: Props$e<T>) => react_jsx_runtime.JSX.Element;
 
-interface Props$c {
+interface Props$d {
     label?: string;
     value: string;
     placeholder?: string;
@@ -165,7 +152,7 @@ interface Props$c {
     tooltip?: string;
     onChange: (value: string) => void;
 }
-declare const Select: ({ label, value, placeholder, options, className, onChange }: Props$c) => react_jsx_runtime.JSX.Element;
+declare const Select: ({ label, value, placeholder, options, className, onChange }: Props$d) => react_jsx_runtime.JSX.Element;
 
 interface ComputedFieldProps {
     label: string;
@@ -185,17 +172,21 @@ interface NumberFieldProps {
 }
 declare const NumberField: ({ label, value, onChange, suffix, step, readOnly }: NumberFieldProps) => react_jsx_runtime.JSX.Element;
 
-interface TextFieldProps {
-    label: string;
-    value: string | undefined;
-    onChange?: (v: string | undefined) => void;
+interface Props$c {
+    label?: string;
+    tooltip?: string;
+    value?: string;
+    onChange?: (v: string) => void;
     readOnly?: boolean;
     placeholder?: string;
+    className?: string;
+    visible?: boolean;
     fullWidth?: boolean;
     icon?: string;
     onIconClick?: () => void;
 }
-declare const TextField: ({ label, value, onChange, readOnly, placeholder, fullWidth, icon, onIconClick }: TextFieldProps) => react_jsx_runtime.JSX.Element;
+type TextFieldProps = Props$c & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'readOnly'>;
+declare const TextField: ({ label, tooltip, value, onChange, readOnly, placeholder, className, visible, fullWidth, icon, onIconClick, ...rest }: TextFieldProps) => react_jsx_runtime.JSX.Element;
 
 interface SelectFieldProps {
     label: string;
@@ -974,4 +965,4 @@ interface UploadCardsProps {
 }
 declare function UploadCards({ items, summary, requestLabel, role, labels: userLabels }: UploadCardsProps): react_jsx_runtime.JSX.Element;
 
-export { Accordion, Anchor, Button, ButtonGroup, type CapturedTransfer, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, type FenceRect, FieldWrapper, type FileStatus, type FileUploadItem, Icon, Input, Label, LogoUpload, MasterDetail, Modal, ModalFormLayout, ModalOverlayPanel, ModalToolbar, type MultiSelectState, MultiselectToolbar, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, type RefreshActions, Scroll, type Section, SectionSeparator, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, type SortOption, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, UploadCards, type UploadCardsLabels, type UploadFlowLabels, type UploadFlowOptions, type UploadSummary, type UploadToast, type UseFenceSelectOptions, type UseFenceSelectResult, type UseRecordsOptions, type UseRecordsReturn, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useFenceSelect, useIsDesktop, useIsMobile, useMultiSelect, useRecords, useToast, useUploadFlow };
+export { Accordion, Anchor, Button, ButtonGroup, type CapturedTransfer, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, type FenceRect, FieldWrapper, type FileStatus, type FileUploadItem, Icon, Label, LogoUpload, MasterDetail, Modal, ModalFormLayout, ModalOverlayPanel, ModalToolbar, type MultiSelectState, MultiselectToolbar, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, type RefreshActions, Scroll, type Section, SectionSeparator, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, type SortOption, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, UploadCards, type UploadCardsLabels, type UploadFlowLabels, type UploadFlowOptions, type UploadSummary, type UploadToast, type UseFenceSelectOptions, type UseFenceSelectResult, type UseRecordsOptions, type UseRecordsReturn, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useFenceSelect, useIsDesktop, useIsMobile, useMultiSelect, useRecords, useToast, useUploadFlow };
