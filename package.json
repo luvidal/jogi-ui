@@ -24,12 +24,16 @@
   },
   "peerDependencies": {
     "browser-image-compression": ">=2.0",
+    "dompurify": ">=3.0",
     "lucide-react": ">=0.300",
     "react": ">=18",
     "react-dom": ">=18"
   },
   "peerDependenciesMeta": {
     "browser-image-compression": {
+      "optional": true
+    },
+    "dompurify": {
       "optional": true
     }
   },
@@ -39,6 +43,8 @@
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.0",
     "browser-image-compression": "^2.0.2",
+    "dompurify": "^3.2.6",
+    "@types/dompurify": "^3.0.5",
     "happy-dom": "^20.0.0",
     "lucide-react": "^0.487.0",
     "postcss": "^8.4.0",

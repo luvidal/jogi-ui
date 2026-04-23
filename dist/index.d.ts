@@ -213,6 +213,20 @@ interface Props$b {
 }
 declare const LogoUpload: ({ label, value, onChange, onUpload, className, visible, maxFileSizeMB, compressedSizeMB, compressedMaxDim, }: Props$b) => react_jsx_runtime.JSX.Element;
 
+interface RTFEditorProps {
+    label?: string;
+    value: string;
+    onChange: (content: string) => void;
+    tooltip?: string;
+    className?: string;
+    editorClassName?: string;
+    style?: React.CSSProperties;
+    stretch?: boolean;
+    /** Resolver for the "insert link" toolbar button. Return the URL, or null/undefined to cancel. Defaults to window.prompt. */
+    onInsertLink?: () => Promise<string | null | undefined> | string | null | undefined;
+}
+declare const RTFEditor: ({ value, label, onChange, className, tooltip, editorClassName, style, stretch, onInsertLink, }: RTFEditorProps) => react_jsx_runtime.JSX.Element;
+
 type ModalSize = 'xl' | 'lg' | 'md' | 'sm' | 'xs';
 interface Props$a {
     title?: string;
@@ -965,4 +979,4 @@ interface UploadCardsProps {
 }
 declare function UploadCards({ items, summary, requestLabel, role, labels: userLabels }: UploadCardsProps): react_jsx_runtime.JSX.Element;
 
-export { Accordion, Anchor, Button, ButtonGroup, type CapturedTransfer, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, type FenceRect, FieldWrapper, type FileStatus, type FileUploadItem, Icon, Label, LogoUpload, MasterDetail, Modal, ModalFormLayout, ModalOverlayPanel, ModalToolbar, type MultiSelectState, MultiselectToolbar, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, Radio, type RefreshActions, Scroll, type Section, SectionSeparator, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, type SortOption, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, UploadCards, type UploadCardsLabels, type UploadFlowLabels, type UploadFlowOptions, type UploadSummary, type UploadToast, type UseFenceSelectOptions, type UseFenceSelectResult, type UseRecordsOptions, type UseRecordsReturn, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useFenceSelect, useIsDesktop, useIsMobile, useMultiSelect, useRecords, useToast, useUploadFlow };
+export { Accordion, Anchor, Button, ButtonGroup, type CapturedTransfer, Card, type CardItem, CardList, Checkbox, ColorPicker, ComputedField, ConfirmDialog as Confirm, type ConfirmOptions, Container, ContextMenu, DetailBar, DetailContent, DragHere$1 as DragHereHint, DragHere as DragHereOverlay, EditableTitle, EmailLink, EmptyState, type FenceRect, FieldWrapper, type FileStatus, type FileUploadItem, Icon, Label, LogoUpload, MasterDetail, Modal, ModalFormLayout, ModalOverlayPanel, ModalToolbar, type MultiSelectState, MultiselectToolbar, NumberField, Panel, PillTag, ProgressRing, PromptDialog as Prompt, type PromptOptions, RTFEditor, Radio, type RefreshActions, Scroll, type Section, SectionSeparator, Select, SelectField, SidebarFilter, SidebarPaginator, SidebarSort, Skeleton, type SortOption, Spinner, StatCard, TablePanel, Tabs, TextField, ToastContainer, type ToastData, ToastProvider, ToolBack, ToolbarButton, Tooltip, UploadCards, type UploadCardsLabels, type UploadFlowLabels, type UploadFlowOptions, type UploadSummary, type UploadToast, type UseFenceSelectOptions, type UseFenceSelectResult, type UseRecordsOptions, type UseRecordsReturn, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useFenceSelect, useIsDesktop, useIsMobile, useMultiSelect, useRecords, useToast, useUploadFlow };

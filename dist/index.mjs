@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useContext, useCallback, useMemo, u
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import { icons, CircleHelp } from 'lucide-react';
 import { createPortal } from 'react-dom';
+import DOMPurify from 'dompurify';
 
 // src/hooks.tsx
 var useIsMobile = () => {
@@ -592,6 +593,105 @@ var LogoUpload = ({
   ] });
 };
 var logoupload_default = LogoUpload;
+var sanitizeLinks = (html) => html.replace(/<a\s+([^>]*href=['"])(?!https?:)/gi, "$1https://");
+var enhanceLinks = (html) => html.replace(/<a\s+([^>]*)>/gi, (_match, attrs) => {
+  if (!/target=/i.test(attrs)) attrs += ` target="_blank"`;
+  if (!/rel=/i.test(attrs)) attrs += ` rel="noopener noreferrer"`;
+  return `<a ${attrs}>`;
+});
+var defaultInsertLink = () => typeof window !== "undefined" ? window.prompt("URL:") : null;
+var RTFEditor = ({
+  value,
+  label,
+  onChange,
+  className = "",
+  tooltip = "",
+  editorClassName = "",
+  style,
+  stretch = true,
+  onInsertLink = defaultInsertLink
+}) => {
+  const editorRef = useRef(null);
+  const [showToolbar, setShowToolbar] = useState(false);
+  useEffect(() => {
+    if (editorRef.current) {
+      const current = editorRef.current.innerHTML;
+      if (current !== value) editorRef.current.innerHTML = DOMPurify.sanitize(value || "");
+    }
+  }, [value]);
+  const handleInput = () => {
+    if (!editorRef.current) return;
+    const content = enhanceLinks(
+      sanitizeLinks(
+        editorRef.current.innerHTML.replace(/<div><br><\/div>/g, "<br>").replace(/<div>/g, "<br>").replace(/<\/div>/g, "").replace(/^<br>/, "")
+      )
+    );
+    onChange(content);
+  };
+  const execCommand = (cmd, val) => {
+    if (document.queryCommandSupported?.(cmd)) {
+      document.execCommand(cmd, false, val);
+      editorRef.current?.focus();
+    }
+  };
+  const insertLink = async () => {
+    const url = await onInsertLink();
+    if (!url) return;
+    const safe = url.match(/^https?:\/\//i) ? url : `https://${url}`;
+    execCommand("createLink", safe);
+  };
+  const commands = [
+    { name: "bold", label: "B", style: { fontWeight: "bold" } },
+    { name: "italic", label: "I", style: { fontStyle: "italic" } },
+    { name: "underline", label: "U", style: { textDecoration: "underline" } },
+    { name: "link", label: /* @__PURE__ */ jsx(icon_default, { name: "Link", size: 16, className: "text-ink-tertiary group-hover:text-ink-primary" }) }
+  ];
+  return /* @__PURE__ */ jsxs("div", { className: `mb-2 flex flex-col min-h-0 ${stretch ? "flex-1" : ""} ${className}`, children: [
+    label && /* @__PURE__ */ jsx(label_default, { text: label, tooltip, className: "shrink-0" }),
+    /* @__PURE__ */ jsxs("div", { className: `border border-edge-subtle/20 bg-surface-0 rounded-xl overflow-hidden relative flex-1 min-h-0 flex flex-col`, children: [
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          type: "button",
+          onClick: () => setShowToolbar(!showToolbar),
+          className: "absolute top-2 right-3 p-1.5 rounded-xl bg-surface-2/70 hover:bg-surface-2 text-ink-tertiary hover:text-ink-secondary transition",
+          children: /* @__PURE__ */ jsx(
+            icon_default,
+            {
+              name: "Paintbrush",
+              size: 18,
+              className: `transition-all duration-500 ease-out ${showToolbar ? "rotate-[-45deg] scale-110" : "rotate-0 scale-100"}`
+            }
+          )
+        }
+      ),
+      showToolbar && /* @__PURE__ */ jsx("div", { className: "flex gap-2 p-2 bg-surface-2 border-b border-edge-subtle/20", children: commands.map((cmd) => /* @__PURE__ */ jsx(
+        "button",
+        {
+          type: "button",
+          onMouseDown: (e) => e.preventDefault(),
+          onClick: () => cmd.name === "link" ? insertLink() : execCommand(cmd.name),
+          className: "group px-3 py-1 text-sm text-ink-primary hover:bg-surface-3 rounded flex items-center justify-center",
+          style: typeof cmd.label === "string" ? cmd.style : void 0,
+          children: cmd.label
+        },
+        cmd.name
+      )) }),
+      /* @__PURE__ */ jsx(
+        "div",
+        {
+          ref: editorRef,
+          contentEditable: true,
+          onInput: handleInput,
+          className: `p-4 outline-none overflow-y-auto text-ink-primary [&_a]:text-brand [&_a]:underline ${stretch ? "flex-1 min-h-0" : ""} ${editorClassName || ""}`,
+          style: { fontSize: "1rem", lineHeight: "1.5rem", ...style },
+          suppressContentEditableWarning: true
+        }
+      )
+    ] })
+  ] });
+};
+var rtfeditor_default = RTFEditor;
 var SIZE_CONFIG = {
   xl: { w: 1200, h: 900, maxW: 95, maxH: 90 },
   lg: { w: 960, h: 800, maxW: 92, maxH: 88 },
@@ -3179,6 +3279,6 @@ function UploadCards({ items, summary, requestLabel, role, labels: userLabels })
   ] }) });
 }
 
-export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, label_default as Label, logoupload_default as LogoUpload, MasterDetail, modal_default as Modal, modalformlayout_default as ModalFormLayout, modaloverlaypanel_default as ModalOverlayPanel, modaltoolbar_default as ModalToolbar, MultiselectToolbar, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, radio_default as Radio, scroll_default as Scroll, SectionSeparator, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, UploadCards, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useFenceSelect, useIsDesktop, useIsMobile, useMultiSelect, useRecords, useToast, useUploadFlow };
+export { section_default as Accordion, anchor_default as Anchor, button_default as Button, buttongroup_default as ButtonGroup, card_default as Card, CardList, checkbox_default as Checkbox, colorpicker_default as ColorPicker, computedfield_default as ComputedField, confirm_default as Confirm, container_default as Container, contextmenu_default as ContextMenu, DetailBar, DetailContent, dragherehint_default as DragHereHint, DragHere2 as DragHereOverlay, editabletitle_default as EditableTitle, emaillink_default as EmailLink, emptystate_default as EmptyState, FieldWrapper, icon_default as Icon, label_default as Label, logoupload_default as LogoUpload, MasterDetail, modal_default as Modal, modalformlayout_default as ModalFormLayout, modaloverlaypanel_default as ModalOverlayPanel, modaltoolbar_default as ModalToolbar, MultiselectToolbar, numberfield_default as NumberField, panel_default as Panel, pilltag_default as PillTag, progressring_default as ProgressRing, prompt_default as Prompt, rtfeditor_default as RTFEditor, radio_default as Radio, scroll_default as Scroll, SectionSeparator, select_default as Select, selectfield_default as SelectField, SidebarFilter, SidebarPaginator, SidebarSort, skeleton_default as Skeleton, Spinner, statcard_default as StatCard, tablepanel_default as TablePanel, tabs_default as Tabs, textfield_default as TextField, ToastContainer, ToastProvider, toolback_default as ToolBack, toolbarbutton_default as ToolbarButton, tooltip_default as Tooltip, UploadCards, captureDataTransfer, createDialogContext, openFilePicker, resolveFiles, useFenceSelect, useIsDesktop, useIsMobile, useMultiSelect, useRecords, useToast, useUploadFlow };
 //# sourceMappingURL=index.mjs.map
 //# sourceMappingURL=index.mjs.map

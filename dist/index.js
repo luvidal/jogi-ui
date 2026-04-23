@@ -4,6 +4,11 @@ var react = require('react');
 var jsxRuntime = require('react/jsx-runtime');
 var lucideReact = require('lucide-react');
 var reactDom = require('react-dom');
+var DOMPurify = require('dompurify');
+
+function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
+
+var DOMPurify__default = /*#__PURE__*/_interopDefault(DOMPurify);
 
 // src/hooks.tsx
 var useIsMobile = () => {
@@ -594,6 +599,105 @@ var LogoUpload = ({
   ] });
 };
 var logoupload_default = LogoUpload;
+var sanitizeLinks = (html) => html.replace(/<a\s+([^>]*href=['"])(?!https?:)/gi, "$1https://");
+var enhanceLinks = (html) => html.replace(/<a\s+([^>]*)>/gi, (_match, attrs) => {
+  if (!/target=/i.test(attrs)) attrs += ` target="_blank"`;
+  if (!/rel=/i.test(attrs)) attrs += ` rel="noopener noreferrer"`;
+  return `<a ${attrs}>`;
+});
+var defaultInsertLink = () => typeof window !== "undefined" ? window.prompt("URL:") : null;
+var RTFEditor = ({
+  value,
+  label,
+  onChange,
+  className = "",
+  tooltip = "",
+  editorClassName = "",
+  style,
+  stretch = true,
+  onInsertLink = defaultInsertLink
+}) => {
+  const editorRef = react.useRef(null);
+  const [showToolbar, setShowToolbar] = react.useState(false);
+  react.useEffect(() => {
+    if (editorRef.current) {
+      const current = editorRef.current.innerHTML;
+      if (current !== value) editorRef.current.innerHTML = DOMPurify__default.default.sanitize(value || "");
+    }
+  }, [value]);
+  const handleInput = () => {
+    if (!editorRef.current) return;
+    const content = enhanceLinks(
+      sanitizeLinks(
+        editorRef.current.innerHTML.replace(/<div><br><\/div>/g, "<br>").replace(/<div>/g, "<br>").replace(/<\/div>/g, "").replace(/^<br>/, "")
+      )
+    );
+    onChange(content);
+  };
+  const execCommand = (cmd, val) => {
+    if (document.queryCommandSupported?.(cmd)) {
+      document.execCommand(cmd, false, val);
+      editorRef.current?.focus();
+    }
+  };
+  const insertLink = async () => {
+    const url = await onInsertLink();
+    if (!url) return;
+    const safe = url.match(/^https?:\/\//i) ? url : `https://${url}`;
+    execCommand("createLink", safe);
+  };
+  const commands = [
+    { name: "bold", label: "B", style: { fontWeight: "bold" } },
+    { name: "italic", label: "I", style: { fontStyle: "italic" } },
+    { name: "underline", label: "U", style: { textDecoration: "underline" } },
+    { name: "link", label: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: "Link", size: 16, className: "text-ink-tertiary group-hover:text-ink-primary" }) }
+  ];
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `mb-2 flex flex-col min-h-0 ${stretch ? "flex-1" : ""} ${className}`, children: [
+    label && /* @__PURE__ */ jsxRuntime.jsx(label_default, { text: label, tooltip, className: "shrink-0" }),
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `border border-edge-subtle/20 bg-surface-0 rounded-xl overflow-hidden relative flex-1 min-h-0 flex flex-col`, children: [
+      /* @__PURE__ */ jsxRuntime.jsx(
+        "button",
+        {
+          type: "button",
+          onClick: () => setShowToolbar(!showToolbar),
+          className: "absolute top-2 right-3 p-1.5 rounded-xl bg-surface-2/70 hover:bg-surface-2 text-ink-tertiary hover:text-ink-secondary transition",
+          children: /* @__PURE__ */ jsxRuntime.jsx(
+            icon_default,
+            {
+              name: "Paintbrush",
+              size: 18,
+              className: `transition-all duration-500 ease-out ${showToolbar ? "rotate-[-45deg] scale-110" : "rotate-0 scale-100"}`
+            }
+          )
+        }
+      ),
+      showToolbar && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex gap-2 p-2 bg-surface-2 border-b border-edge-subtle/20", children: commands.map((cmd) => /* @__PURE__ */ jsxRuntime.jsx(
+        "button",
+        {
+          type: "button",
+          onMouseDown: (e) => e.preventDefault(),
+          onClick: () => cmd.name === "link" ? insertLink() : execCommand(cmd.name),
+          className: "group px-3 py-1 text-sm text-ink-primary hover:bg-surface-3 rounded flex items-center justify-center",
+          style: typeof cmd.label === "string" ? cmd.style : void 0,
+          children: cmd.label
+        },
+        cmd.name
+      )) }),
+      /* @__PURE__ */ jsxRuntime.jsx(
+        "div",
+        {
+          ref: editorRef,
+          contentEditable: true,
+          onInput: handleInput,
+          className: `p-4 outline-none overflow-y-auto text-ink-primary [&_a]:text-brand [&_a]:underline ${stretch ? "flex-1 min-h-0" : ""} ${editorClassName || ""}`,
+          style: { fontSize: "1rem", lineHeight: "1.5rem", ...style },
+          suppressContentEditableWarning: true
+        }
+      )
+    ] })
+  ] });
+};
+var rtfeditor_default = RTFEditor;
 var SIZE_CONFIG = {
   xl: { w: 1200, h: 900, maxW: 95, maxH: 90 },
   lg: { w: 960, h: 800, maxW: 92, maxH: 88 },
@@ -3215,6 +3319,7 @@ exports.Panel = panel_default;
 exports.PillTag = pilltag_default;
 exports.ProgressRing = progressring_default;
 exports.Prompt = prompt_default;
+exports.RTFEditor = rtfeditor_default;
 exports.Radio = radio_default;
 exports.Scroll = scroll_default;
 exports.SectionSeparator = SectionSeparator;

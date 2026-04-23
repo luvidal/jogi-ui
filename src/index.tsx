@@ -24,6 +24,7 @@ export { default as NumberField } from './forms/numberfield'
 export { default as TextField } from './forms/textfield'
 export { default as SelectField } from './forms/selectfield'
 export { default as LogoUpload } from './forms/logoupload'
+export { default as RTFEditor } from './forms/rtfeditor'
 
 // ── Common ──
 export { default as Modal } from './common/modal'
