@@ -2102,35 +2102,16 @@ var Tabs = ({
     if (!stored || controlledActive !== void 0) return;
     if (stored !== tabs[0]?.id) onChange?.(stored);
   }, []);
+  const displayActiveId = activeId && tabs.some((t) => t.id === activeId) ? activeId : tabs[0]?.id || "";
   react.useEffect(() => {
     if (!storageKey) return;
-    const value = controlledActive ?? internalActive;
+    if (!displayActiveId) return;
+    if (!tabs.some((t) => t.id === displayActiveId)) return;
     try {
-      localStorage.setItem(storageKey, value);
+      localStorage.setItem(storageKey, displayActiveId);
     } catch {
     }
-  }, [controlledActive, internalActive, storageKey]);
-  const tabIdsKey = tabs.map((t) => t.id).join(",");
-  const lastSelfHealRef = react.useRef(null);
-  react.useEffect(() => {
-    if (tabs.length === 0) return;
-    if (tabs.some((t) => t.id === activeId)) {
-      lastSelfHealRef.current = null;
-      return;
-    }
-    const newActive = tabs[0].id;
-    const guardKey = `${tabIdsKey}:${newActive}`;
-    if (lastSelfHealRef.current === guardKey) return;
-    lastSelfHealRef.current = guardKey;
-    setInternalActive(newActive);
-    onChange?.(newActive);
-    if (storageKey) {
-      try {
-        localStorage.setItem(storageKey, newActive);
-      } catch {
-      }
-    }
-  }, [tabIdsKey, activeId]);
+  }, [displayActiveId, storageKey, tabs]);
   const handleTabClick = (tabId) => {
     if (tabId === activeId) {
       onRefresh?.(tabId);
@@ -2152,7 +2133,7 @@ var Tabs = ({
   const sizeConfig3 = SIZE_CONFIG2[size];
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className, children: [
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "overflow-x-auto overflow-y-hidden mx-3 sm:mx-6 my-2.5 scrollbar-none", children: /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex w-fit gap-1.5", children: tabs.map((tab) => {
-      const isActive = activeId === tab.id;
+      const isActive = displayActiveId === tab.id;
       const sfx = suffix?.(tab.id);
       return /* @__PURE__ */ jsxRuntime.jsxs(
         "button",

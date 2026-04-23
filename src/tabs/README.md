@@ -40,9 +40,11 @@ Both controlled (`activeTab` prop) and uncontrolled modes persist:
 - Clicking an inactive tab: calls `onChange(tabId)`, persists to localStorage.
 - Clicking the active tab: calls `onRefresh(tabId)` — useful for re-fetching data.
 
-### Safety fallback
+### Stale `activeTab` handling
 
-If the active tab ID is no longer in the `tabs` array (e.g. dynamic tabs changed), the component resets to the first tab and calls `onChange`.
+If `activeTab` is not present in `tabs` (stale parent state, a tab was removed, etc.), the first tab is highlighted for DISPLAY only. The component does **not** call `onChange` to "heal" the parent state — that pattern caused a React #185 "Maximum update depth" ping-pong in controlled usage (see Sentry JOGI-1B / commit history). The parent is responsible for keeping `activeTab` in sync with the tab set, or tolerating a render where the first tab appears active.
+
+This matches Radix / MUI / Ant Design / Headless UI behavior: none of them emit `onChange` from an effect when the controlled value goes stale.
 
 ## Usage patterns
 

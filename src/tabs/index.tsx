@@ -89,36 +89,25 @@ const Tabs = ({
         if (stored !== tabs[0]?.id) onChange?.(stored)
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-    // Persist active tab to localStorage on change
+    // Render-time clamp: if activeId isn't in tabs (stale parent state, tab
+    // removed, etc.), fall back to the first tab for DISPLAY only. Do NOT
+    // emit onChange from an effect — that's the anti-pattern that caused
+    // React #185 "Maximum update depth" ping-pong (Sentry JOGI-1B). None of
+    // the mature headless tab libs (Radix, MUI, Ant, Headless UI) self-heal
+    // via onChange; the parent is responsible for keeping activeTab in sync
+    // with the tab set, or tolerating a render where nothing is highlighted.
+    const displayActiveId = activeId && tabs.some(t => t.id === activeId)
+        ? activeId
+        : tabs[0]?.id || ''
+
+    // Persist active tab to localStorage on change. Only write valid ids so
+    // a transient stale activeTab doesn't poison future mount-restores.
     useEffect(() => {
         if (!storageKey) return
-        const value = controlledActive ?? internalActive
-        try { localStorage.setItem(storageKey, value) } catch {}
-    }, [controlledActive, internalActive, storageKey])
-
-    // Safety: if tabs change and activeId is no longer valid, reset to first tab.
-    // Uses a stable id-key dep (not the array identity) so the effect only fires
-    // when the tab set actually changes, and a ref guard so we never re-notify the
-    // parent for the same (ids, target) pair — prevents a feedback loop when the
-    // parent ignores onChange (React max-update-depth crash, JOGI-1B).
-    const tabIdsKey = tabs.map(t => t.id).join(',')
-    const lastSelfHealRef = useRef<string | null>(null)
-    useEffect(() => {
-        if (tabs.length === 0) return
-        if (tabs.some(t => t.id === activeId)) {
-            lastSelfHealRef.current = null
-            return
-        }
-        const newActive = tabs[0].id
-        const guardKey = `${tabIdsKey}:${newActive}`
-        if (lastSelfHealRef.current === guardKey) return
-        lastSelfHealRef.current = guardKey
-        setInternalActive(newActive)
-        onChange?.(newActive)
-        if (storageKey) {
-            try { localStorage.setItem(storageKey, newActive) } catch {}
-        }
-    }, [tabIdsKey, activeId]) // eslint-disable-line react-hooks/exhaustive-deps
+        if (!displayActiveId) return
+        if (!tabs.some(t => t.id === displayActiveId)) return
+        try { localStorage.setItem(storageKey, displayActiveId) } catch {}
+    }, [displayActiveId, storageKey, tabs])
 
     const handleTabClick = (tabId: string) => {
         if (tabId === activeId) {
@@ -145,7 +134,7 @@ const Tabs = ({
             <div className="overflow-x-auto overflow-y-hidden mx-3 sm:mx-6 my-2.5 scrollbar-none">
                 <div className="flex w-fit gap-1.5">
                 {tabs.map(tab => {
-                    const isActive = activeId === tab.id
+                    const isActive = displayActiveId === tab.id
                     const sfx = suffix?.(tab.id)
                     return (
                         <button
