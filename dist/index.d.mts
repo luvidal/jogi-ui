@@ -646,7 +646,13 @@ interface TabsProps {
     onChange?: (tabId: string) => void;
     onRefresh?: (tabId: string) => void;
     storageKey?: string;
-    children?: ReactNode;
+    /**
+     * Content below the tab bar. Pass a function to receive the live active id
+     * (including the localStorage-restored value on mount) — this is the only
+     * way to render panels in sync with the tab highlight without the consumer
+     * duplicating state.
+     */
+    children?: ReactNode | ((activeId: string) => ReactNode);
     className?: string;
     suffix?: (tabId: string) => string | undefined;
     dark?: boolean;

@@ -11,7 +11,7 @@ Pill-style tab selector with localStorage memory.
 | `onChange` | `(tabId: string) => void` | — | Called on tab click AND on mount when restoring from storage |
 | `onRefresh` | `(tabId: string) => void` | — | Called when clicking the already-active tab |
 | `storageKey` | `string` | auto | Explicit localStorage key. Auto-generated from tab IDs if omitted. |
-| `children` | `ReactNode` | — | Content below the tab bar |
+| `children` | `ReactNode \| (activeId: string) => ReactNode` | — | Content below the tab bar. Pass a function to receive the live active id (see render-prop usage below) |
 | `suffix` | `(tabId: string) => string \| undefined` | — | Badge text after label (e.g. "(3/5)") |
 | `dark` | `boolean` | `true` | Dark-mode styling (brand pill on dark surface) |
 | `size` | `'xs' \| 'sm' \| 'md'` | `'sm'` | Density preset |
@@ -58,4 +58,17 @@ const [activeTab, setActiveTab] = useState('tab1')
 
 // Explicit storage key (recommended when multiple Tabs share the same tab IDs)
 <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} storageKey="my_feature_tab" />
+
+// Render-prop children — Tabs owns the active id, panels stay in sync with the
+// tab highlight even on the very first render (localStorage-restored value).
+// Consumers should prefer this when they render per-tab panels, to avoid
+// maintaining a duplicate activeTabId for panel visibility.
+<Tabs tabs={tabs} storageKey="my_feature_tab" onChange={onTabChange}>
+  {(activeId) => (
+    <>
+      {activeId === 'tab1' && <Panel1 />}
+      {activeId === 'tab2' && <Panel2 />}
+    </>
+  )}
+</Tabs>
 ```

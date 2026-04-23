@@ -2262,7 +2262,7 @@ var Tabs = ({
         tab.id
       );
     }) }) }),
-    hasContent && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-1 min-h-0 flex flex-col", children })
+    hasContent && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-1 min-h-0 flex flex-col", children: typeof children === "function" ? children(displayActiveId) : children })
   ] });
 };
 var tabs_default = Tabs;
