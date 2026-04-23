@@ -2108,19 +2108,27 @@ var Tabs = ({
     } catch {
     }
   }, [controlledActive, internalActive, storageKey]);
+  const tabIdsKey = tabs.map((t) => t.id).join(",");
+  const lastSelfHealRef = useRef(null);
   useEffect(() => {
-    if (tabs.length > 0 && !tabs.some((t) => t.id === activeId)) {
-      const newActive = tabs[0].id;
-      setInternalActive(newActive);
-      onChange?.(newActive);
-      if (storageKey) {
-        try {
-          localStorage.setItem(storageKey, newActive);
-        } catch {
-        }
+    if (tabs.length === 0) return;
+    if (tabs.some((t) => t.id === activeId)) {
+      lastSelfHealRef.current = null;
+      return;
+    }
+    const newActive = tabs[0].id;
+    const guardKey = `${tabIdsKey}:${newActive}`;
+    if (lastSelfHealRef.current === guardKey) return;
+    lastSelfHealRef.current = guardKey;
+    setInternalActive(newActive);
+    onChange?.(newActive);
+    if (storageKey) {
+      try {
+        localStorage.setItem(storageKey, newActive);
+      } catch {
       }
     }
-  }, [tabs, activeId]);
+  }, [tabIdsKey, activeId]);
   const handleTabClick = (tabId) => {
     if (tabId === activeId) {
       onRefresh?.(tabId);

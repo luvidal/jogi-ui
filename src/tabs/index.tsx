@@ -96,17 +96,29 @@ const Tabs = ({
         try { localStorage.setItem(storageKey, value) } catch {}
     }, [controlledActive, internalActive, storageKey])
 
-    // Safety: if tabs change and activeId is no longer valid, reset to first tab
+    // Safety: if tabs change and activeId is no longer valid, reset to first tab.
+    // Uses a stable id-key dep (not the array identity) so the effect only fires
+    // when the tab set actually changes, and a ref guard so we never re-notify the
+    // parent for the same (ids, target) pair — prevents a feedback loop when the
+    // parent ignores onChange (React max-update-depth crash, JOGI-1B).
+    const tabIdsKey = tabs.map(t => t.id).join(',')
+    const lastSelfHealRef = useRef<string | null>(null)
     useEffect(() => {
-        if (tabs.length > 0 && !tabs.some(t => t.id === activeId)) {
-            const newActive = tabs[0].id
-            setInternalActive(newActive)
-            onChange?.(newActive)
-            if (storageKey) {
-                try { localStorage.setItem(storageKey, newActive) } catch {}
-            }
+        if (tabs.length === 0) return
+        if (tabs.some(t => t.id === activeId)) {
+            lastSelfHealRef.current = null
+            return
         }
-    }, [tabs, activeId])
+        const newActive = tabs[0].id
+        const guardKey = `${tabIdsKey}:${newActive}`
+        if (lastSelfHealRef.current === guardKey) return
+        lastSelfHealRef.current = guardKey
+        setInternalActive(newActive)
+        onChange?.(newActive)
+        if (storageKey) {
+            try { localStorage.setItem(storageKey, newActive) } catch {}
+        }
+    }, [tabIdsKey, activeId]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleTabClick = (tabId: string) => {
         if (tabId === activeId) {
