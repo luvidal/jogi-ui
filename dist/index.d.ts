@@ -415,13 +415,12 @@ interface Props$3 {
     items: CardItem[];
     selectedId: string | null;
     onSelect: (id: string) => void;
-    compact?: boolean;
     /** Set of checked item IDs for multi-select mode */
     checkedIds?: Set<string>;
     /** Callback when an item's checkbox is toggled */
     onCheck?: (id: string, checked: boolean) => void;
 }
-declare function CardList({ items, selectedId, onSelect, compact, checkedIds, onCheck }: Props$3): react_jsx_runtime.JSX.Element | null;
+declare function CardList({ items, selectedId, onSelect, checkedIds, onCheck }: Props$3): react_jsx_runtime.JSX.Element | null;
 
 interface MasterDetailProps {
     /** Page title */

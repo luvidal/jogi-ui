@@ -1317,40 +1317,10 @@ var ContextMenu = ({ open, position, items, onClose }) => {
 };
 var contextmenu_default = ContextMenu;
 var Card = ({ item, isSelected, onClick, checkbox }) => /* @__PURE__ */ jsxRuntime.jsxs(
-  "div",
-  {
-    onClick: checkbox ? () => checkbox.onChange(!checkbox.checked) : onClick,
-    className: `
-            group relative flex items-center gap-3 p-3 rounded-2xl cursor-pointer
-            transition-all duration-200 ease-out bg-white
-            shadow-md hover:shadow-lg active:scale-[0.99]
-            ${isSelected ? "ring-2 ring-theme-500" : ""}
-        `,
-    children: [
-      checkbox ? /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-shrink-0 flex items-center", onClick: (e) => {
-        e.stopPropagation();
-        checkbox.onChange(!checkbox.checked);
-      }, children: /* @__PURE__ */ jsxRuntime.jsx(
-        icon_default,
-        {
-          name: checkbox.checked ? "SquareCheckBig" : "Square",
-          size: 18,
-          className: `cursor-pointer transition-colors ${checkbox.checked ? "text-theme-500" : "text-gray-300"}`
-        }
-      ) }) : item.icon ? /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex items-center justify-center w-12 h-12 rounded-xl bg-theme-100 flex-shrink-0", children: typeof item.icon === "string" ? /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: item.icon, size: 24, className: "text-theme-600" }) : item.icon }) : null,
-      /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex-1 min-w-0 flex flex-col", children: [
-        typeof item.title === "string" ? /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-sm font-semibold text-gray-800 truncate max-w-full", children: item.title }) : item.title,
-        item.subtitle && (typeof item.subtitle === "string" ? /* @__PURE__ */ jsxRuntime.jsx("span", { className: "mt-0.5 text-xs text-theme-500 truncate max-w-full", children: item.subtitle }) : item.subtitle)
-      ] }),
-      item.right && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-shrink-0", children: item.right })
-    ]
-  }
-);
-var CardCompact = ({ item, isSelected, onClick, checkbox }) => /* @__PURE__ */ jsxRuntime.jsxs(
   "button",
   {
     onClick: checkbox ? () => checkbox.onChange(!checkbox.checked) : onClick,
-    className: `w-full relative flex items-center gap-3 px-4 py-3.5 text-left transition-colors ${isSelected ? "bg-surface-2/60" : "hover:bg-surface-2/30"}`,
+    className: `group w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors duration-200 ${isSelected ? "bg-surface-2/50 text-ink-primary" : "bg-surface-2/15 text-ink-secondary hover:bg-surface-2/35"}`,
     children: [
       checkbox ? /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-shrink-0 flex items-center", onClick: (e) => {
         e.stopPropagation();
@@ -1364,41 +1334,22 @@ var CardCompact = ({ item, isSelected, onClick, checkbox }) => /* @__PURE__ */ j
         }
       ) }) : item.icon ? typeof item.icon === "string" ? /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl bg-surface-2", children: /* @__PURE__ */ jsxRuntime.jsx(icon_default, { name: item.icon, size: 18, className: isSelected ? "text-brand" : "text-ink-tertiary" }) }) : /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-shrink-0", children: item.icon }) : null,
       /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex-1 min-w-0", children: [
-        typeof item.title === "string" ? /* @__PURE__ */ jsxRuntime.jsx("div", { className: `text-sm font-medium truncate ${isSelected ? "text-ink-primary" : "text-ink-secondary"}`, children: item.title }) : item.title,
-        item.subtitle && (typeof item.subtitle === "string" ? /* @__PURE__ */ jsxRuntime.jsx("div", { className: "text-xs text-ink-tertiary truncate", children: item.subtitle }) : item.subtitle)
+        typeof item.title === "string" ? /* @__PURE__ */ jsxRuntime.jsx("div", { className: `text-sm font-medium truncate ${isSelected ? "text-ink-primary" : "text-ink-secondary group-hover:text-ink-primary"}`, children: item.title }) : item.title,
+        item.subtitle && (typeof item.subtitle === "string" ? /* @__PURE__ */ jsxRuntime.jsx("div", { className: "text-xs text-ink-tertiary truncate mt-0.5", children: item.subtitle }) : item.subtitle)
       ] }),
       item.right && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-shrink-0", children: item.right }),
-      isSelected && !checkbox && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-brand rounded-l-full" })
+      isSelected && !item.right && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex-shrink-0 h-1.5 w-1.5 rounded-full bg-brand" })
     ]
   }
 );
-function CardList({ items, selectedId, onSelect, compact, checkedIds, onCheck }) {
+function CardList({ items, selectedId, onSelect, checkedIds, onCheck }) {
   if (!Array.isArray(items) || items.length === 0) return null;
   const getCheckbox = (id) => checkedIds && onCheck ? { checked: checkedIds.has(id), onChange: (checked) => onCheck(id, checked) } : void 0;
-  if (compact) {
-    return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-col py-1", children: items.map((item, i) => /* @__PURE__ */ jsxRuntime.jsx(
-      "div",
-      {
-        className: "animate-fade-in",
-        style: i < 8 ? { animationDelay: `${i * 40}ms` } : void 0,
-        children: /* @__PURE__ */ jsxRuntime.jsx(
-          CardCompact,
-          {
-            item,
-            isSelected: selectedId === item.id,
-            onClick: () => onSelect(item.id),
-            checkbox: getCheckbox(item.id)
-          }
-        )
-      },
-      item.id
-    )) });
-  }
-  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "grid grid-cols-1 p-1.5 sm:p-2.5", children: items.map((item, i) => /* @__PURE__ */ jsxRuntime.jsx(
+  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-col gap-1 px-3 py-2", children: items.map((item, i) => /* @__PURE__ */ jsxRuntime.jsx(
     "div",
     {
-      className: "p-1.5 animate-fade-in-up",
-      style: i < 8 ? { animationDelay: `${i * 50}ms` } : void 0,
+      className: "animate-fade-in",
+      style: i < 8 ? { animationDelay: `${i * 40}ms` } : void 0,
       children: /* @__PURE__ */ jsxRuntime.jsx(
         Card,
         {
